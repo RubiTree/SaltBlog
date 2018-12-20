@@ -79,12 +79,12 @@
 
 
 
-<meta name="description" content="引子  Canvas变换是我们日常开发自定义控件用得比较多的东西，我们知道Canvas有这些变换操作：平移、缩放、旋转、错切，对Canvas进行变换后，再在Canvas上进行绘制，绘制出的图形就能体现出刚才变换的效果 比如往 $X$ 轴和 $Y$ 轴的正方向平移100像素： $canvas.translate(100f, 100f) \\  canvas.drawBitmap(image)$">
+<meta name="description" content="引子  Canvas变换是我们日常开发自定义控件用得比较多的东西，我们知道Canvas有这些变换操作：平移、缩放、旋转、错切，对Canvas进行变换后，再在Canvas上进行绘制，绘制出的图形就能体现出刚才变换的效果  比如往 $X$ 轴和 $Y$ 轴的正方向平移100像素：  12canvas.translate(100f, 100f)canvas.drawBitmap(image)  （下图">
 <meta property="og:type" content="article">
 <meta property="og:title" content="【透镜系列】Canvas变换">
 <meta property="og:url" content="http://zhengyu.site/2018/12/20/canvas-transform/index.html">
 <meta property="og:site_name" content="SaltedBlog">
-<meta property="og:description" content="引子  Canvas变换是我们日常开发自定义控件用得比较多的东西，我们知道Canvas有这些变换操作：平移、缩放、旋转、错切，对Canvas进行变换后，再在Canvas上进行绘制，绘制出的图形就能体现出刚才变换的效果 比如往 $X$ 轴和 $Y$ 轴的正方向平移100像素： $canvas.translate(100f, 100f) \\  canvas.drawBitmap(image)$">
+<meta property="og:description" content="引子  Canvas变换是我们日常开发自定义控件用得比较多的东西，我们知道Canvas有这些变换操作：平移、缩放、旋转、错切，对Canvas进行变换后，再在Canvas上进行绘制，绘制出的图形就能体现出刚才变换的效果  比如往 $X$ 轴和 $Y$ 轴的正方向平移100像素：  12canvas.translate(100f, 100f)canvas.drawBitmap(image)  （下图">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://blog-1258341143.cos.ap-beijing.myqcloud.com/blog/15449657481603.gif">
 <meta property="og:image" content="https://blog-1258341143.cos.ap-beijing.myqcloud.com/blog/15444059731047.png">
@@ -106,10 +106,10 @@
 <meta property="og:image" content="https://blog-1258341143.cos.ap-beijing.myqcloud.com/blog/15450145629298.gif">
 <meta property="og:image" content="https://blog-1258341143.cos.ap-beijing.myqcloud.com/blog/15449501491636.jpg">
 <meta property="og:image" content="https://blog-1258341143.cos.ap-beijing.myqcloud.com/blog/15449501607899.jpg">
-<meta property="og:updated_time" content="2018-12-20T13:56:21.706Z">
+<meta property="og:updated_time" content="2018-12-20T14:00:21.303Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="【透镜系列】Canvas变换">
-<meta name="twitter:description" content="引子  Canvas变换是我们日常开发自定义控件用得比较多的东西，我们知道Canvas有这些变换操作：平移、缩放、旋转、错切，对Canvas进行变换后，再在Canvas上进行绘制，绘制出的图形就能体现出刚才变换的效果 比如往 $X$ 轴和 $Y$ 轴的正方向平移100像素： $canvas.translate(100f, 100f) \\  canvas.drawBitmap(image)$">
+<meta name="twitter:description" content="引子  Canvas变换是我们日常开发自定义控件用得比较多的东西，我们知道Canvas有这些变换操作：平移、缩放、旋转、错切，对Canvas进行变换后，再在Canvas上进行绘制，绘制出的图形就能体现出刚才变换的效果  比如往 $X$ 轴和 $Y$ 轴的正方向平移100像素：  12canvas.translate(100f, 100f)canvas.drawBitmap(image)  （下图">
 <meta name="twitter:image" content="https://blog-1258341143.cos.ap-beijing.myqcloud.com/blog/15449657481603.gif">
 
 
@@ -335,12 +335,13 @@ save clip都可以放后篇
 -->
 <p>引子</p>
 <ol>
-<li><code>Canvas</code>变换是我们日常开发自定义控件用得比较多的东西，我们知道<code>Canvas</code>有这些变换操作：平移、缩放、旋转、错切，对<code>Canvas</code>进行变换后，再在<code>Canvas</code>上进行绘制，绘制出的图形就能体现出刚才变换的效果<ol>
-<li>比如往 $X$ 轴和 $Y$ 轴的正方向平移100像素：<ol>
-<li>$canvas.translate(100f, 100f) \\  canvas.drawBitmap(image)$</li>
-</ol>
+<li><p><code>Canvas</code>变换是我们日常开发自定义控件用得比较多的东西，我们知道<code>Canvas</code>有这些变换操作：平移、缩放、旋转、错切，对<code>Canvas</code>进行变换后，再在<code>Canvas</code>上进行绘制，绘制出的图形就能体现出刚才变换的效果</p>
+<ol>
+<li><p>比如往 $X$ 轴和 $Y$ 轴的正方向平移100像素：</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">canvas.translate(100f, 100f)</span><br><span class="line">canvas.drawBitmap(image)</span><br></pre></td></tr></table></figure>
 </li>
-<li>（下图中每一个小方格间距50像素，每两个小方格间有一个刻度，代表100像素）</li>
+<li><p>（下图中每一个小方格间距50像素，每两个小方格间有一个刻度，代表100像素）</p>
+</li>
 <li><img src="https://blog-1258341143.cos.ap-beijing.myqcloud.com/blog/15449657481603.gif" alt=""></li>
 </ol>
 </li>
