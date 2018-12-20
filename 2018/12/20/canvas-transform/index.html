@@ -106,7 +106,7 @@
 <meta property="og:image" content="https://blog-1258341143.cos.ap-beijing.myqcloud.com/blog/15450145629298.gif">
 <meta property="og:image" content="https://blog-1258341143.cos.ap-beijing.myqcloud.com/blog/15449501491636.jpg">
 <meta property="og:image" content="https://blog-1258341143.cos.ap-beijing.myqcloud.com/blog/15449501607899.jpg">
-<meta property="og:updated_time" content="2018-12-20T13:00:28.957Z">
+<meta property="og:updated_time" content="2018-12-20T13:07:11.371Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="【透镜系列】Canvas变换">
 <meta name="twitter:description" content="引子  Canvas变换是我们日常开发自定义控件用得比较多的东西，我们知道Canvas有这些变换操作：平移、缩放、旋转、错切，对Canvas进行变换后，再在Canvas上进行绘制，绘制出的图形就能体现出刚才变换的效果 比如往 $X$ 轴和 $Y$ 轴的正方向平移100像素： $canvas.translate(100f, 100f) \  canvas.drawBitmap(image)$ （下">
@@ -351,6 +351,7 @@ save clip都可以放后篇
 1. 本文的讲述方式是说来话长，以引导读者一步步更好地进行理解，所以有人可能会嫌弃太长了，另外还有一个长话短说的版本，可以看这里@@@
 2. 理解本文甚至需要一点点矩阵知识，但只需要一点点而已了；甚至有少量的公式，但是小学数学水平就能看懂了；然后你就能得到上面所有问题的答案并完全理解，成为一个`Canvas`变换专家（233
 -->
+<p>$$ \begin{cases} f(x) = x_0 + dx \ f(y) = y_0 + dy \end{cases} $$</p>
 <h2 id="1、二维空间中图形变换的朴素表示"><a href="#1、二维空间中图形变换的朴素表示" class="headerlink" title="1、二维空间中图形变换的朴素表示"></a>1、二维空间中图形变换的朴素表示</h2><ol>
 <li>说来话长，我们从图形变换的本质说起<ol>
 <li>图形变换的本质是一个函数 $ f({P}) $ ，这里称之为变换函数</li>
