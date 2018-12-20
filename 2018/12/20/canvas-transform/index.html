@@ -106,7 +106,7 @@
 <meta property="og:image" content="https://blog-1258341143.cos.ap-beijing.myqcloud.com/blog/15450145629298.gif">
 <meta property="og:image" content="https://blog-1258341143.cos.ap-beijing.myqcloud.com/blog/15449501491636.jpg">
 <meta property="og:image" content="https://blog-1258341143.cos.ap-beijing.myqcloud.com/blog/15449501607899.jpg">
-<meta property="og:updated_time" content="2018-12-20T12:31:26.286Z">
+<meta property="og:updated_time" content="2018-12-20T12:36:19.026Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="【透镜系列】Canvas变换">
 <meta name="twitter:description" content="引子  Canvas变换是我们日常开发自定义控件用得比较多的东西，我们知道Canvas有这些变换操作：平移、缩放、旋转、错切，对Canvas进行变换后，再在Canvas上进行绘制，绘制出的图形就能体现出刚才变换的效果 比如往 $X$ 轴和 $Y$ 轴的正方向平移100像素： $canvas.translate(100f, 100f) \  canvas.drawBitmap(image)$ （下">
@@ -351,11 +351,11 @@ save clip都可以放后篇
 1. 本文的讲述方式是说来话长，以引导读者一步步更好地进行理解，所以有人可能会嫌弃太长了，另外还有一个长话短说的版本，可以看这里@@@
 2. 理解本文甚至需要一点点矩阵知识，但只需要一点点而已了；甚至有少量的公式，但是小学数学水平就能看懂了；然后你就能得到上面所有问题的答案并完全理解，成为一个`Canvas`变换专家（233
 -->
-<p>2<br>$$<br>\begin{eqnarray}<br>\nabla\cdot\vec{E} &amp;=&amp; \frac{\rho}{\epsilon_0} \ \nabla\cdot\vec{B} &amp;=&amp; 0 \ \nabla\times\vec{E} &amp;=&amp; -\frac{\partial B}{\partial t} \ \nabla\times\vec{B} &amp;=&amp; \mu_0\left(\vec{J}+\epsilon_0\frac{\partial E}{\partial t} \right)<br>\end{eqnarray}<br>$$</p>
+<p>3<br>$$<br>\begin{eqnarray}<br>\nabla\cdot\vec{E} &amp;=&amp; \frac{\rho}{\epsilon_0} \ \nabla\cdot\vec{B} &amp;=&amp; 0 \ \nabla\times\vec{E} &amp;=&amp; -\frac{\partial B}{\partial t} \ \nabla\times\vec{B} &amp;=&amp; \mu_0\left(\vec{J}+\epsilon_0\frac{\partial E}{\partial t} \right)<br>\end{eqnarray}<br>$$</p>
 <h2 id="1、二维空间中图形变换的朴素表示"><a href="#1、二维空间中图形变换的朴素表示" class="headerlink" title="1、二维空间中图形变换的朴素表示"></a>1、二维空间中图形变换的朴素表示</h2><ol>
 <li>说来话长，我们从图形变换的本质说起<ol>
-<li>图形变换的本质是一个函数 $ f(\{P\}) $ ，这里称之为变换函数</li>
-<li>在二维空间中，它可以拆分成两个函数 $ ( f(\{x\}), f(\{y\}) ) $</li>
+<li>图形变换的本质是一个函数 $ f({P}) $ ，这里称之为变换函数</li>
+<li>在二维空间中，它可以拆分成两个函数 $ ( f({x}), f({y}) ) $</li>
 </ol>
 </li>
 <li>为什么就是个函数了？<ol>
@@ -364,14 +364,14 @@ save clip都可以放后篇
 </ol>
 </li>
 <li>所以在这里<ol>
-<li>$\{P\}$ 就是输入值的集合，也就是初始的二维图形的所有点的位置集合<ol>
-<li>（在本文中，变换特指图形的变换，变换只影响点的位置，不影响点的内容(颜色)，所以 $\{P\}$ 只是位置的集合）</li>
+<li>${P}$ 就是输入值的集合，也就是初始的二维图形的所有点的位置集合<ol>
+<li>（在本文中，变换特指图形的变换，变换只影响点的位置，不影响点的内容(颜色)，所以 ${P}$ 只是位置的集合）</li>
 </ol>
 </li>
-<li>而 $ f(\{P\}) $ 是输出值的集合，也就是变换后的二维图形的所有点的位置集合</li>
+<li>而 $ f({P}) $ 是输出值的集合，也就是变换后的二维图形的所有点的位置集合</li>
 </ol>
 </li>
-<li>在二维空间中，点的位置用 $x,y$ 表示更为直观，所以下面都会用这样两个函数 $ ( f(\{x\}), f(\{y\}) )  $ 表示变换，它也可以简单写为 $ ( f(x), f(y) )  $</li>
+<li>在二维空间中，点的位置用 $x,y$ 表示更为直观，所以下面都会用这样两个函数 $ ( f({x}), f({y}) )  $ 表示变换，它也可以简单写为 $ ( f(x), f(y) )  $</li>
 </ol>
 </li>
 <li>误区<ol>
@@ -960,7 +960,7 @@ save clip都可以放后篇
 <h2 id="7、Camera与三维变换模型"><a href="#7、Camera与三维变换模型" class="headerlink" title="7、Camera与三维变换模型"></a>7、Camera与三维变换模型</h2><p>理解了前面的二维变换之后，三维变换其实非常简单</p>
 <h3 id="理解"><a href="#理解" class="headerlink" title="理解"></a>理解</h3><p>首先从三维变换的本质出发</p>
 <ol>
-<li>如前文所述，图形变换的本质还是一个函数 $ f(\{P\}) $，只是在三维空间中，它可以拆分成三个函数 $ ( f(\{x\}), f(\{y\}), f(\{z\}) ) $</li>
+<li>如前文所述，图形变换的本质还是一个函数 $ f({P}) $，只是在三维空间中，它可以拆分成三个函数 $ ( f({x}), f({y}), f({z}) ) $</li>
 <li>对于三维线性变换，可以用矩阵表示为： $ \begin{bmatrix} x \ y \ z \end{bmatrix} = \begin{bmatrix} m_{11} &amp; m_{12} &amp; m_{13} \ m_{21} &amp; m_{22} &amp; m_{23} \ m_{31} &amp; m_{32} &amp; m_{33} \end{bmatrix} · \begin{bmatrix} x_0 \ y_0 \ z_0 \end{bmatrix}$，或 $ P = M · P_0 $</li>
 <li>所以三维变换跟二维变换没有什么本质区别，只是多了一个维度</li>
 </ol>
@@ -998,7 +998,7 @@ save clip都可以放后篇
 <li>在图形学中，投影是一种将三维坐标变换为二维坐标的方法，常用到的有正交投影和透视投影：正交投影多用于三维健模，透视投影则由于和人的视觉系统相似，多用于在二维平面中对三维世界的呈现</li>
 <li>基本的透视投影模型由视点$E$（投影中心）和视平面$P$两部分构成：视点可以认为是观察者的位置，视平面就是渲染三维对象透视图的二维平面<ol start="7">
 <li>对于世界中的任一点$X$，构造一条起点为$E$并经过$X$点的射线$R$，$R$与平面$P$的交点$X_p$即是$X$点的透视投影结果，如下图<img src="https://blog-1258341143.cos.ap-beijing.myqcloud.com/blog/15449501491636.jpg" alt=""></li>
-<li>三维世界的物体可以看作是由点的集合 $\{X_i\}$ 构成的，这样依次构造起点为$E$，并经过点$X_i$的射线$R_i$，这些射线与视平面P的交点集合便是三维世界在当前视点的透视图，如下图<img src="https://blog-1258341143.cos.ap-beijing.myqcloud.com/blog/15449501607899.jpg" alt="-w400"></li>
+<li>三维世界的物体可以看作是由点的集合 ${X_i}$ 构成的，这样依次构造起点为$E$，并经过点$X_i$的射线$R_i$，这些射线与视平面P的交点集合便是三维世界在当前视点的透视图，如下图<img src="https://blog-1258341143.cos.ap-beijing.myqcloud.com/blog/15449501607899.jpg" alt="-w400"></li>
 <li>但注意，视点、视平面、被投影物体之间并没有强制的位置关系，被投影物体也可以出现在视点和视平面之间（@@@可以有图）</li>
 </ol>
 </li>
