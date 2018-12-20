@@ -79,12 +79,12 @@
 
 
 
-<meta name="description" content="引子  Canvas变换是我们日常开发自定义控件用得比较多的东西，我们知道Canvas有这些变换操作：平移、缩放、旋转、错切，对Canvas进行变换后，再在Canvas上进行绘制，绘制出的图形就能体现出刚才变换的效果 比如往 $X$ 轴和 $Y$ 轴的正方向平移100像素： $canvas.translate(100f, 100f) \  canvas.drawBitmap(image)$ （下">
+<meta name="description" content="引子  Canvas变换是我们日常开发自定义控件用得比较多的东西，我们知道Canvas有这些变换操作：平移、缩放、旋转、错切，对Canvas进行变换后，再在Canvas上进行绘制，绘制出的图形就能体现出刚才变换的效果 比如往 $X$ 轴和 $Y$ 轴的正方向平移100像素： $canvas.translate(100f, 100f) \\  canvas.drawBitmap(image)$ （">
 <meta property="og:type" content="article">
 <meta property="og:title" content="【透镜系列】Canvas变换">
 <meta property="og:url" content="http://zhengyu.site/2018/12/20/canvas-transform/index.html">
 <meta property="og:site_name" content="SaltedBlog">
-<meta property="og:description" content="引子  Canvas变换是我们日常开发自定义控件用得比较多的东西，我们知道Canvas有这些变换操作：平移、缩放、旋转、错切，对Canvas进行变换后，再在Canvas上进行绘制，绘制出的图形就能体现出刚才变换的效果 比如往 $X$ 轴和 $Y$ 轴的正方向平移100像素： $canvas.translate(100f, 100f) \  canvas.drawBitmap(image)$ （下">
+<meta property="og:description" content="引子  Canvas变换是我们日常开发自定义控件用得比较多的东西，我们知道Canvas有这些变换操作：平移、缩放、旋转、错切，对Canvas进行变换后，再在Canvas上进行绘制，绘制出的图形就能体现出刚才变换的效果 比如往 $X$ 轴和 $Y$ 轴的正方向平移100像素： $canvas.translate(100f, 100f) \\  canvas.drawBitmap(image)$ （">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://blog-1258341143.cos.ap-beijing.myqcloud.com/blog/15449657481603.gif">
 <meta property="og:image" content="https://blog-1258341143.cos.ap-beijing.myqcloud.com/blog/15444059731047.png">
@@ -106,10 +106,10 @@
 <meta property="og:image" content="https://blog-1258341143.cos.ap-beijing.myqcloud.com/blog/15450145629298.gif">
 <meta property="og:image" content="https://blog-1258341143.cos.ap-beijing.myqcloud.com/blog/15449501491636.jpg">
 <meta property="og:image" content="https://blog-1258341143.cos.ap-beijing.myqcloud.com/blog/15449501607899.jpg">
-<meta property="og:updated_time" content="2018-12-20T13:13:34.012Z">
+<meta property="og:updated_time" content="2018-12-20T13:19:50.954Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="【透镜系列】Canvas变换">
-<meta name="twitter:description" content="引子  Canvas变换是我们日常开发自定义控件用得比较多的东西，我们知道Canvas有这些变换操作：平移、缩放、旋转、错切，对Canvas进行变换后，再在Canvas上进行绘制，绘制出的图形就能体现出刚才变换的效果 比如往 $X$ 轴和 $Y$ 轴的正方向平移100像素： $canvas.translate(100f, 100f) \  canvas.drawBitmap(image)$ （下">
+<meta name="twitter:description" content="引子  Canvas变换是我们日常开发自定义控件用得比较多的东西，我们知道Canvas有这些变换操作：平移、缩放、旋转、错切，对Canvas进行变换后，再在Canvas上进行绘制，绘制出的图形就能体现出刚才变换的效果 比如往 $X$ 轴和 $Y$ 轴的正方向平移100像素： $canvas.translate(100f, 100f) \\  canvas.drawBitmap(image)$ （">
 <meta name="twitter:image" content="https://blog-1258341143.cos.ap-beijing.myqcloud.com/blog/15449657481603.gif">
 
 
@@ -333,7 +333,7 @@ save clip都可以放后篇
 <ol>
 <li><code>Canvas</code>变换是我们日常开发自定义控件用得比较多的东西，我们知道<code>Canvas</code>有这些变换操作：平移、缩放、旋转、错切，对<code>Canvas</code>进行变换后，再在<code>Canvas</code>上进行绘制，绘制出的图形就能体现出刚才变换的效果<ol start="2">
 <li>比如往 $X$ 轴和 $Y$ 轴的正方向平移100像素：</li>
-<li>$canvas.translate(100f, 100f) \  canvas.drawBitmap(image)$</li>
+<li>$canvas.translate(100f, 100f) \\  canvas.drawBitmap(image)$</li>
 <li>（下图中每一个小方格间距50像素，每两个小方格间有一个刻度，代表100像素）</li>
 <li><img src="https://blog-1258341143.cos.ap-beijing.myqcloud.com/blog/15449657481603.gif" alt=""></li>
 </ol>
@@ -351,8 +351,6 @@ save clip都可以放后篇
 1. 本文的讲述方式是说来话长，以引导读者一步步更好地进行理解，所以有人可能会嫌弃太长了，另外还有一个长话短说的版本，可以看这里@@@
 2. 理解本文甚至需要一点点矩阵知识，但只需要一点点而已了；甚至有少量的公式，但是小学数学水平就能看懂了；然后你就能得到上面所有问题的答案并完全理解，成为一个`Canvas`变换专家（233
 -->
-<p>$$ \begin{cases} f(x) = x_0 + dx \\ f(y) = y_0 + dy \end{cases} $$</p>
-<p>$$<br>\begin{cases}<br>f(x) = x_0 + dx \\<br>f(y) = y_0 + dy<br>\end{cases}<br>$$</p>
 <h2 id="1、二维空间中图形变换的朴素表示"><a href="#1、二维空间中图形变换的朴素表示" class="headerlink" title="1、二维空间中图形变换的朴素表示"></a>1、二维空间中图形变换的朴素表示</h2><ol>
 <li>说来话长，我们从图形变换的本质说起<ol>
 <li>图形变换的本质是一个函数 $ f({P}) $ ，这里称之为变换函数</li>
@@ -387,14 +385,14 @@ save clip都可以放后篇
 <li>平移<ol>
 <li>平移可以说是最简单的变换了</li>
 <li>当需求是希望把图形在 $X$ 轴正方向移动 $dx$，在 $Y$ 轴正方向移动 $dy$ 时，如图 <img src="https://blog-1258341143.cos.ap-beijing.myqcloud.com/blog/15449657481603.gif" alt=""></li>
-<li>使用一点点解析几何的知识，我们就能得到它的变换函数：$$ \begin{cases} f(x) = x_0 + dx \ f(y) = y_0 + dy \end{cases} $$</li>
+<li>使用一点点解析几何的知识，我们就能得到它的变换函数：$$ \begin{cases} f(x) = x_0 + dx \\ f(y) = y_0 + dy \end{cases} $$</li>
 </ol>
 </li>
 <li>缩放<ol>
 <li>通过指定一个缩放中心、x方向和y方向上的缩放系数，可以实施一次缩放变换</li>
 <li>当缩放中心是原点时<ol start="3">
 <li>设x方向的缩放系数是 $s_x$，y方向上的缩放系数是 $s_y$ ，如图<img src="https://blog-1258341143.cos.ap-beijing.myqcloud.com/blog/15449664893887.gif" alt=""></li>
-<li>同样使用一点点解析几何的知识，我们就能得到它的变换函数：$$ \begin{cases} f(x) = x_0 <em> s_x \ f(y) = y_0 </em> s_y \end{cases} $$</li>
+<li>同样使用一点点解析几何的知识，我们就能得到它的变换函数：$$ \begin{cases} f(x) = x_0 <em> s_x \\ f(y) = y_0 </em> s_y \end{cases} $$</li>
 </ol>
 </li>
 <li>对于缩放中心不是原点的情况，我们暂时不作讨论，因为我们不认为其属于常用变换（实际上是因为不属于线性变换），后续讲变换叠加的时候会再讲到</li>
@@ -403,7 +401,7 @@ save clip都可以放后篇
 <li>旋转<ol>
 <li>通过指定一个旋转中心和一个旋转角度，就可以实施一次旋转变换</li>
 <li>同样，此处我们暂时只讨论旋转中心是原点的情况，当旋转角度是 $θ$ 时，如图<img src="https://blog-1258341143.cos.ap-beijing.myqcloud.com/blog/15449665966241.gif" alt=""></li>
-<li>这里的推导过程稍微有一点点复杂，但不是很重要，直接看结果（@@@可以在这里看详细过程，书上有，其他地方应该也有），它的变换函数是：$$ \begin{cases} f(x) = x_0 cosθ - y_0 sinθ \ f(y) = x_0 sinθ + y_0 cosθ \end{cases} $$</li>
+<li>这里的推导过程稍微有一点点复杂，但不是很重要，直接看结果（@@@可以在这里看详细过程，书上有，其他地方应该也有），它的变换函数是：$$ \begin{cases} f(x) = x_0 cosθ - y_0 sinθ \\ f(y) = x_0 sinθ + y_0 cosθ \end{cases} $$</li>
 </ol>
 </li>
 <li>错切<ol>
@@ -421,20 +419,20 @@ save clip都可以放后篇
 </li>
 <li>我们先尝试用矩阵表示这些变换<ol>
 <li>在用矩阵表示变换之前，我们需要先考虑怎么表示点，点通常用一个列向量表示，也就是一个<code>2*1</code>的矩阵<ol start="2">
-<li>比如 $P(x, y)$ 可以表示为 $ P = \begin{bmatrix} x \ y \end{bmatrix} $</li>
+<li>比如 $P(x, y)$ 可以表示为 $ P = \begin{bmatrix} x \\ y \end{bmatrix} $</li>
 </ol>
 </li>
 <li>平移<ol>
-<li>从数学上，平移变换函数 $$ \begin{cases} f(x) = x_0 + dx \ f(y) = y_0 + dy \end{cases} $$ 可以写成矩阵的形式：$$ \begin{bmatrix} x \ y \end{bmatrix} = \begin{bmatrix} x_0 \ y_0 \end{bmatrix} + \begin{bmatrix} dx \ dy \end{bmatrix}$$ 或（其中 $T$ 为平移矩阵） $$ P = P_0 + T $$</li>
+<li>从数学上，平移变换函数 $$ \begin{cases} f(x) = x_0 + dx \\ f(y) = y_0 + dy \end{cases} $$ 可以写成矩阵的形式：$$ \begin{bmatrix} x \\ y \end{bmatrix} = \begin{bmatrix} x_0 \\ y_0 \end{bmatrix} + \begin{bmatrix} dx \\ dy \end{bmatrix}$$ 或（其中 $T$ 为平移矩阵） $$ P = P_0 + T $$</li>
 <li>这样就用矩阵表示了二维平移变换函数</li>
 </ol>
 </li>
 <li>缩放<ol>
-<li>同样，缩放变换函数 $$ \begin{cases} f(x) = x_0 <em> s_x \ f(y) = y_0 </em> s_y \end{cases} $$ 可以写成矩阵形式 $$ \begin{bmatrix} x \ y \end{bmatrix} = \begin{bmatrix} s_x &amp; 0 \ 0 &amp; s_y \end{bmatrix} · \begin{bmatrix} x_0 \ y_0 \end{bmatrix}$$ 或（其中 $S$ 是缩放矩阵） $$ P = S · P_0 $$</li>
+<li>同样，缩放变换函数 $$ \begin{cases} f(x) = x_0 <em> s_x \\ f(y) = y_0 </em> s_y \end{cases} $$ 可以写成矩阵形式 $$ \begin{bmatrix} x \\ y \end{bmatrix} = \begin{bmatrix} s_x &amp; 0 \\ 0 &amp; s_y \end{bmatrix} · \begin{bmatrix} x_0 \\ y_0 \end{bmatrix}$$ 或（其中 $S$ 是缩放矩阵） $$ P = S · P_0 $$</li>
 </ol>
 </li>
 <li>旋转<ol>
-<li>同样，旋转变换函数 $$ \begin{cases} f(x) = x_0 cosθ - y_0 sinθ \ f(y) = x_0 sinθ + y_0 cosθ \end{cases} $$ 可以写成矩阵形式 $$ \begin{bmatrix} x \ y \end{bmatrix} = \begin{bmatrix} cosθ &amp; -sinθ \ sinθ &amp; cosθ \end{bmatrix} · \begin{bmatrix} x_0 \ y_0 \end{bmatrix}$$ 或（其中 $R$ 是旋转矩阵） $$ P = R · P_0 $$</li>
+<li>同样，旋转变换函数 $$ \begin{cases} f(x) = x_0 cosθ - y_0 sinθ \\ f(y) = x_0 sinθ + y_0 cosθ \end{cases} $$ 可以写成矩阵形式 $$ \begin{bmatrix} x \\ y \end{bmatrix} = \begin{bmatrix} cosθ &amp; -sinθ \\ sinθ &amp; cosθ \end{bmatrix} · \begin{bmatrix} x_0 \\ y_0 \end{bmatrix}$$ 或（其中 $R$ 是旋转矩阵） $$ P = R · P_0 $$</li>
 </ol>
 </li>
 <li>错切（@@@同跳过）</li>
@@ -451,8 +449,8 @@ save clip都可以放后篇
 <li>下面我们考虑多个变换叠加的场景<ol>
 <li>比如，如果要进行「先缩放、后平移、再缩放」的变换<ol start="2">
 <li><img src="https://blog-1258341143.cos.ap-beijing.myqcloud.com/blog/15449677159742.gif" alt=""></li>
-<li>先用函数表示，非常简单（只用x举例）：$$ \begin{align<em>} x_1 = x_0 </em> s_1 \ x_2 = x_1 + dx = x_0 <em> s_1 + dx \ x_3 = x_2 </em> s_2 = (x_0 <em> s_1 + dx)</em>s_2 \end{align*} $$</li>
-<li>用矩阵表示也很容易：$$ \begin{align<em>} P_1 = S_1 · P_0 \ P_2 = P_1 + T = S_1 · P_0 + T \ P_3 = S_2 · P_2 = S_2 · ( S_1 · P_0 + T ) \end{align</em>} $$</li>
+<li>先用函数表示，非常简单（只用x举例）：$$ \begin{align<em>} x_1 = x_0 </em> s_1 \\ x_2 = x_1 + dx = x_0 <em> s_1 + dx \\ x_3 = x_2 </em> s_2 = (x_0 <em> s_1 + dx)</em>s_2 \end{align*} $$</li>
+<li>用矩阵表示也很容易：$$ \begin{align<em>} P_1 = S_1 · P_0 \\ P_2 = P_1 + T = S_1 · P_0 + T \\ P_3 = S_2 · P_2 = S_2 · ( S_1 · P_0 + T ) \end{align</em>} $$</li>
 <li>这两种表示是等价的</li>
 </ol>
 </li>
@@ -513,7 +511,7 @@ save clip都可以放后篇
 </li>
 <li>然后就有一种办法，能通过线性变换来表示仿射变换，这样对于包括平移的四种基本操作，都能像线性变换一样，消除中间坐标的运算，这种办法简单说是：增加一个维度<ol>
 <li>先简要描述这个转化过程，非常简洁巧妙<ol>
-<li>$\overrightarrow{P} = M · \overrightarrow{P_0} + \overrightarrow{T}$ 可以写成 $ \begin{bmatrix} \overrightarrow{P} \ 1 \end{bmatrix} = \begin{bmatrix} M &amp; \overrightarrow{T} \ 0 &amp; 1 \end{bmatrix} · \begin{bmatrix} \overrightarrow{P_0} \ 1 \end{bmatrix} $<ol start="2">
+<li>$\overrightarrow{P} = M · \overrightarrow{P_0} + \overrightarrow{T}$ 可以写成 $ \begin{bmatrix} \overrightarrow{P} \\ 1 \end{bmatrix} = \begin{bmatrix} M &amp; \overrightarrow{T} \\ 0 &amp; 1 \end{bmatrix} · \begin{bmatrix} \overrightarrow{P_0} \\ 1 \end{bmatrix} $<ol start="2">
 <li>它们在数学上是等价的</li>
 <li>（这里为了清晰，<code>2*1</code>的矩阵写成了向量的形式）</li>
 </ol>
@@ -531,7 +529,7 @@ save clip都可以放后篇
 </li>
 <li>尝试形象地理解一下这种转化方式<ol>
 <li>在三维空间中的线性变换原则应该跟二维空间的线性变换原则一致</li>
-<li>想象对一个三维正立方体施加线性变换， $\begin{bmatrix} \overrightarrow{P_0} \ 1 \end{bmatrix} $ 可以认为是变换前三维立方体与 $z=1$ 平面上的相交面，这个初始的相交面的中心是原点，而 $\begin{bmatrix} \overrightarrow{P} \ 1 \end{bmatrix} $ 则是变换后三维立方体与 $z=1$ 平面上的相交面，它的中心就可以不是原点，可以发生偏移</li>
+<li>想象对一个三维正立方体施加线性变换， $\begin{bmatrix} \overrightarrow{P_0} \\ 1 \end{bmatrix} $ 可以认为是变换前三维立方体与 $z=1$ 平面上的相交面，这个初始的相交面的中心是原点，而 $\begin{bmatrix} \overrightarrow{P} \\ 1 \end{bmatrix} $ 则是变换后三维立方体与 $z=1$ 平面上的相交面，它的中心就可以不是原点，可以发生偏移</li>
 <li>当我们忽略掉第三个维度的1，也就是把 $z=1$ 平面当成我们观察的二维平面，你就会观察到二维图形在三维线性变换后，实现了平移效果</li>
 <li>所以增加一个维度后，就可以在高维度通过线性变换表示低维度的仿射变换</li>
 <li>可以参考维基百科“仿射变换”词条里的动图，生动的表现了这一过程：<img src="https://blog-1258341143.cos.ap-beijing.myqcloud.com/blog/15449693706857.gif" alt=""></li>
@@ -710,15 +708,15 @@ save clip都可以放后篇
 <li>每次进行变换后，不止把变换后的图形传递给下一次变换，而且还把当前的变换跟之前做过的变换合并在一起，得到一个总变换，也传递给下一次变换</li>
 <li>于是下一次变换时，可以先把图形使用总变换的逆变换变回原图形，然后对原图形进行这次新的变换，再把进行了新变换的原图形再次使用总变换进行变换，最后把这次新变换合并进总变换中</li>
 <li>这样的变换函数大概可以写成这样（不严谨，就表达个意思）：$x_n = f_n ( f_{n-1} ( … ( f_2 ( f_1 ( x_0 ), f_1 ), f_1f_2 ) … ), f_1…f_{n-1} )$，$f_n$ 中就会进行上面描述的复杂操作</li>
-<li>你会发现这是一个类似小千叠加的变换函数，于是通项公式也可以写了，它包含两个表达式，其中 $S_n$ 表示n次小鱼叠加得到的总变换：$ \begin{cases} x_n = S_{n-1} ( f_n ( {S_{n-1}}^{-1}( x_{n-1} ) ) ) \ S_n = f_n(S_{n-1}) \end{cases} $</li>
+<li>你会发现这是一个类似小千叠加的变换函数，于是通项公式也可以写了，它包含两个表达式，其中 $S_n$ 表示n次小鱼叠加得到的总变换：$ \begin{cases} x_n = S_{n-1} ( f_n ( {S_{n-1}}^{-1}( x_{n-1} ) ) ) \\ S_n = f_n(S_{n-1}) \end{cases} $</li>
 </ol>
 </li>
 <li>但你可能小声嘀咕，这效率会不有点感人，小鱼叠加真的是这么实现的吗？</li>
 <li>确实不是（诶，别打我，等一下，听我解释<ol>
 <li>首先，目前为止，我们主要讨论的是线性变换（包括使用齐次矩阵扩展的仿射变换），线性变换与一般的变换不同，它在叠加时有一些特殊的性质，前面点到为止，这里继续往下讲<ol>
 <li>所有的线性变换都可以写成矩阵相乘的形式，所以当所有的变换都是线性变换时<ol>
-<li>小千叠加可以写成这样：$P_n = M_n · M_{n-1} · … · M_2 · M_1 · P_0$，于是通项公式是：$ \begin{cases} P_n = S_n · P_0 \ S_n = M_n · S_{n-1} \end{cases} $</li>
-<li>而小鱼叠加可以写成这样：$P_n = M_1 · M_2 · … · M_{n-1} · M_n · P_0$，然后此时你会发现现在居然能写出通项公式了：$ \begin{cases} P_n = S_n · P_0 \ S_n = S_{n-1} · M_n \end{cases} $<ol>
+<li>小千叠加可以写成这样：$P_n = M_n · M_{n-1} · … · M_2 · M_1 · P_0$，于是通项公式是：$ \begin{cases} P_n = S_n · P_0 \\ S_n = M_n · S_{n-1} \end{cases} $</li>
+<li>而小鱼叠加可以写成这样：$P_n = M_1 · M_2 · … · M_{n-1} · M_n · P_0$，然后此时你会发现现在居然能写出通项公式了：$ \begin{cases} P_n = S_n · P_0 \\ S_n = S_{n-1} · M_n \end{cases} $<ol>
 <li>为什么这个时候能写通项公式呢？因为此时变换都是矩阵相乘的形式，而矩阵相乘有宝贵的结合律，所以可以容易地调整结合顺序，于是可以容易地把新的变换插入到所有旧变换和原图形之间</li>
 </ol>
 </li>
@@ -808,9 +806,9 @@ save clip都可以放后篇
 <ol start="4">
 <li>操作方式是：用小千叠加的思路，倒着使用小鱼叠加的API，实现「正着用小千叠加的API」同样的效果<ol start="5">
 <li>举个例子，需求是：把<code>Canvas</code>沿绝对坐标系的 $X$ 轴负方向移动100， $Y$ 轴负方向移动100，然后绕绝对坐标系的原点顺时针旋转45度，再沿绝对坐标系的 $X$ 轴正方向移动100， $Y$ 轴正方向移动100</li>
-<li>如果直接使用小鱼叠加的API，你可能会这么写： $ canvas.translate(-100,-100) \ canvas.rotate(45) \ canvas.translate(100,100) $ ，但它的效果是这样：<img src="https://blog-1258341143.cos.ap-beijing.myqcloud.com/blog/15449805823985.gif" alt=""><br>，为什么会这样，前面理解了这里就很简单，因为你是小千叠加的思路在调用小鱼叠加的API，肯定不对了</li>
+<li>如果直接使用小鱼叠加的API，你可能会这么写： $ canvas.translate(-100,-100) \\ canvas.rotate(45) \\ canvas.translate(100,100) $ ，但它的效果是这样：<img src="https://blog-1258341143.cos.ap-beijing.myqcloud.com/blog/15449805823985.gif" alt=""><br>，为什么会这样，前面理解了这里就很简单，因为你是小千叠加的思路在调用小鱼叠加的API，肯定不对了</li>
 <li>当然，你可以真正用小鱼叠加的思路来写，但那样就会比较麻烦，而且碰到更复杂的用小千叠加思路描述的需求，就更麻烦了。本来你换用小千叠加的API来操作就什么问题都没有了，但<code>Canvas</code>的变换方法只有小鱼叠加</li>
-<li>于是神奇操作就来了，来用小鱼叠加的API实现小千叠加的思路吧，方法非常简单，把上面的调用顺序倒过来就行了，也就是 $ canvas.translate(100,100) \ canvas.rotate(45) \ canvas.translate(-100,-100) $，这样一操作，效果真的预想中一样了<img src="https://blog-1258341143.cos.ap-beijing.myqcloud.com/blog/15449807824073.gif" alt=""></li>
+<li>于是神奇操作就来了，来用小鱼叠加的API实现小千叠加的思路吧，方法非常简单，把上面的调用顺序倒过来就行了，也就是 $ canvas.translate(100,100) \\ canvas.rotate(45) \\ canvas.translate(-100,-100) $，这样一操作，效果真的预想中一样了<img src="https://blog-1258341143.cos.ap-beijing.myqcloud.com/blog/15449807824073.gif" alt=""></li>
 </ol>
 </li>
 <li>为什么神奇操作有神奇效果呢？原因在于线性变换可以用矩阵表示<ol>
@@ -819,7 +817,7 @@ save clip都可以放后篇
 <li>小鱼叠加线性变换的矩阵表达式为：$P_n = M_1 · M_2 · … · M_{n-1} · M_n · P_0$</li>
 </ol>
 </li>
-<li>在这个需求中，最自然的办法是使用小千叠加的思路调用小千叠加的API（假设这里<code>Canvas</code>的q系列操作提供的是小千叠加的API）：$ canvas.qTranslate(-100,-100) \ canvas.qRotate(45) \ canvas.qTranslate(100,100) $ ，这套操作的效果用矩阵表示是 $P_n = M(100,100) · R(45) · M(-100,-100) · P_0$</li>
+<li>在这个需求中，最自然的办法是使用小千叠加的思路调用小千叠加的API（假设这里<code>Canvas</code>的q系列操作提供的是小千叠加的API）：$ canvas.qTranslate(-100,-100) \\ canvas.qRotate(45) \\ canvas.qTranslate(100,100) $ ，这套操作的效果用矩阵表示是 $P_n = M(100,100) · R(45) · M(-100,-100) · P_0$</li>
 <li>而前面错误的做法中，使用小千叠加的思路调用小鱼叠加的API，操作的效果用矩阵表示是 $P_n = M(-100,-100) · R(45) · M(100,100) · P_0$</li>
 <li>如果我们基于这个错误做法，还是小千叠加的思路和小于叠加的API，只是把调用顺序反过来，用矩阵表示就是 $P_n = M(100,100) · R(45) · M(-100,-100) · P_0$，这就跟「使用小千叠加的思路调用小千叠加的API」得到的矩阵表达式一致了，就是我们要的效果</li>
 </ol>
@@ -962,7 +960,7 @@ save clip都可以放后篇
 <h3 id="理解"><a href="#理解" class="headerlink" title="理解"></a>理解</h3><p>首先从三维变换的本质出发</p>
 <ol>
 <li>如前文所述，图形变换的本质还是一个函数 $ f({P}) $，只是在三维空间中，它可以拆分成三个函数 $ ( f({x}), f({y}), f({z}) ) $</li>
-<li>对于三维线性变换，可以用矩阵表示为： $ \begin{bmatrix} x \ y \ z \end{bmatrix} = \begin{bmatrix} m_{11} &amp; m_{12} &amp; m_{13} \ m_{21} &amp; m_{22} &amp; m_{23} \ m_{31} &amp; m_{32} &amp; m_{33} \end{bmatrix} · \begin{bmatrix} x_0 \ y_0 \ z_0 \end{bmatrix}$，或 $ P = M · P_0 $</li>
+<li>对于三维线性变换，可以用矩阵表示为： $ \begin{bmatrix} x \\ y \\ z \end{bmatrix} = \begin{bmatrix} m_{11} &amp; m_{12} &amp; m_{13} \\ m_{21} &amp; m_{22} &amp; m_{23} \\ m_{31} &amp; m_{32} &amp; m_{33} \end{bmatrix} · \begin{bmatrix} x_0 \\ y_0 \\ z_0 \end{bmatrix}$，或 $ P = M · P_0 $</li>
 <li>所以三维变换跟二维变换没有什么本质区别，只是多了一个维度</li>
 </ol>
 <p>但这里要讨论的三维变换与以上内容不同，因为我们是在二维坐标系中进行三维变换</p>
@@ -972,11 +970,11 @@ save clip都可以放后篇
 </ol>
 <p>更具体一点，在Android（@@@？ios，html）中，如何基于已有的二维齐次变换矩阵实现三维变换的效果</p>
 <ol>
-<li>前面已经讲过，在实际操作中，二维仿射变换使用了三维线性变换表示，它也叫二维齐次变换矩阵（@@@是吗？），变换过程可以表示为：$ \begin{bmatrix} \overrightarrow{P} \ 1 \end{bmatrix} = \begin{bmatrix} M &amp; \overrightarrow{T} \ 0 &amp; 1 \end{bmatrix} · \begin{bmatrix} \overrightarrow{P_0} \ 1 \end{bmatrix} $</li>
+<li>前面已经讲过，在实际操作中，二维仿射变换使用了三维线性变换表示，它也叫二维齐次变换矩阵（@@@是吗？），变换过程可以表示为：$ \begin{bmatrix} \overrightarrow{P} \\ 1 \end{bmatrix} = \begin{bmatrix} M &amp; \overrightarrow{T} \\ 0 &amp; 1 \end{bmatrix} · \begin{bmatrix} \overrightarrow{P_0} \\ 1 \end{bmatrix} $</li>
 <li>所有的仿射变换都可以用中间的变换矩阵表示，这个矩阵的第三行为 $\begin{bmatrix} 0 &amp; 0 &amp; 1 \end{bmatrix}$，变换前的齐次参数（第三个维度的值）一定为1，变换后齐次参数也一定会得到1，变换前后点的位置都只需要直接取$x$和$y$的值即可</li>
-<li>但是当变换不是仿射变换时，特别是当变换矩阵的第三行不是$\begin{bmatrix} 0 &amp; 0 &amp; 1 \end{bmatrix}$时，变换前的齐次参数当然还是1，但变换后的齐次参数就不是1了，如 $ \begin{bmatrix} x \ y \ k \end{bmatrix} = \begin{bmatrix} m_{11} &amp; m_{12} &amp; m_{13} \ m_{21} &amp; m_{22} &amp; m_{23} \ m_{31} &amp; m_{32} &amp; m_{33} \end{bmatrix} · \begin{bmatrix} x_0 \ y_0 \ 1 \end{bmatrix}$。此时可以通过一个齐次操作（@@@是叫这个名字吗）把变换后的齐次参数变为1，此时x和y就会进行缩放</li>
+<li>但是当变换不是仿射变换时，特别是当变换矩阵的第三行不是$\begin{bmatrix} 0 &amp; 0 &amp; 1 \end{bmatrix}$时，变换前的齐次参数当然还是1，但变换后的齐次参数就不是1了，如 $ \begin{bmatrix} x \\ y \\ k \end{bmatrix} = \begin{bmatrix} m_{11} &amp; m_{12} &amp; m_{13} \\ m_{21} &amp; m_{22} &amp; m_{23} \\ m_{31} &amp; m_{32} &amp; m_{33} \end{bmatrix} · \begin{bmatrix} x_0 \\ y_0 \\ 1 \end{bmatrix}$。此时可以通过一个齐次操作（@@@是叫这个名字吗）把变换后的齐次参数变为1，此时x和y就会进行缩放</li>
 <li>这里的「用一个第三行不是$\begin{bmatrix} 0 &amp; 0 &amp; 1 \end{bmatrix}$的变换矩阵进行变换」，得到一个齐次参数不为1的变换结果，然后「通过齐次操作把变换后的齐次参数变为1」，就对应着前面在二维坐标系中进行三维变换的过程中的「把二维物体放在三维空间中进行三维变换操作」和「把得到的三维物体在二维上做一个投影」，就是这样基于已有的二维齐次变换矩阵实现三维变换的效果的</li>
-<li>举个具体的例子，跟前面一样，想象对一个三维正立方体施加线性变换， $ \begin{bmatrix} x_0 \ y_0 \ 1 \end{bmatrix} $ 可以认为是变换前三维立方体与 $z=1$ 平面上的相交面，经过线性变换后，比如绕 $X$ 轴旋转30度，这个面被变换成 $ \begin{bmatrix} x \ y \ k \end{bmatrix} $ ，把它的k变成1，其实就是把变换后的面在 $z=1$ 平面上做一个投影，但注意，这个投影并不是正交投影，而是以原点为透视中心进行透视投影（具体可以看后文，@@@这里要不要拓展。。。），这就实现了基于已有的二维齐次变换矩阵实现三维变换的效果（@@@跟上面重复了）（@@@可以有creo图）</li>
+<li>举个具体的例子，跟前面一样，想象对一个三维正立方体施加线性变换， $ \begin{bmatrix} x_0 \\ y_0 \\ 1 \end{bmatrix} $ 可以认为是变换前三维立方体与 $z=1$ 平面上的相交面，经过线性变换后，比如绕 $X$ 轴旋转30度，这个面被变换成 $ \begin{bmatrix} x \\ y \\ k \end{bmatrix} $ ，把它的k变成1，其实就是把变换后的面在 $z=1$ 平面上做一个投影，但注意，这个投影并不是正交投影，而是以原点为透视中心进行透视投影（具体可以看后文，@@@这里要不要拓展。。。），这就实现了基于已有的二维齐次变换矩阵实现三维变换的效果（@@@跟上面重复了）（@@@可以有creo图）</li>
 </ol>
 <p>所以现在的问题变成了，我怎么获取一个我想要的变换矩阵，能实现我希望的三维变换效果</p>
 <ol>
@@ -986,7 +984,7 @@ save clip都可以放后篇
 </ol>
 </li>
 <li><code>Camera</code>通过有解释力的API，让你更容易地获取自己想要的三维变换效果的变换矩阵<ol start="3">
-<li>比如我想获得一个让<code>Canvas</code>变换成沿着 $X$ 轴旋转30度然后投影在绝对坐标系平面上的样子，就可以通过 $camera.rotateX(30) \ camera.getMatrix(matrix)$ 获得这个变换矩阵</li>
+<li>比如我想获得一个让<code>Canvas</code>变换成沿着 $X$ 轴旋转30度然后投影在绝对坐标系平面上的样子，就可以通过 $camera.rotateX(30) \\ camera.getMatrix(matrix)$ 获得这个变换矩阵</li>
 </ol>
 </li>
 <li>然后这个变换矩阵就跟前面所有的基本变换矩阵一样，可以通过小鱼或小千叠加作用在你的<code>Canvas</code>上，得到你想要的效果</li>
