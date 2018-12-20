@@ -1,0 +1,1510 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="引子  Canvas变换是我们日常开发自定义控件用得比较多的东西，我们知道Canvas有这些变换操作：平移、缩放、旋转、错切，对Canvas进行变换后，再在Canvas上进行绘制，绘制出的图形就能体现出刚才变换的效果 比如往 $X$ 轴和 $Y$ 轴的正方向平移100像素： $canvas.translate(100f, 100f) \  canvas.drawBitmap(image)$ （下">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【透镜系列】Canvas变换">
+<meta property="og:url" content="http://zhengyu.site/2018/12/20/canvas-transform/index.html">
+<meta property="og:site_name" content="SaltedBlog">
+<meta property="og:description" content="引子  Canvas变换是我们日常开发自定义控件用得比较多的东西，我们知道Canvas有这些变换操作：平移、缩放、旋转、错切，对Canvas进行变换后，再在Canvas上进行绘制，绘制出的图形就能体现出刚才变换的效果 比如往 $X$ 轴和 $Y$ 轴的正方向平移100像素： $canvas.translate(100f, 100f) \  canvas.drawBitmap(image)$ （下">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://blog-1258341143.cos.ap-beijing.myqcloud.com/blog/15449657481603.gif">
+<meta property="og:image" content="https://blog-1258341143.cos.ap-beijing.myqcloud.com/blog/15444059731047.png">
+<meta property="og:image" content="https://blog-1258341143.cos.ap-beijing.myqcloud.com/blog/15449657481603.gif">
+<meta property="og:image" content="https://blog-1258341143.cos.ap-beijing.myqcloud.com/blog/15449664893887.gif">
+<meta property="og:image" content="https://blog-1258341143.cos.ap-beijing.myqcloud.com/blog/15449665966241.gif">
+<meta property="og:image" content="https://blog-1258341143.cos.ap-beijing.myqcloud.com/blog/15449667611322.gif">
+<meta property="og:image" content="https://blog-1258341143.cos.ap-beijing.myqcloud.com/blog/15449677159742.gif">
+<meta property="og:image" content="https://blog-1258341143.cos.ap-beijing.myqcloud.com/blog/15449693706857.gif">
+<meta property="og:image" content="https://blog-1258341143.cos.ap-beijing.myqcloud.com/blog/15449700435777.jpg">
+<meta property="og:image" content="https://blog-1258341143.cos.ap-beijing.myqcloud.com/blog/15449677159742.gif">
+<meta property="og:image" content="https://blog-1258341143.cos.ap-beijing.myqcloud.com/blog/15449710439194.jpg">
+<meta property="og:image" content="https://blog-1258341143.cos.ap-beijing.myqcloud.com/blog/15449719679048.png">
+<meta property="og:image" content="https://blog-1258341143.cos.ap-beijing.myqcloud.com/blog/15449731027758.gif">
+<meta property="og:image" content="https://blog-1258341143.cos.ap-beijing.myqcloud.com/blog/15449730418724.gif">
+<meta property="og:image" content="https://blog-1258341143.cos.ap-beijing.myqcloud.com/blog/15449790793133.gif">
+<meta property="og:image" content="https://blog-1258341143.cos.ap-beijing.myqcloud.com/blog/15449805823985.gif">
+<meta property="og:image" content="https://blog-1258341143.cos.ap-beijing.myqcloud.com/blog/15449807824073.gif">
+<meta property="og:image" content="https://blog-1258341143.cos.ap-beijing.myqcloud.com/blog/15450145629298.gif">
+<meta property="og:image" content="https://blog-1258341143.cos.ap-beijing.myqcloud.com/blog/15449501491636.jpg">
+<meta property="og:image" content="https://blog-1258341143.cos.ap-beijing.myqcloud.com/blog/15449501607899.jpg">
+<meta property="og:updated_time" content="2018-12-20T11:46:24.024Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="【透镜系列】Canvas变换">
+<meta name="twitter:description" content="引子  Canvas变换是我们日常开发自定义控件用得比较多的东西，我们知道Canvas有这些变换操作：平移、缩放、旋转、错切，对Canvas进行变换后，再在Canvas上进行绘制，绘制出的图形就能体现出刚才变换的效果 比如往 $X$ 轴和 $Y$ 轴的正方向平移100像素： $canvas.translate(100f, 100f) \  canvas.drawBitmap(image)$ （下">
+<meta name="twitter:image" content="https://blog-1258341143.cos.ap-beijing.myqcloud.com/blog/15449657481603.gif">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://zhengyu.site/2018/12/20/canvas-transform/"/>
+
+
+
+
+
+  <title>【透镜系列】Canvas变换 | SaltedBlog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">SaltedBlog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://zhengyu.site/2018/12/20/canvas-transform/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="BigBear">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="SaltedBlog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">【透镜系列】Canvas变换</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-12-20T16:51:35+08:00">
+                2018-12-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i> View
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <!--
+真的承认了，其实正常很多操作都是相对的
+save clip都可以放后篇
+-->
+<p>引子</p>
+<ol>
+<li><code>Canvas</code>变换是我们日常开发自定义控件用得比较多的东西，我们知道<code>Canvas</code>有这些变换操作：平移、缩放、旋转、错切，对<code>Canvas</code>进行变换后，再在<code>Canvas</code>上进行绘制，绘制出的图形就能体现出刚才变换的效果<ol start="2">
+<li>比如往 $X$ 轴和 $Y$ 轴的正方向平移100像素：</li>
+<li>$canvas.translate(100f, 100f) \  canvas.drawBitmap(image)$</li>
+<li>（下图中每一个小方格间距50像素，每两个小方格间有一个刻度，代表100像素）</li>
+<li><img src="https://blog-1258341143.cos.ap-beijing.myqcloud.com/blog/15449657481603.gif" alt=""></li>
+</ol>
+</li>
+<li>但在我们要实现一些稍微复杂的连续变换时，比如不使用带偏移中心的API，把图形绕<code>(200, 200)</code>顺时针旋转90度；或是使用<code>Camera</code>进行连续变换以实现绕图片的中线翻转；或者其他更复杂的需求时，你会发现按照正常思路，往往无法得到你想要的效果</li>
+<li>于是你可能会被告知：当成代码是倒着执行的，你先正着写，再把操作顺序倒过来，就能实现你的需求了。但是这样为什么能实现需求？为什么代码是倒着执行的？正着倒着是相对什么来的，为什么正着我也能写出好几种变换顺序？为什么有的时候这个方法不顶用？这些问题你可能都不清楚</li>
+<li>然后你可能也听说过，对<code>Canvas</code>进行变换还可以通过操作<code>matrix</code>实现，但是具体怎么做，它的<code>pre</code>和<code>post</code>操作到底代表了什么意思，你可能不是很明白</li>
+<li>最后你可能还知道可以通过<code>Camera</code>进行三维变换，但是变换的效果往往出乎你的预料</li>
+<li>所以本文的目标就是要把这些问题分析清楚，让你真正理解<code>Canvas</code>变换究竟是怎么运作的，以及为什么这么运作 <!--。如果你确定对于这些问题你都理解得非常清楚，那看到这就该干嘛干嘛去吧~--></li>
+</ol>
+<a id="more"></a>
+<!--
+另外注意
+
+1. 本文的讲述方式是说来话长，以引导读者一步步更好地进行理解，所以有人可能会嫌弃太长了，另外还有一个长话短说的版本，可以看这里@@@
+2. 理解本文甚至需要一点点矩阵知识，但只需要一点点而已了；甚至有少量的公式，但是小学数学水平就能看懂了；然后你就能得到上面所有问题的答案并完全理解，成为一个`Canvas`变换专家（233
+-->
+<h2 id="1、二维空间中图形变换的朴素表示"><a href="#1、二维空间中图形变换的朴素表示" class="headerlink" title="1、二维空间中图形变换的朴素表示"></a>1、二维空间中图形变换的朴素表示</h2><ol>
+<li>说来话长，我们从图形变换的本质说起<ol>
+<li>图形变换的本质是一个函数 $ f(\{P\}) $ ，这里称之为变换函数</li>
+<li>在二维空间中，它可以拆分成两个函数 $ ( f(\{x\}), f(\{y\}) ) $</li>
+</ol>
+</li>
+<li>为什么就是个函数了？<ol>
+<li>如果你还记得初中学的函数定义：「在数学中，函数是两个集合间的一种对应关系：输入值集合中的每项元素皆能对应唯一一项输出值集合中的元素」（wiki）<ol>
+<li><img src="https://blog-1258341143.cos.ap-beijing.myqcloud.com/blog/15444059731047.png" alt=""></li>
+</ol>
+</li>
+<li>所以在这里<ol>
+<li>$\{P\}$ 就是输入值的集合，也就是初始的二维图形的所有点的位置集合<ol>
+<li>（在本文中，变换特指图形的变换，变换只影响点的位置，不影响点的内容(颜色)，所以 $\{P\}$ 只是位置的集合）</li>
+</ol>
+</li>
+<li>而 $ f(\{P\}) $ 是输出值的集合，也就是变换后的二维图形的所有点的位置集合</li>
+</ol>
+</li>
+<li>在二维空间中，点的位置用 $x,y$ 表示更为直观，所以下面都会用这样两个函数 $ ( f(\{x\}), f(\{y\}) )  $ 表示变换，它也可以简单写为 $ ( f(x), f(y) )  $</li>
+</ol>
+</li>
+<li>误区<ol>
+<li>不要以为变换用两个简单的函数 $  ( f(x), f(y) )  $ 表达，就认为变换只能做一些简单的事情<ol>
+<li>因为 $f(x)$ 不仅可以是 $x+1$、$2x$，也可以是 $x^2$、$sinx$，甚至它可以是一个大型分段函数，针对每一个像素的初始 $x$ 值，都有专门的结果值对应（$f(y)$同理）</li>
+<li>所以，你可以用这两个函数表达出任何你能想到的变换</li>
+</ol>
+</li>
+</ol>
+</li>
+<li>接下来我们讨论一些常见变换如何用函数 $ ( f(x), f(y) ) $ 表示<ol>
+<li>平移<ol>
+<li>平移可以说是最简单的变换了</li>
+<li>当需求是希望把图形在 $X$ 轴正方向移动 $dx$，在 $Y$ 轴正方向移动 $dy$ 时，如图 <img src="https://blog-1258341143.cos.ap-beijing.myqcloud.com/blog/15449657481603.gif" alt=""></li>
+<li>使用一点点解析几何的知识，我们就能得到它的变换函数：$$ \begin{cases} f(x) = x_0 + dx \ f(y) = y_0 + dy \end{cases} $$</li>
+</ol>
+</li>
+<li>缩放<ol>
+<li>通过指定一个缩放中心、x方向和y方向上的缩放系数，可以实施一次缩放变换</li>
+<li>当缩放中心是原点时<ol start="3">
+<li>设x方向的缩放系数是 $s_x$，y方向上的缩放系数是 $s_y$ ，如图<img src="https://blog-1258341143.cos.ap-beijing.myqcloud.com/blog/15449664893887.gif" alt=""></li>
+<li>同样使用一点点解析几何的知识，我们就能得到它的变换函数：$$ \begin{cases} f(x) = x_0 <em> s_x \ f(y) = y_0 </em> s_y \end{cases} $$</li>
+</ol>
+</li>
+<li>对于缩放中心不是原点的情况，我们暂时不作讨论，因为我们不认为其属于常用变换（实际上是因为不属于线性变换），后续讲变换叠加的时候会再讲到</li>
+</ol>
+</li>
+<li>旋转<ol>
+<li>通过指定一个旋转中心和一个旋转角度，就可以实施一次旋转变换</li>
+<li>同样，此处我们暂时只讨论旋转中心是原点的情况，当旋转角度是 $θ$ 时，如图<img src="https://blog-1258341143.cos.ap-beijing.myqcloud.com/blog/15449665966241.gif" alt=""></li>
+<li>这里的推导过程稍微有一点点复杂，但不是很重要，直接看结果（@@@可以在这里看详细过程，书上有，其他地方应该也有），它的变换函数是：$$ \begin{cases} f(x) = x_0 cosθ - y_0 sinθ \ f(y) = x_0 sinθ + y_0 cosθ \end{cases} $$</li>
+</ol>
+</li>
+<li>错切<ol>
+<li>（@@@具体是什么不重要，我们接下来的描述里也可以用它，这里先略过）（懒得写，自己去查吧）（可以简单写一下）</li>
+<li>图<img src="https://blog-1258341143.cos.ap-beijing.myqcloud.com/blog/15449667611322.gif" alt=""></li>
+</ol>
+</li>
+</ol>
+</li>
+</ol>
+<h2 id="2、变换的矩阵表示"><a href="#2、变换的矩阵表示" class="headerlink" title="2、变换的矩阵表示"></a>2、变换的矩阵表示</h2><h3 id="基本表示"><a href="#基本表示" class="headerlink" title="基本表示"></a>基本表示</h3><ol>
+<li>你能看到，对于上面举例的四种常见变换，它的变换函数都是相对比较简单的，对于这类简单的变换函数，还可以有另一种表示方式 —— 矩阵<ol start="2">
+<li>为什么使用矩阵表示变换呢？理应把原因写在这，但因为我们对于这种表示方法还没有认识，直接写原因可能不容易理解，所以我把它放在最后了，与它的缺点和评价一块讲述</li>
+</ol>
+</li>
+<li>我们先尝试用矩阵表示这些变换<ol>
+<li>在用矩阵表示变换之前，我们需要先考虑怎么表示点，点通常用一个列向量表示，也就是一个<code>2*1</code>的矩阵<ol start="2">
+<li>比如 $P(x, y)$ 可以表示为 $ P = \begin{bmatrix} x \ y \end{bmatrix} $</li>
+</ol>
+</li>
+<li>平移<ol>
+<li>从数学上，平移变换函数 $$ \begin{cases} f(x) = x_0 + dx \ f(y) = y_0 + dy \end{cases} $$ 可以写成矩阵的形式：$$ \begin{bmatrix} x \ y \end{bmatrix} = \begin{bmatrix} x_0 \ y_0 \end{bmatrix} + \begin{bmatrix} dx \ dy \end{bmatrix}$$ 或（其中 $T$ 为平移矩阵） $$ P = P_0 + T $$</li>
+<li>这样就用矩阵表示了二维平移变换函数</li>
+</ol>
+</li>
+<li>缩放<ol>
+<li>同样，缩放变换函数 $$ \begin{cases} f(x) = x_0 <em> s_x \ f(y) = y_0 </em> s_y \end{cases} $$ 可以写成矩阵形式 $$ \begin{bmatrix} x \ y \end{bmatrix} = \begin{bmatrix} s_x &amp; 0 \ 0 &amp; s_y \end{bmatrix} · \begin{bmatrix} x_0 \ y_0 \end{bmatrix}$$ 或（其中 $S$ 是缩放矩阵） $$ P = S · P_0 $$</li>
+</ol>
+</li>
+<li>旋转<ol>
+<li>同样，旋转变换函数 $$ \begin{cases} f(x) = x_0 cosθ - y_0 sinθ \ f(y) = x_0 sinθ + y_0 cosθ \end{cases} $$ 可以写成矩阵形式 $$ \begin{bmatrix} x \ y \end{bmatrix} = \begin{bmatrix} cosθ &amp; -sinθ \ sinθ &amp; cosθ \end{bmatrix} · \begin{bmatrix} x_0 \ y_0 \end{bmatrix}$$ 或（其中 $R$ 是旋转矩阵） $$ P = R · P_0 $$</li>
+</ol>
+</li>
+<li>错切（@@@同跳过）</li>
+</ol>
+</li>
+<li>于是你会发现，上面四个用变换函数表示时各不相同的基本变换，都可以统一表示成一种矩阵形式：$$ P = M_1 · P_0 + M_2 $$<ol start="2">
+<li>$M_1$ 是一个<code>2*2</code>的矩阵，它在平移时是单位矩阵，在缩放和旋转中包含了缩放和旋转的参数</li>
+<li>$M_2$ 是一个<code>2*1</code>的矩阵，在缩放和旋转的时候是0矩阵，在平移时包含了平移的参数</li>
+</ol>
+</li>
+<li>这就体现了矩阵表示的第一个好处：<strong>方便地把各种基本操作用统一的数据格式（矩阵）和统一的运算（矩阵乘法和加法）表达</strong>。这是一个很棒的抽象</li>
+</ol>
+<h3 id="变换叠加-与-仿射变换的线性表示"><a href="#变换叠加-与-仿射变换的线性表示" class="headerlink" title="变换叠加 与 仿射变换的线性表示"></a>变换叠加 与 仿射变换的线性表示</h3><ol>
+<li>下面我们考虑多个变换叠加的场景<ol>
+<li>比如，如果要进行「先缩放、后平移、再缩放」的变换<ol start="2">
+<li><img src="https://blog-1258341143.cos.ap-beijing.myqcloud.com/blog/15449677159742.gif" alt=""></li>
+<li>先用函数表示，非常简单（只用x举例）：$$ \begin{align<em>} x_1 = x_0 </em> s_1 \ x_2 = x_1 + dx = x_0 <em> s_1 + dx \ x_3 = x_2 </em> s_2 = (x_0 <em> s_1 + dx)</em>s_2 \end{align*} $$</li>
+<li>用矩阵表示也很容易：$$ \begin{align<em>} P_1 = S_1 · P_0 \ P_2 = P_1 + T = S_1 · P_0 + T \ P_3 = S_2 · P_2 = S_2 · ( S_1 · P_0 + T ) \end{align</em>} $$</li>
+<li>这两种表示是等价的</li>
+</ol>
+</li>
+<li>所以，我们能得到<ol>
+<li>变换叠加可以表示为：<ol>
+<li>变换函数：$x_n = f_n ( f_{n-1} ( … ( f_2 ( f_1 ( x_0 ) ) ) … ) )$</li>
+<li>变换矩阵：$P_n = F_n ( F_{n-1} ( … ( F_2 ( F_1 ( P_0 ) ) ) … ) )$ （$F$ 表示矩阵运算函数）</li>
+</ol>
+</li>
+<li>容易得到其中的通项公式：<ol>
+<li>变换函数：$x_n = f_n ( x_{n-1} )$</li>
+<li>变换矩阵：$P_n = F_n ( P_{n-1} )$</li>
+</ol>
+</li>
+</ol>
+</li>
+<li>但这种叠加变换的方式，在计算时会比较麻烦，因为我们必须一步步地计算变换的坐标：<ol>
+<li>首先将坐标位置缩放，然后将缩放后的坐标平移，最后将平移后的坐标缩放<ol start="2">
+<li>（注意，即使上面对 $P_3$ 的表达式进行进一步矩阵运算，得到：$P_3 = S_2 · S_1 · P + S_2 · T$ ，整个运算过程并没有得到多少简化，甚至更为麻烦，因为多了一次变换）</li>
+</ol>
+</li>
+<li>当变换的只是一个坐标点的时候，这种运算上的浪费还可以接受，但往往我们要变换的是一个非常大图形，包含成千上万的坐标点，再遇到变换叠加次数更多的时候，这种浪费会被放大到无法接受</li>
+</ol>
+</li>
+<li>能想象更有效率的方式是将所有的变换先进行计算，得到一个总变换矩阵，通过使用总变换矩阵对初始坐标进行变换，就能直接从初始坐标算到最后的结果坐标，消除了中间坐标的计算</li>
+<li>真的能做到这点吗？能，你会发现，当你不考虑平移的时候，就真的能够做到<ol>
+<li>我们用「先缩放、后旋转、再缩放」进行举例</li>
+<li>此时它的矩阵形式可以表达成这样：$ P_3 = S_2 · ( R · (S_1 · P_0) ) $</li>
+<li>因为矩阵乘法是有结合律的，也就是：$ P_3 = (S_2 · R · S_1) · P $</li>
+<li>于是你完全可以先把前面三个变换矩阵的结果算出来，最后对初始坐标进行一次变换</li>
+</ol>
+</li>
+<li>但如果考虑平移，就做不到了，所以我们希望有一种方法，能够消除平移导致的矩阵加法，在介绍这种方法之前，让我们先来学习图形学中两个简单的概念，线性变换和仿射变换，以方便后文的描述</li>
+</ol>
+</li>
+<li>线性变换和仿射变换<ol>
+<li>上面只使用矩阵乘法就能表达的变换（选择、缩放、错切等），被称为线性变换<ol>
+<li>线性变换都可以表示为：$P = M · P_0$</li>
+<li>你能发现线性变换的一些共同点（其实也是判别是否是线性变换的标准）<ol>
+<li>变换前是直线的，变换后依然是直线</li>
+<li>变换后的网格线平行且等距分布</li>
+<li>变换前后原点的位置保持不变</li>
+</ol>
+</li>
+</ol>
+</li>
+<li>所以显然，平移不属于线性变换，因为它的原点位置会发生改变，但有一个条件更宽松的概念包括所有的线性变换再加平移变换，它叫仿射变换<ol>
+<li>仿射变换允许使用矩阵乘法和加法进行表达，它可以用矩阵表示成这样：$P = M · P_0 + T$</li>
+<li>它的共同点或者说要求是这样（少了原点保持不变这一条）<ol>
+<li>变换前是直线的，变换后依然是直线</li>
+<li>变换后网格线平行且等距分布</li>
+</ol>
+</li>
+<li>所以平移是属于仿射变换的</li>
+</ol>
+</li>
+</ol>
+</li>
+<li>然后就有一种办法，能通过线性变换来表示仿射变换，这样对于包括平移的四种基本操作，都能像线性变换一样，消除中间坐标的运算，这种办法简单说是：增加一个维度<ol>
+<li>先简要描述这个转化过程，非常简洁巧妙<ol>
+<li>$\overrightarrow{P} = M · \overrightarrow{P_0} + \overrightarrow{T}$ 可以写成 $ \begin{bmatrix} \overrightarrow{P} \ 1 \end{bmatrix} = \begin{bmatrix} M &amp; \overrightarrow{T} \ 0 &amp; 1 \end{bmatrix} · \begin{bmatrix} \overrightarrow{P_0} \ 1 \end{bmatrix} $<ol start="2">
+<li>它们在数学上是等价的</li>
+<li>（这里为了清晰，<code>2*1</code>的矩阵写成了向量的形式）</li>
+</ol>
+</li>
+<li>而左侧就是仿射变换的形式，右侧则得到了线性变换的形式，完成了一个巧妙的转化<ol>
+<li>这里同时把二维坐标位置扩展成三维列向量，把二维变换矩阵扩展成三维矩阵</li>
+<li>其中二维坐标位置扩展成的三维列向量在计算机图形学中被称为齐次坐标，新加入的维度信息被称为齐次参数，它只需要是一个非零值，最方便的做法是把它设置为1<ol>
+<li>（@@@拓展内容，可以再补充一点，是搜索的网页里有）为什么叫齐次，齐次在很多地方都有这个概念，它的英文单词是xx，表示同等的概念，在这里它就表示，</li>
+</ol>
+</li>
+<li>我们只需要关注初始的 $\overrightarrow{P_0}$ 和变换后的 $\overrightarrow{P}$，忽略第三个维度中1的信息，它的存在只是类似辅助线的效果，</li>
+</ol>
+</li>
+</ol>
+</li>
+<li>尝试形象地理解一下这种转化方式<ol>
+<li>在三维空间中的线性变换原则应该跟二维空间的线性变换原则一致</li>
+<li>想象对一个三维正立方体施加线性变换， $\begin{bmatrix} \overrightarrow{P_0} \ 1 \end{bmatrix} $ 可以认为是变换前三维立方体与 $z=1$ 平面上的相交面，这个初始的相交面的中心是原点，而 $\begin{bmatrix} \overrightarrow{P} \ 1 \end{bmatrix} $ 则是变换后三维立方体与 $z=1$ 平面上的相交面，它的中心就可以不是原点，可以发生偏移</li>
+<li>当我们忽略掉第三个维度的1，也就是把 $z=1$ 平面当成我们观察的二维平面，你就会观察到二维图形在三维线性变换后，实现了平移效果</li>
+<li>所以增加一个维度后，就可以在高维度通过线性变换表示低维度的仿射变换</li>
+<li>可以参考维基百科“仿射变换”词条里的动图，生动的表现了这一过程：<img src="https://blog-1258341143.cos.ap-beijing.myqcloud.com/blog/15449693706857.gif" alt=""></li>
+</ol>
+</li>
+<li>而这也是图形学中的标准做法：n维坐标用n+1维列向量表示，n维变换操作用一个n+1维矩阵表示</li>
+</ol>
+</li>
+<li>于是当我们增加一个维度，使用齐次坐标表示位置，把2维仿射变换写成3维线性变换后，我们就可以把所有的常见变换（平移、旋转、缩放、错切）表示成矩阵相乘的形式：$P = M · P_0$，也就能在多个变换叠加时，消除中间坐标的运算，这就是使用矩阵表示变换的第二个优点了</li>
+</ol>
+<h3 id="使用矩阵表示变换的缺点"><a href="#使用矩阵表示变换的缺点" class="headerlink" title="使用矩阵表示变换的缺点"></a>使用矩阵表示变换的缺点</h3><ol>
+<li>前面介绍了矩阵表示变换的两大优点，你可能不禁表示无脑支持矩阵表示，但在这之前，你可以想一想它有什么缺点和局限</li>
+<li>矩阵神奇地把操作变成数据，优雅而且便利，本身没有缺点，它唯一的遗憾是：「不是所有的变换都能用它表示」</li>
+<li>更确切地说，本文介绍的矩阵表示法所能表示的变换只是整个变换集合中非常有限的一小部分<ol start="2">
+<li>这很容易理解，比如给你一个没有表情头像，要求你用矩阵表示一个把这个头像的嘴角翘起来眼睛眯起来的变换，你肯定是做不到的，所以大部分复杂的变换矩阵都无法表示</li>
+<li>然后如果你用过PS的话，你可能记得里面有一种自由度更大的图片变形操作，它会把整张图片变成一个网格，你可以在网格上添加锚点，然后控制锚点的相对偏移，实现对局部变形的控制<img src="https://blog-1258341143.cos.ap-beijing.myqcloud.com/blog/15449700435777.jpg" alt="-w300"></li>
+</ol>
+</li>
+<li>但矩阵也不是只能表示上文提到的4种基本变换<ol start="4">
+<li>在只是使用二维变换矩阵的时候，它就能表示更多的变换了，在使用了三维变换矩阵后，它能表示的变换就更丰富了，甚至能一定程度呈现三维的效果</li>
+<li>上面的4种基本变换只是其中比较常见而且有名字的变换模式，其他有名字的变换还有反射变换（@@@详细可以看这里，书上比较好）</li>
+<li>然后还有更多叫不出来但确实效果不一样的变换，比如你多个变换叠加得到的复合变换，比如你用随机数构造一个矩阵表示的变换，它都是矩阵能表示的变换</li>
+</ol>
+</li>
+</ol>
+<h2 id="3、变换的叠加"><a href="#3、变换的叠加" class="headerlink" title="3、变换的叠加"></a>3、变换的叠加</h2><p>诶，前面不是讲了叠加吗？怎么还要讲？别着急，讲肯定是因为有新东西</p>
+<h3 id="另一种叠加新变换的方式"><a href="#另一种叠加新变换的方式" class="headerlink" title="另一种叠加新变换的方式"></a>另一种叠加新变换的方式</h3><ol>
+<li>我们从另一个角度来看前面的叠加操作，这个角度是叠加的效果<ol>
+<li>比如前面举例「先缩放、后平移、再缩放」这个变换时<ol>
+<li>我们默认这个变换的效果是这样：<img src="https://blog-1258341143.cos.ap-beijing.myqcloud.com/blog/15449677159742.gif" alt=""></li>
+<li>这是符合我们直觉的，于是我们基于这个效果写出了变换叠加的表达式： $ x_3 = (x_0 <em> s_1 + dx)</em>s_2 $ 或 $ P_3 = S_2 · ( S_1 · P_0 + T ) $</li>
+</ol>
+</li>
+<li>但是只有这一种符合直觉的变换叠加效果吗？有没有其他的？</li>
+</ol>
+</li>
+<li>下面就用一个例子让你体会另一种符合直觉的变换（以下场景中的非重要部分都是虚构，只为重要部分服务）<ol>
+<li>小鱼驾着一辆马车在大街上走着（为什么是马车，这不重要），他要去小千家，但不知道小千家在哪儿，于是小鱼用微信问小千</li>
+<li>可小千就是不说自己家的地址，而是说：你给我分享你的位置吧，然后你边走我边告诉你怎么走，你之前说我是路痴，我一定要证明给你看，我不仅自己不会迷路，我还能教别人不迷路</li>
+<li>好吧，小鱼也没有办法，谁叫自己之前嘴贱，于是给小千分享了自己的位置，小千一看，好家伙，有点距离啊，小鱼在左下角往上走，自己家在右上角，不过还好，只要拐两个弯就到了<img src="https://blog-1258341143.cos.ap-beijing.myqcloud.com/blog/15449710439194.jpg" alt="-w200"></li>
+<li>于是小千告诉小鱼，你先往上走，走过两个红绿灯，右拐</li>
+<li>小鱼想，上是哪儿，不就是往前吗，OK，于是往前走了2个红绿灯，然后右拐</li>
+<li>小千说，对的，你走得很对，那么我们就可以开始往右走，再过4个红绿灯</li>
+<li>小鱼又想，往右走，那其实是继续往前走吧，OK，于是，于是往前走了4个红绿灯</li>
+<li>小千说，好的好的，就快到了，你继续往上走吧，再过2个红绿灯，就到了我家</li>
+<li>小鱼想，嘿，啥玩意，还往前走2个红绿灯，刚直接说走5个红绿灯不就完了吗，真费劲诶这人，于是直接往前走</li>
+<li>小千正在自恋地佩服自己指挥得力，谁再说自己路痴自己跟谁急，然后马上看到小鱼走错了路，不禁毫不留情地鄙视起小鱼来了：嘿，这家伙，还说自己路痴，结果听我指挥也能听错。不过走错了就到不了自己家了，于是小千赶紧喊道：停停停，你走错了，我让你往上走的，你咋就愣是往右走呢？</li>
+<li>小鱼正慢悠悠驾着马，听到这话也生气了，说：我咋就走错了，你不让我继续往前走吗？我就往前走，哪里往右拐了啊？</li>
+<li>…（好了，太蠢了，编不下去了，重点说完了，剩下剧情自己脑补吧）</li>
+</ol>
+</li>
+<li>虽然蠢，但这个例子生动地表现了另一种符合直觉的变换叠加的模式：<ol>
+<li>你变换的不仅是一个图形，图形上也可以有一个坐标系，从图形角度来看，参照自己的坐标系来进行变换是更加自然的一件事</li>
+<li>图形上的坐标系会随着图形的变换一起变换，我把它称为相对坐标系，把图形外不变的坐标系称为绝对坐标系。除了一开始图形在原点时，两个坐标系是重合的，在经过一次变换后，相对坐标系就基本完全与绝对坐标系不同了</li>
+<li>在上面的例子里，小千是参照地图的坐标系来指挥小鱼，她使用了地图坐标系的上下左右来告诉小鱼怎么进行变换，但小鱼参照了自己坐标系的前后左右来执行小千的指令，小鱼自己的相对坐标系是随着自己状态的改变一起改变的，所以面对小千的第三条指令，两个坐标系的偏差导致小鱼执行的变换完全跟小千希望他做的变换不同</li>
+<li>我们可以把小千「参考绝对坐标系叠加新的变换」的变换叠加模式简称为「绝对变换叠加模式」，把小鱼「参考相对坐标系叠加新的变换」的变换叠加模式简称为「相对变换叠加模式」，两种模式都是符合直觉的变换叠加模式，只不过参考的坐标系不同</li>
+</ol>
+</li>
+<li>不过这两个名字可能造成理解上的混淆<ol start="6">
+<li>绝对变换叠加模式和相对变换叠加模式，都是相对（基于）当前相对坐标系的状态来叠加新的变换，都是相对进行变换，并不是前者是进行绝对变换，后者进行相对变换<ol start="7">
+<li>比如我们知道 <code>moveTo</code> 和 <code>moveBy</code> 的区别，但这里两种叠加模式都是 <code>moveBy</code> 的效果</li>
+<li><img src="https://blog-1258341143.cos.ap-beijing.myqcloud.com/blog/15449719679048.png" alt="-w250"></li>
+</ol>
+</li>
+<li>它两的区别在于：在哪个坐标系实现变换的效果<ol start="8">
+<li><!--（@@@这块是不是在讲完纸团模型后讲会更好）（感觉这里的表述还是不够好）（@@@又感觉还行。这个例子都感觉不用放举个例子，先缩小2倍，再移动绝对参考系的400，如果绝对叠加，缩小完直接M(400)就行，但相对叠加，因为是缩小了2倍，相对里要实现绝对移动400的效果，只能移动800了，于是M(800)）--></li>
+<li>首先，变换本身的作用效果都是固定的，用哪种叠加得到的都是一样的效果</li>
+<li>然后，使用两种叠加模式叠加一个变换的过程也是一样的：对变换前的相对坐标系进行变换，得到变换后的相对坐标系</li>
+<li>那为什么还有两种叠加的区别，而且看上去用两种方式叠加同一个变换的效果是不一样的？（后面会有更多变换效果不一样的例子）</li>
+<li>因为使用不同的叠加，它就会在不同的坐标系实现变换的效果，你需要分别在不同的坐标系观察，才能发现变换的效果是一样的<ol start="7">
+<li>在两种叠加模式中，都可以认为有3个坐标系：绝对坐标系、变换前的相对坐标系、变换后的相对坐标系</li>
+<li>当使用「绝对变换叠加模式」叠加变换时，是为了在「绝对坐标系」中实现变换的效果，使用「相对变换叠加模式」叠加变换时，是为了在「变换前的相对坐标系」中实现变换的效果</li>
+<li>所以你必须在绝对坐标系中观察以「绝对变换叠加模式」叠加了一个变换的「变换前后的相对坐标系」 和 在变换前的相对坐标系中观察以「相对变换叠加模式」叠加了同一个变换的「变换前后的相对坐标系」，才能发现它们的变换效果是一样的</li>
+</ol>
+</li>
+</ol>
+</li>
+<li>举个简单的例子<ol start="2">
+<li>初始时相对坐标系与绝对坐标系是重合的，然后让相对坐标系绕原点顺时针旋转90度<ol start="3">
+<li>下一步如果使用「绝对变换叠加模式」叠加一个沿 $X$ 轴正方向移动100的变换<ol start="4">
+<li><img src="https://blog-1258341143.cos.ap-beijing.myqcloud.com/blog/15449731027758.gif" alt=""></li>
+<li>在绝对坐标系中观察，变换后的相对坐标系就是变换前的相对坐标系沿着 $X$ 轴正方向移动100得到的</li>
+<li>但是在变换前的相对坐标系中观察，变换后的相对坐标系是变换前的相对坐标系沿着 $Y$ 轴负方向移动100得到的</li>
+</ol>
+</li>
+<li>下一步如果使用「相对变换叠加模式」叠加一个沿 $X$ 轴正方向移动100的变换<ol start="7">
+<li><img src="https://blog-1258341143.cos.ap-beijing.myqcloud.com/blog/15449730418724.gif" alt=""></li>
+<li>在变换前的相对坐标系中观察，变换后的相对坐标系就是变换前的相对坐标系沿着 $X$ 轴正方向移动100得到的</li>
+<li>但是在绝对坐标系中观察，变换后的相对坐标系就是变换前的相对坐标系沿着 $Y$ 轴正方向移动100得到的</li>
+</ol>
+</li>
+</ol>
+</li>
+<li>所以能看到<ol start="10">
+<li>在不同的坐标系中观察同一个变换，效果是不一样的</li>
+<li>使用不同的叠加方式，在同一个坐标系中观察同一个变换，效果也是不一样的</li>
+<li>而在叠加方式对应的坐标系中观察同一个变换，效果就是一样的了</li>
+</ol>
+</li>
+</ol>
+</li>
+<li>所以为了不引起不必要的误解，下面我会使用更专用的名词称呼这两个概念：用「小千叠加」表示绝对变换叠加，用「小鱼叠加」表示相对变换叠加</li>
+</ol>
+</li>
+<li>既然有两种变换的叠加模式，那什么时候用小鱼什么时候用小千呢？<ol>
+<li>很简单，就看需求是什么<ol start="2">
+<li>如果需求是让你做一系列参考绝对坐标系的操作，那就适合用小千叠加</li>
+<li>如果需求是让你做一系列参考相对坐标系的操作，那就适合用小鱼叠加</li>
+</ol>
+</li>
+<li>继续用小鱼和小千的例子举例<ol start="5">
+<li>如果小千让小鱼先前往 $(100,200)$ ，再顺时针旋转30度，再前往 $(300,150)$ ，再旋转 10 度，再前往… ，这样，如果使用小鱼叠加给小鱼这个相对坐标系叠加变换，就需要额外的计算，而使用小千叠加，就可以直接得到需要做的变换了（这里会用到后面会讲的带偏移中心的基本变换，先不用在意）</li>
+<li>如果小千让小鱼先往前走400米，再左偏前20度直走150米，然后向左后方直走300米… ，这样，如果使用小千叠加给小鱼这个相对坐标系叠加变换，也会需要额外的计算，而使用小鱼叠加，就可以直接得到需要做的变换了</li>
+</ol>
+</li>
+</ol>
+</li>
+<li>你可能会觉得小鱼叠加不那么常用，但在很多场景中它会是第一选择：比如在游戏开发中，当第一人称的游戏人物接收到玩家向左前方移动的指令时，游戏引擎要如何对人物的视角和位置进行变换呢？当然得参考人物身上的相对坐标系进行变换了（具体做法可能差别比较大，但原理就是这样）。然后后边会讲<code>Canvas</code>绘制的模型，会讲到更具体的使用小鱼叠加的理由</li>
+</ol>
+<p>所以总结一下，还有另一种符合直觉的叠加新变换的方式：参考相对坐标系叠加新的变换，小鱼叠加</p>
+<h3 id="小鱼叠加的数学表示"><a href="#小鱼叠加的数学表示" class="headerlink" title="小鱼叠加的数学表示"></a>小鱼叠加的数学表示</h3><p>既然有了一种新的变换叠加模式，那当然得看看怎么用变换函数或变换矩阵来表达这种叠加模式</p>
+<ol>
+<li>用「缩放+平移」举一个简单的例子：先放大2倍，再往 $X$ 轴正方向平移100，写出 $x$ 的变换函数（为了简便，忽略 $y$ ，只考虑 $x$ ）（不用「旋转+平移」举例是因为旋转的表达式不太好写，避免增加额外的理解成本）<ol start="2">
+<li><img src="https://blog-1258341143.cos.ap-beijing.myqcloud.com/blog/15449790793133.gif" alt=""></li>
+<li>一开始的位置是 $x_0$，然后变换完是 $x$ … 诶，现在有两个坐标系，它们是哪个坐标系的 $x$ ？</li>
+<li>不知道，那就都试试看，如果是绝对的坐标系里的 $x$<ol>
+<li>先放大2倍，那就是 $x = 2*x_0$ ，这没问题</li>
+<li>然后再平移100… 诶，这里怎么平移呢，是 $x = 2*x_0 + 100$ 吗？想想就觉得不太对，我们形象一点去想这个场景：<ol>
+<li>放大2倍之后，整个相对坐标系都变大了两倍</li>
+<li>然后参考这个相对坐标系移动100</li>
+<li>但相对坐标系里的100其实是个放大的版本，相当于外面绝对坐标系的200</li>
+</ol>
+</li>
+<li>所以平移之后的结果应该是 $x = 2*x_0 + 200$</li>
+<li>这个2能不能提出来呢？试试：$x = 2*(x_0 + 100)$</li>
+<li>这不就像参考绝对坐标系，先移动100，再放大两倍，是一样的效果呢？确实是一样的效果</li>
+<li>这时，你可能会察觉到一点点奇怪，为什么我明明是先放大、再平移，但是一参考相对坐标系，就有点像先平移、再放大呢？把这个问题暂时放放，我们先看如果 $x$ 是相对坐标系中的 $x$ 时的情况</li>
+</ol>
+</li>
+<li>如果 $x$ 是相对坐标系中的 $x$<ol>
+<li>先放大两倍，$x = 2 * x_0$，没问… 诶？不对， $x$ 应该没有变化，$x = x_0$，因为相对坐标系同步变换了，或者说图像的变换是因为相对坐标系变换所以变换了，图像在相对坐标系中没！有！变！化！</li>
+<li>所以如果把 $x$ 当成相对坐标系的 $x$ 的话，没有意义</li>
+</ol>
+</li>
+<li>所以在这个例子中，变换函数是：$x = 2*(x_0 + 100)$，而 $x$ 和 $x_0$ 只能是变换前后点在绝对坐标系中的位置</li>
+</ol>
+</li>
+<li>然后还可以看「旋转+平移」的例子，你会发现也是一样的， $x_0$ 和 $x$ 还是点在绝对坐标系中的位置，变换顺序也像把用小千叠加的操作反过来，具体分析就略过了</li>
+<li>所以我们能得到小鱼叠加的变换函数是：$x_n = f_1 ( f_2 ( … ( f_{n-1} ( f_n ( x_0 ) ) ) … ) )$</li>
+</ol>
+<h3 id="小鱼叠加的第一个问题"><a href="#小鱼叠加的第一个问题" class="headerlink" title="小鱼叠加的第一个问题"></a>小鱼叠加的第一个问题</h3><ol>
+<li>小鱼叠加的变换函数第一眼看上去感觉还行，不就是小千叠加的变换函数反过来写吗<ol>
+<li>来对比一下小千叠加的变换函数：$x_n = f_n ( f_{n-1} ( … ( f_2 ( f_1 ( x_0 ) ) ) … ) )$</li>
+</ol>
+</li>
+<li>然后你可能会慢慢意识到一点特别，然后眼睛越眯越小，眉头越皱越紧，不对，完全不对啊，完全不对<ol start="3">
+<li>你想想看，无论是小鱼叠加还是小千叠加，变换叠加的过程都应该是：<ol>
+<li>先有一个原始图形，然后对其进行第一步变换，得到变换后的图形，然后对这个图形叠加第二步变换，得到变换后的图形，再对这个图形叠加第三步变换…</li>
+</ol>
+</li>
+<li>但如果是按照小鱼叠加的变换函数，做不到啊，比如在叠加第二步变换的时候，我拿到第一步变换的结果，要如何在原图形变换成这个结果前，插入第二步的变换呢？</li>
+<li>所以没有办法，完全没有办法</li>
+</ol>
+</li>
+<li>更能佐证这个变换函数不太对劲的现象是：你无法写出它的通项公式！（所以你看上面我很明智的没去写）<ol>
+<li>你可以用小千叠加的变换函数的通项公式作为参考：$x_n = f_n ( x_{n-1} )$</li>
+<li>无论怎么挣扎，你就是没法写，因为它不通项，它无法简单地去递推</li>
+<li>（@@@这里如果可能的话，可以问下晓晓）</li>
+</ol>
+</li>
+<li>同样，用矩阵表示时只能写出这样的变换矩阵：$P_n = F_1 ( F_2 ( … ( F_{n-1} ( F_n ( P_0 ) ) ) … ) )$ ，而无法写出通项公式</li>
+</ol>
+<p>所以你会发现，你居然无法进行小鱼叠加，这可能吗？<br>当然不可能，否则我讲这么半天这玩意干嘛，哦不是，否则计算机图形学里的那些小鱼叠加是怎么实现的</p>
+<ol>
+<li>一个最简单的方案是：<ol>
+<li>每次进行变换后，不止把变换后的图形传递给下一次变换，而且还把当前的变换跟之前做过的变换合并在一起，得到一个总变换，也传递给下一次变换</li>
+<li>于是下一次变换时，可以先把图形使用总变换的逆变换变回原图形，然后对原图形进行这次新的变换，再把进行了新变换的原图形再次使用总变换进行变换，最后把这次新变换合并进总变换中</li>
+<li>这样的变换函数大概可以写成这样（不严谨，就表达个意思）：$x_n = f_n ( f_{n-1} ( … ( f_2 ( f_1 ( x_0 ), f_1 ), f_1f_2 ) … ), f_1…f_{n-1} )$，$f_n$ 中就会进行上面描述的复杂操作</li>
+<li>你会发现这是一个类似小千叠加的变换函数，于是通项公式也可以写了，它包含两个表达式，其中 $S_n$ 表示n次小鱼叠加得到的总变换：$ \begin{cases} x_n = S_{n-1} ( f_n ( {S_{n-1}}^{-1}( x_{n-1} ) ) ) \ S_n = f_n(S_{n-1}) \end{cases} $</li>
+</ol>
+</li>
+<li>但你可能小声嘀咕，这效率会不有点感人，小鱼叠加真的是这么实现的吗？</li>
+<li>确实不是（诶，别打我，等一下，听我解释<ol>
+<li>首先，目前为止，我们主要讨论的是线性变换（包括使用齐次矩阵扩展的仿射变换），线性变换与一般的变换不同，它在叠加时有一些特殊的性质，前面点到为止，这里继续往下讲<ol>
+<li>所有的线性变换都可以写成矩阵相乘的形式，所以当所有的变换都是线性变换时<ol>
+<li>小千叠加可以写成这样：$P_n = M_n · M_{n-1} · … · M_2 · M_1 · P_0$，于是通项公式是：$ \begin{cases} P_n = S_n · P_0 \ S_n = M_n · S_{n-1} \end{cases} $</li>
+<li>而小鱼叠加可以写成这样：$P_n = M_1 · M_2 · … · M_{n-1} · M_n · P_0$，然后此时你会发现现在居然能写出通项公式了：$ \begin{cases} P_n = S_n · P_0 \ S_n = S_{n-1} · M_n \end{cases} $<ol>
+<li>为什么这个时候能写通项公式呢？因为此时变换都是矩阵相乘的形式，而矩阵相乘有宝贵的结合律，所以可以容易地调整结合顺序，于是可以容易地把新的变换插入到所有旧变换和原图形之间</li>
+</ol>
+</li>
+</ol>
+</li>
+<li>然后进一步观察两个通项公式，你马上会发现它们非常像，然后你会注意到：<ol>
+<li>小千叠加模式下，叠加一个新变换，就是前乘旧的总变换矩阵</li>
+<li>小鱼叠加模式下，叠加一个新变换，就是后乘旧的总变换矩阵</li>
+</ol>
+</li>
+<li>为什么两种叠加模式正好对应上矩阵的前乘后乘？<ol>
+<li>其中并没有神奇的巧合，从两者的变换函数上能看出，本质上两种叠加模式的区别是变换的嵌套顺序，只是在线性变换时所有的变换都能写成矩阵相乘的形式，而矩阵的结合律能把变换的嵌套顺序变成乘法的先后顺序，所以就对应了矩阵的前乘后乘</li>
+<li>然后需要注意的是，矩阵相乘没有交换律，所以一般不能随意颠倒前乘后乘的顺序<ol start="3">
+<li>但对于两个基本变换是同一类型的特殊情况，是可以交换相乘顺序的，例如两个连续的 移动/旋转/缩放 可以按两个顺序完成，但最后的效果是相同的</li>
+<li>另外旋转和 一致缩放（$s_x = s_y$时）也是可以交换的</li>
+</ol>
+</li>
+</ol>
+</li>
+</ol>
+</li>
+<li>但以上的性质以及小鱼叠加通项公式看上去并不能直接用在我们的变换中，因为小鱼叠加模式不是基于上一步的变换结果进行变换，而是基于总变换矩阵和原始图形。不过，实际上计算机中就是基于后者的：<ol>
+<li>计算机中对图形变换的操作流程跟上面一直默认的流程不一样</li>
+<li>虽然从本文开始到现在，一直默认的变换操作流程是：我先有一个图形，然后对图形去进行变换操作，得到想要的变换后的样子</li>
+<li>但实际上并不是这样，这个流程只是为了直观而简化的版本，到目前为止这个简化版本都不会引起理解上的偏差，所以不要慌</li>
+<li>想必了解<code>Canvas</code>的人就知道真正的流程是什么，不知道的也别着急，下面马上就会讲到<code>Canvas</code>模型，会详细说，这里简要描述计算机中实际对图形变换的操作流程：「先累积总变换，在渲染图形的时候直接获取当前的总变换对要渲染的原图形进行变换」，这就跟小鱼叠加的通项公式一致了，说明这个通项公式是有实际使用价值的</li>
+</ol>
+</li>
+</ol>
+</li>
+<li>所以，当你要添加一个新变换，直接把它添加到总变换中就行了，之后在需要绘制的时候，再用总变换对原图形进行变换计算<ol>
+<li>对比上面最简单的方案，实际中变换和原图形直接就是分离的，你不需要做繁琐的来回变换，运算也非常简单</li>
+</ol>
+</li>
+</ol>
+<h3 id="小鱼叠加的第二个问题"><a href="#小鱼叠加的第二个问题" class="headerlink" title="小鱼叠加的第二个问题"></a>小鱼叠加的第二个问题</h3><p>好，确认完小鱼叠加是可操作的之后，你可能马上会产生第二个疑惑：「参考相对坐标系叠加新的变换」的变换叠加模式是怎么跟「变换顺序颠倒」或者说「新变换插入到最前」联系到一起的，它的效果为什么是这样？是不是不太符合直觉？（注意到我这里直接使用了小鱼叠加的全称，你就不用回头去找它了）</p>
+<ol>
+<li>我有一个自以为非常能贯通直觉的例子，不知道能不能贯通你的，可以体会一下：纸团比喻<ol>
+<li>你面前有一张纸，上面画了横平竖直的网格线，你可以把网格看成这张纸上的坐标系，初始时纸的坐标系跟真实坐标系是重合的</li>
+<li>然后你对纸叠加了一个团操作，不管是小千叠加还是小鱼叠加，得到的效果都是一样的，这张纸被揉成一团，纸上的坐标系也被揉成一团了</li>
+<li>下一步就有区别了，如果需求希望你用小千叠加模式叠加一个折叠操作，你应该马上就能知道要怎么操作，你会把这个纸团强行从中间弯折，得到一个弯折的纸团，有点丑，但这就是需求希望的效果，也符合你的直觉</li>
+<li>如果需求希望你用小鱼叠加模式叠加一个折叠操作，也就是参考那个被揉成一团的坐标系，叠加一个折叠操作，你应该能比较容易地想到，进行这个操作之后应该得到一个双层的纸团，这是符合直觉的</li>
+<li>而这时再看这个双层的纸团，你就会发现这就是先把纸折叠、然后再揉成团得到的效果，这就像在揉成团之前插入了一个折叠操作，所以这种效果也是可以符合直觉的</li>
+</ol>
+</li>
+<li>不知道这个例子大家还满意不，另外说一下，上面那个小千指挥小鱼寻路的例子不太适合用来理解这个，小鱼叠加的先旋转再移动，就跟小千叠加的先移动再旋转一样吗？事实是这样，但可能不太符合大部分人的直觉</li>
+</ol>
+<p>到这里，你可能会抱怨（其实不用到这里），说好的讲<code>Canvas</code>变换呢，怎么我都听你叨叨半小时了，<code>Canvas</code>呢？<br>哈哈，别着急，这就讲到了，前面那些都是必要的准备工作，做好了那些准备，再讲<code>Canvas</code>，你就能享受水到渠成的快感（并不</p>
+<h2 id="4、Canvas绘制模型"><a href="#4、Canvas绘制模型" class="headerlink" title="4、Canvas绘制模型"></a>4、Canvas绘制模型</h2><p>接下来要建立<code>Canvas</code>绘制的理论模型，可能跟你的理解有点偏差，不妨尝试按这个来理解一下，它能解释很多问题</p>
+<ol>
+<li>首先<code>Canvas</code>不适合理解成画布，它应该理解成画尺，一把2D的尺子<ol>
+<li>现实中的尺子是直尺，它是1D的，能够度量1个维度的尺寸，并且利用它绘制从0到10的直线</li>
+<li>而2D的尺子是1D尺子的增强版，就像一把交叉的十字尺或者是一块标有坐标系的透明塑料片，可以称它为面尺（本文中画尺会和<code>Canvas</code>混用），你不仅可以用它绘制从 $(1,1)$ 到 $(5,10)$ 的直线，而且可以用它画二维图形，比如画圆画五角星</li>
+</ol>
+</li>
+<li>所以所有使用 <code>canvas.draw</code> 绘制的内容，都是参考画尺的坐标系进行绘制的<ol>
+<li>比如你要绘制从 $(1,1)$ 到 $(5,10)$ 的直线，你就需要在画尺坐标系上找到 $(1,1)$ 和 $(5,10)$ 的位置，然后画一条线把这两个位置连接起来</li>
+</ol>
+</li>
+<li>我们知道，用笔在直尺上画线，线不是画在尺上，而是落在下面的纸上<ol start="4">
+<li>用画尺也是一样的，所以画尺的下面还有一张画纸，为了跟<code>Canvas</code>的翻译名区分，我们称它为基板</li>
+<li>所有使用 <code>canvas.draw</code> 绘制的内容，会最终落在基板上</li>
+</ol>
+</li>
+<li>我们还知道，可以对<code>Canvas</code>进行变换。而所有对<code>Canvas</code>的变换，其实是对画尺进行变换<ol>
+<li>也就是这把2D的尺子还可以被变换被扭曲，被扭曲之后的画尺，其上的坐标系也会被扭曲，但扭曲之后的坐标系也是可以继续使用的，上面的刻度仍然可以用来绘制内容</li>
+<li>只是这时候绘制的内容落在基板上看上去也是扭曲的，你可以想象一把弯曲的直尺也能用来画线，但是画的线是歪歪扭扭的，这就是你对<code>Canvas</code>进行变换后，再在<code>Canvas</code>上进行绘制的效果</li>
+<li>另外，很容易理解，这种变换不会对之前的绘制起作用，只会对变换之后使用画尺进行的绘制起作用</li>
+</ol>
+</li>
+<li>而最后你看到的屏幕就是这块基板上某个区域的内容<ol>
+<li>比如你的手机是 <code>1920*1080</code> 的屏幕，最后看到的内容就是这块基板上 $0 ≤ x ≤ 1080, 0 ≤ y ≤ 1920$ 的区域<br>（示意图@@@，可以画一个立体的图，下面是基板，上面一个半透明塑料片，上面有刻度，中间有一点扭曲，有一根线透过塑料片画在下面的画纸上）</li>
+</ol>
+</li>
+</ol>
+<p>所以你会看到，这就是前面简要描述<code>Canvas</code>绘制模型时说「先累积总变换，在渲染图形的时候直接获取当前的总变换对要渲染的原图形进行变换」的全貌了</p>
+<ol>
+<li>画尺就是利用累积的总变换实现的，在扭曲的画尺上绘制图形，本质上就是把总变换作用于要绘制的图形，两者的效果是一致的</li>
+<li>正是由于这种实现方式，不管是小千叠加还是小鱼叠加，都是能够做到的</li>
+</ol>
+<h3 id="不好用的Canvas变换API、神奇操作-和-Matrix"><a href="#不好用的Canvas变换API、神奇操作-和-Matrix" class="headerlink" title="不好用的Canvas变换API、神奇操作 和 Matrix"></a>不好用的Canvas变换API、神奇操作 和 Matrix</h3><p>然后你会发现，基于这个Canvas绘制模型，绘制很自然就是参考相对坐标系进行的，否则的话你希望施加在图像上的变换就不起作用了<br>于是，<code>Canvas</code>也自然地选择了参考相对坐标系进行变换叠加，也就是小鱼叠加，这从概念上讲非常一致，不是吗</p>
+<ol>
+<li>等等，不是，记得前面说，是参考相对坐标系进行叠加还是参考绝对坐标系进行叠加，应该取决于需求，需求从哪个角度出发，你就最好使用这个角度进行变换叠加，否则就会很麻烦</li>
+<li>所以<code>Canvas</code>这种一刀切的方式实际上并没有那么自然，甚至会让人觉得，怎么那么难用呢？</li>
+</ol>
+<p>于是就有人发明了一套神奇的操作，用<code>Canvas</code>提供的小鱼叠加的API，实现小千叠加的效果</p>
+<ol start="4">
+<li>操作方式是：用小千叠加的思路，倒着使用小鱼叠加的API，实现「正着用小千叠加的API」同样的效果<ol start="5">
+<li>举个例子，需求是：把<code>Canvas</code>沿绝对坐标系的 $X$ 轴负方向移动100， $Y$ 轴负方向移动100，然后绕绝对坐标系的原点顺时针旋转45度，再沿绝对坐标系的 $X$ 轴正方向移动100， $Y$ 轴正方向移动100</li>
+<li>如果直接使用小鱼叠加的API，你可能会这么写： $ canvas.translate(-100,-100) \ canvas.rotate(45) \ canvas.translate(100,100) $ ，但它的效果是这样：<img src="https://blog-1258341143.cos.ap-beijing.myqcloud.com/blog/15449805823985.gif" alt=""><br>，为什么会这样，前面理解了这里就很简单，因为你是小千叠加的思路在调用小鱼叠加的API，肯定不对了</li>
+<li>当然，你可以真正用小鱼叠加的思路来写，但那样就会比较麻烦，而且碰到更复杂的用小千叠加思路描述的需求，就更麻烦了。本来你换用小千叠加的API来操作就什么问题都没有了，但<code>Canvas</code>的变换方法只有小鱼叠加</li>
+<li>于是神奇操作就来了，来用小鱼叠加的API实现小千叠加的思路吧，方法非常简单，把上面的调用顺序倒过来就行了，也就是 $ canvas.translate(100,100) \ canvas.rotate(45) \ canvas.translate(-100,-100) $，这样一操作，效果真的预想中一样了<img src="https://blog-1258341143.cos.ap-beijing.myqcloud.com/blog/15449807824073.gif" alt=""></li>
+</ol>
+</li>
+<li>为什么神奇操作有神奇效果呢？原因在于线性变换可以用矩阵表示<ol>
+<li>线性变换最终都会变成矩阵作用在<code>Canvas</code>上，前文已经讲述过：<ol start="2">
+<li>小千叠加线性变换的矩阵表达式为：$P_n = M_n · M_{n-1} · … · M_2 · M_1 · P_0$</li>
+<li>小鱼叠加线性变换的矩阵表达式为：$P_n = M_1 · M_2 · … · M_{n-1} · M_n · P_0$</li>
+</ol>
+</li>
+<li>在这个需求中，最自然的办法是使用小千叠加的思路调用小千叠加的API（假设这里<code>Canvas</code>的q系列操作提供的是小千叠加的API）：$ canvas.qTranslate(-100,-100) \ canvas.qRotate(45) \ canvas.qTranslate(100,100) $ ，这套操作的效果用矩阵表示是 $P_n = M(100,100) · R(45) · M(-100,-100) · P_0$</li>
+<li>而前面错误的做法中，使用小千叠加的思路调用小鱼叠加的API，操作的效果用矩阵表示是 $P_n = M(-100,-100) · R(45) · M(100,100) · P_0$</li>
+<li>如果我们基于这个错误做法，还是小千叠加的思路和小于叠加的API，只是把调用顺序反过来，用矩阵表示就是 $P_n = M(100,100) · R(45) · M(-100,-100) · P_0$，这就跟「使用小千叠加的思路调用小千叠加的API」得到的矩阵表达式一致了，就是我们要的效果</li>
+</ol>
+</li>
+<li>所以神奇操作确实是有效的，但我并不建议你在不清楚其底层原理之前就到处使用，因为基于以上的原理，你会发现使用这套操作有一些前提，如果前提不满足，就无法实现你要的效果<ol start="8">
+<li>前提一：需求是使用小千叠加描述的<ol start="9">
+<li>很显然这是必要条件，假如需求是用小鱼叠加描述的，让你参考相对坐标系叠加新的变换，就可以直接顺序调用<code>Canvas</code>的API了，而不应该把调用顺序反过来</li>
+</ol>
+</li>
+<li>前提二：进行这套操作之前<code>Canvas</code>不能叠加过其他变换<ol>
+<li>比如在上面的例子中，如果<code>Canvas</code>已经进行了一次 $R(50)$ 的变换<ol start="2">
+<li>使用小千叠加的思路调用小千叠加的API，得到正确变换的矩阵表达式应该是：$P_n = M(100,100) · R(45) · M(-100,-100) · R(50) · P_0$</li>
+<li>如果使用小千叠加的思路调用小鱼叠加的API，操作的效果用矩阵表示是 $P_n = R(50) · M(-100,-100) · R(45) · M(100,100) · P_0$ ，这显然是不对的</li>
+<li>而使用神奇操作，把上面的调用顺序倒转，操作的效果用矩阵表示是 $P_n = R(50) · M(100,100) · R(45) · M(-100,-100) · P_0$ ，这显然也是不对的</li>
+</ol>
+</li>
+<li>这时候怎么使用神奇操作都实现不了，只能用下面的<code>Matrix</code>方法</li>
+</ol>
+</li>
+<li>前提三：变换必须是线性变换<ol start="2">
+<li>这条不那么重要，因为我们使用API对<code>Canvas</code>的操作都是线性变换，但它确实是神奇操作能够使用的前提，因为只有线性变换才能用矩阵相乘表示</li>
+</ol>
+</li>
+</ol>
+</li>
+<li>所以既然使用神奇操作也得理解这么多底层原理，那为什么不能直接从底层原理出发呢？而且理解了底层原理，你也不用强迫自己适应这种代码倒过来执行的反直觉的工作方式了。不过如果你已经习惯了倒过来执行的操作，而且觉得自己维护<code>Matrix</code>太麻烦，你仍然可以继续使用神奇操作，了解了底层原理之后你也会用得更放心了（@@@这里可以重新表述）</li>
+</ol>
+<h3 id="利用Matrix对Canvas进行变换"><a href="#利用Matrix对Canvas进行变换" class="headerlink" title="利用Matrix对Canvas进行变换"></a>利用Matrix对Canvas进行变换</h3><p>虽然<code>Canvas</code>提供的小鱼叠加的API确实在不合适的场景中非常难用，但也不是不能理解它这么提供的原因（跟绘制时的参考坐标系一致），而且值得庆幸的是，<code>Canvas</code>其实也间接提供了小千叠加的API，那就是操作 <code>Matrix</code></p>
+<ol>
+<li><code>canvas.set(matrix)</code> 就是直接设置<code>Canvas</code>当前的总变换矩阵，所以你完全可以自己在外部维护一套变换的<code>Matrix</code>，然后在合适的时候通过这个方法设置给<code>Canvas</code>，实现你需要的变换（@@@可以有具体代码例子，否则别人会不知道怎么写代码）</li>
+<li><code>Matrix</code>本身提供了前乘和后乘操作的API，这样就既能实现小鱼叠加也能实现小千叠加<ol start="3">
+<li><code>matrix.preXXX</code> 系列基本变换API<ol start="4">
+<li>包括：<code>preRotate preScale preSkew preTranslate</code></li>
+<li>它会把新的变换矩阵「后乘」之前的总变换矩阵，它实现的效果是小鱼叠加，也就是「新变换插入到最前」，所以它被称为「pre」操作</li>
+<li>使用这个系列的API，就跟直接使用<code>Canvas</code>进行变换操作是一样的</li>
+<li>你会发现这类API其实包含了两个基本操作步骤<ol start="7">
+<li>通过你的传入参数生成基本变换矩阵</li>
+<li>把基本变换矩阵以前乘或后乘的方式与之前的总变换矩阵进行叠加</li>
+</ol>
+</li>
+<li>你还可以通过<code>matrix.preConcat(Matrix other)</code>来直接让另一个矩阵后乘当前矩阵</li>
+</ol>
+</li>
+<li><code>matrix.postXXX</code> 系列基本变换API<ol start="5">
+<li>包括：<code>postRotate postScale postSkew postTranslate</code></li>
+<li>它会把新的变换矩阵「前乘」之前的总变换矩阵，它实现的效果是小千叠加，也就是「新变换添加到最后」，所以它被称为「post」操作</li>
+<li>你还可以通过<code>matrix.postConcat(Matrix other)</code>来直接让另一个矩阵前乘当前矩阵</li>
+</ol>
+</li>
+</ol>
+</li>
+<li>除了直接给<code>Canvas</code>设置<code>Matrix</code>，还有一个<code>Matrix</code>与<code>Canvas</code>作用的方法：<code>canvas.contact(matrix)</code><ol start="3">
+<li>此API是让传入的<code>Matrix</code>与<code>Canvas</code>当前的<code>Matrix</code>相乘，但它继承了<code>Canvas</code>中API的”优良传统”，相乘的方式只能是「后乘」</li>
+</ol>
+</li>
+<li>另外<code>Matrix</code>还有一些其他API，原理上没有特别值得一提的或者跟本文的主要内容不太相关，大家可以自行查看</li>
+</ol>
+<p>它有很多好处，能直接实现一些复杂的叠加需求，甚至即使需求来回变换参考变换的坐标系，你也只需要改变调用的API，就能实现<br>（@@@这里可以马上举2个例子，一个小鱼叠加的例子，用<code>Canvas</code>做，然后用matrix做，然后是小千叠加的例子做，直接用<code>Canvas</code>有问题，然后倒着用<code>Canvas</code>，最后用matrix）</p>
+<p>但实践上，更常见的做法是，在大的相对变换中使用局部的绝对变换</p>
+<!--
+《------》
+5、最佳实践（@@@其实到这里讲最佳实践好像不太合适，因为带偏移中心的还没有讲）
+2. 手动实现camera操作
+3. 就是要要复合几个操作的时候，为什么顺序相关
+
+几个简单的原则就是：
+1. 从需求出发，如果是绝对叠加的思路，就使用matrix，如果是相对，就直接用`Canvas`
+
+
+到这里，`Canvas`变换的原理和最佳实践就基本讲完了，所以我说得没错嘛，背景讲清楚了，`Canvas`变换就是水到渠成的事情，但其实我们还会面对一些问题
+1. 为什么可以用绝对坐标系的思路，倒着使用相对坐标系的API，达到正着用绝对坐标系的API，同样的效果？
+2. 这样有什么局限？不能叠加，只能基于单位正进行变换
+3. 为什么有的操作还带有偏移中心，怎么实现的？
+4. 既然带偏移中心的是复合操作，那几个这样的复合操作能叠加吗？能
+（可以听下回分解这样）（这是留的几个带有一点挑战性的作业，如果你能全部完成，就说明你真的理解了，甚至融会贯通了，建议自己思考完再看下篇）
+下篇会讲上面的答案，然后会讲camera变换
+
+这里就接着写吧
+-->
+<h2 id="6、带偏移中心的操作"><a href="#6、带偏移中心的操作" class="headerlink" title="6、带偏移中心的操作"></a>6、带偏移中心的操作</h2><p>如果你使用过<code>Canvas</code>的变换API，你会发现跟上面描述有一点不一样的地方：旋转和缩放操作都能设置一个旋转中心和缩放中心，并不只能是相对坐标系的坐标原点<br>这是什么原理，是怎么实现的？变换矩阵是什么？我们用旋转操作举例，分两种叠加方式讨论</p>
+<h3 id="小千叠加一个带偏移中心的旋转操作"><a href="#小千叠加一个带偏移中心的旋转操作" class="headerlink" title="小千叠加一个带偏移中心的旋转操作"></a>小千叠加一个带偏移中心的旋转操作</h3><p>假设需求是这样：画尺已经被施加的变换设为 $T$，需要你再给画尺用小千叠加模式叠加一个「以绝对坐标系位置为 $(100,100)$ 的点为中心顺时针旋转90度」的变换，求这个变换矩阵，效果如下图：<br><img src="https://blog-1258341143.cos.ap-beijing.myqcloud.com/blog/15450145629298.gif" alt=""></p>
+<ol start="2">
+<li>没有把需求直接变成变换矩阵的方法，但你可以跟前面一样，使用这样的流程来得到：需求 -&gt; 效果图示 -&gt; 几何法计算x/y变换函数 -&gt; 转化为变换矩阵</li>
+<li>但对于当前这个需求，你自然会思考有没有其他捷径能做这件事，这个捷径就是组合叠加几个前面我们知道的基本变换来实现：绕原点旋转、移动，也就是对带偏移中心的旋转变换进行拆分<ol start="4">
+<li>这个需求换一种说法就是：在绝对坐标系观察这个要施加的变换，它的效果应该是，变换后的画尺是「变换前的画尺绕绝对坐标系的点 $(100,100)$ 顺时针旋转90度」的样子</li>
+<li>所以关键操作是旋转90度，但使用小千叠加基本变换只能让画尺绕原点旋转，于是很自然，我们可以尝试先把画尺偏移 $(-100,-100)$，使得在绝对坐标系上看，画尺上的旋转中心跟原点重合，那么第一步就是小千叠加一个 <code>translate(-100,-100)</code> 的基本变换</li>
+<li>旋转中心跟原点重合后，就可以进行旋转， 所以第二步是小千叠加一个绕原点旋转90度的基本变换 <code>rotate(90)</code></li>
+<li>最后我们需要把画尺移回原来的位置，目标是画尺上的旋转中心跟变换前处于绝对坐标系的同一个位置，这很简单，也就是偏移 $(100,100)$，所以第三步是小千叠加一个平移变换 <code>translate(100,100)</code>，这样就完成了需求</li>
+</ol>
+</li>
+<li>所以总的来看<ol start="9">
+<li>小千叠加一个带偏移中心的旋转操作非常简单，只需要三步：<code>qTranslate(-100,-100); qRotate(90); qTranslate(100,100)</code></li>
+<li>前面说过，小千叠加的运算方式是矩阵前乘，于是总的变换过程用矩阵表示是：$P = M(100,100)·R(90)·M(-100,-100)·T·P_0$ （这里使用了一个简便的基本变换矩阵的记法）</li>
+<li>所以相比不带偏移中心的旋转操作，带偏移中心的操作只需要在基本旋转操作前后增加一个基本移动操作即可</li>
+</ol>
+</li>
+</ol>
+<!--
+（@@@这里真是有点特殊，我其实还是没有完全想通，只能用一些表述的技巧去骗过直觉：注意，这里我不敢说吧画尺的100，100移动到原点，因为画尺上的100，100不是那个点，你需要用一个新的绝对坐标系）
+-->
+<h3 id="小鱼叠加一个带偏移中心的旋转操作"><a href="#小鱼叠加一个带偏移中心的旋转操作" class="headerlink" title="小鱼叠加一个带偏移中心的旋转操作"></a>小鱼叠加一个带偏移中心的旋转操作</h3><p>假设需求是这样：画尺已经被施加的变换设为$T$，需要你再给画尺用小鱼叠加模式叠加一个「以相对坐标系位置为 $(100,100)$ 的点为中心顺时针旋转90度」的变换，求这个变换矩阵</p>
+<ol start="2">
+<li>同样，还是考虑怎么组合叠加基本变换<ol start="3">
+<li>这个需求换一种说法就是：在变换前的相对坐标系观察这个要施加的变换，它的效果应该是，变换后的画尺是 变换前的画尺绕变换前的相对坐标系的点 $(100,100)$ 顺时针旋转90度的样子</li>
+<li>于是就开始想，发现想不明白啊，有点模糊的思路：可以先把相对坐标系的原点移动到 $(100,100)$ ，然后转90度，转完移动回去。但想来想去还是有问题：<ol>
+<li>要以相对坐标系的 $(100,100)$ 为中心进行旋转，但我把相对坐标系移动过去，那 $(100,100)$ 也动了，这样就不是相对这个点转吧？</li>
+<li>在旋转的时候你会发现这个转的效果根本不对啊，前面小千叠加的时候，一转就是我要的效果</li>
+<li>接着转完怎么移动回去呢？往哪个方向移？相对的坐标系变了要不要调整移的方向？</li>
+</ol>
+</li>
+<li>但实际如果你尝试一下<code>translate(100,100); rotate(90); translate(-100,-100)</code>，它会是你要的效果</li>
+</ol>
+</li>
+<li>这时我想到一个新的思路：在相对坐标系中使用小千叠加<ol start="4">
+<li>不管是前变换 $T$ 是什么，我要对它进行小鱼叠加，都可以想象成我身处相对坐标系中，我看到一个完全正常而普通的相对坐标系，没有被施加任何变换，然后想象在相对坐标系中还有一个画尺，这个画尺坐标系现在正跟相对坐标系重合</li>
+<li>现在我要做的事情是，施加变换，让这个画尺绕 $(100,100)$ 顺时针旋转90度</li>
+<li>此时，我虽然处于相对坐标系，但不管是小千叠加还是小鱼叠加，只要能实现效果，都是可以使用的，而我们发现这个效果通过小鱼叠加多次基本变换做起来有点困难，所以我们选择使用小千叠加来实现</li>
+<li>我们发现此时要实现的效果跟上面「小千叠加一个带偏移中心的旋转操作」例子中要实现的效果是一模一样的，而它的操作步骤我们已经得到了：<code>translate(-100,-100); rotate(90); translate(100,100)</code></li>
+<li>于是在相对坐标系中，我们施加的变换可以表示为：$P = M(100,100)·R(90)·M(-100,-100)·P_0$</li>
+<li>而整个组合变换是小鱼叠加在之前的变换上的，于是总的变换过程用矩阵表示是这样：$P = T · (M(100,100)·R(90)·M(-100,-100)) · P_0$，这就得到了需要的变换矩阵了<ol start="10">
+<li>这个式子有点意思，外层是小千叠加，内层是小鱼叠加</li>
+</ol>
+</li>
+</ol>
+</li>
+<li>另外，注意到如果用矩阵结合律把括号调整一下，就能得到：$P = (((T · M(100,100)) · R(90) ) · M(-100,-100)) · P_0$ ，这就像是小鱼叠加了三个基本操作：<code>translate(100,100); rotate(90); translate(-100,-100)</code>，也跟前面有点怀疑不对的操作是一致的</li>
+</ol>
+<p>最后顺便说一下，带偏移中心的变换为什么也能使用神奇操作</p>
+<ol>
+<li>你可能会担心，带偏移中心的变换是多个变换组合而成的，神奇操作需要把变换的叠加顺序颠倒，那组合而成的「带偏移中心的变换」在颠倒的时候，其内部的基本变换是否也需要颠倒呢？如果需要的话，直接使用神奇操作会不会有问题？又要怎么颠倒内部的基本变换呢？</li>
+<li>但其实前面我在讲神奇操作的前提时，并没有对变换本身有要求，而且你可能自己已经直接用了很多次，也没有出现问题，确实，带偏移中心的变换也能使用神奇操作</li>
+<li>原因很简单，但怎么让其符合直觉还需要多解释一下<ol start="5">
+<li>变换的本质属性中并没有「是否是组合而成的」这个属性，即使是基本变换，也可以由多个变换组合而成，只要组合完毕，它就可以当成是一个基本变换来看待。或者说，大家都是一个变换矩阵</li>
+<li>变换的效果是固定的，”组合变换”的效果始终是不变的，由它本身组合了哪些变换、怎么组合叠加决定，而不因它被用来怎么叠加而改变</li>
+<li>所以如果你选择了一个”组合变换”参与叠加，那么它跟一个基本变换没有区别，颠倒叠加顺序时，不用关心其内部的基本变换</li>
+</ol>
+</li>
+</ol>
+<h2 id="7、Camera与三维变换模型"><a href="#7、Camera与三维变换模型" class="headerlink" title="7、Camera与三维变换模型"></a>7、Camera与三维变换模型</h2><p>理解了前面的二维变换之后，三维变换其实非常简单</p>
+<h3 id="理解"><a href="#理解" class="headerlink" title="理解"></a>理解</h3><p>首先从三维变换的本质出发</p>
+<ol>
+<li>如前文所述，图形变换的本质还是一个函数 $ f(\{P\}) $，只是在三维空间中，它可以拆分成三个函数 $ ( f(\{x\}), f(\{y\}), f(\{z\}) ) $</li>
+<li>对于三维线性变换，可以用矩阵表示为： $ \begin{bmatrix} x \ y \ z \end{bmatrix} = \begin{bmatrix} m_{11} &amp; m_{12} &amp; m_{13} \ m_{21} &amp; m_{22} &amp; m_{23} \ m_{31} &amp; m_{32} &amp; m_{33} \end{bmatrix} · \begin{bmatrix} x_0 \ y_0 \ z_0 \end{bmatrix}$，或 $ P = M · P_0 $</li>
+<li>所以三维变换跟二维变换没有什么本质区别，只是多了一个维度</li>
+</ol>
+<p>但这里要讨论的三维变换与以上内容不同，因为我们是在二维坐标系中进行三维变换</p>
+<ol>
+<li>直接从文字上看好像很难理解，二维坐标系里怎么进行三维变换呢？但其实我们在日常生活已经见得多了：所有的影视画面都是三维物体投影在二维屏幕上的结果，它们做着各种复杂的三维变换，但我们仍然可以通过二维载体进行观察；甚至你看到的整个三维的世界，也只是三维世界在你二维的视网膜上的投影</li>
+<li>所以，在二维坐标系中进行三维变换过程的直观理解就是：变换前有一个初始的二维物体，把它放在三维空间中进行三维变换操作，得到一个三维的物体，让它在某个二维平面上做一个投影，这个二维的投影就是变换后的结果（@@@可以有图）</li>
+</ol>
+<p>更具体一点，在Android（@@@？ios，html）中，如何基于已有的二维齐次变换矩阵实现三维变换的效果</p>
+<ol>
+<li>前面已经讲过，在实际操作中，二维仿射变换使用了三维线性变换表示，它也叫二维齐次变换矩阵（@@@是吗？），变换过程可以表示为：$ \begin{bmatrix} \overrightarrow{P} \ 1 \end{bmatrix} = \begin{bmatrix} M &amp; \overrightarrow{T} \ 0 &amp; 1 \end{bmatrix} · \begin{bmatrix} \overrightarrow{P_0} \ 1 \end{bmatrix} $</li>
+<li>所有的仿射变换都可以用中间的变换矩阵表示，这个矩阵的第三行为 $\begin{bmatrix} 0 &amp; 0 &amp; 1 \end{bmatrix}$，变换前的齐次参数（第三个维度的值）一定为1，变换后齐次参数也一定会得到1，变换前后点的位置都只需要直接取$x$和$y$的值即可</li>
+<li>但是当变换不是仿射变换时，特别是当变换矩阵的第三行不是$\begin{bmatrix} 0 &amp; 0 &amp; 1 \end{bmatrix}$时，变换前的齐次参数当然还是1，但变换后的齐次参数就不是1了，如 $ \begin{bmatrix} x \ y \ k \end{bmatrix} = \begin{bmatrix} m_{11} &amp; m_{12} &amp; m_{13} \ m_{21} &amp; m_{22} &amp; m_{23} \ m_{31} &amp; m_{32} &amp; m_{33} \end{bmatrix} · \begin{bmatrix} x_0 \ y_0 \ 1 \end{bmatrix}$。此时可以通过一个齐次操作（@@@是叫这个名字吗）把变换后的齐次参数变为1，此时x和y就会进行缩放</li>
+<li>这里的「用一个第三行不是$\begin{bmatrix} 0 &amp; 0 &amp; 1 \end{bmatrix}$的变换矩阵进行变换」，得到一个齐次参数不为1的变换结果，然后「通过齐次操作把变换后的齐次参数变为1」，就对应着前面在二维坐标系中进行三维变换的过程中的「把二维物体放在三维空间中进行三维变换操作」和「把得到的三维物体在二维上做一个投影」，就是这样基于已有的二维齐次变换矩阵实现三维变换的效果的</li>
+<li>举个具体的例子，跟前面一样，想象对一个三维正立方体施加线性变换， $ \begin{bmatrix} x_0 \ y_0 \ 1 \end{bmatrix} $ 可以认为是变换前三维立方体与 $z=1$ 平面上的相交面，经过线性变换后，比如绕 $X$ 轴旋转30度，这个面被变换成 $ \begin{bmatrix} x \ y \ k \end{bmatrix} $ ，把它的k变成1，其实就是把变换后的面在 $z=1$ 平面上做一个投影，但注意，这个投影并不是正交投影，而是以原点为透视中心进行透视投影（具体可以看后文，@@@这里要不要拓展。。。），这就实现了基于已有的二维齐次变换矩阵实现三维变换的效果（@@@跟上面重复了）（@@@可以有creo图）</li>
+</ol>
+<p>所以现在的问题变成了，我怎么获取一个我想要的变换矩阵，能实现我希望的三维变换效果</p>
+<ol>
+<li>这时候终于轮到<code>Camera</code>出场了，<code>Camera</code>的作用跟前面我们讲二维变换时的<code>matrix</code>是一样的，它们都是获取变换矩阵的工具<ol start="2">
+<li><code>matrix</code>可以通过<code>translate</code>等方法得到你想要的二维变换矩阵，但这些二维变换矩阵基本能被<code>Canvas</code>本身的变换操作API替代</li>
+<li>而<code>Camera</code>提供的三维变换就不能直接用<code>Canvas</code>操作实现了</li>
+</ol>
+</li>
+<li><code>Camera</code>通过有解释力的API，让你更容易地获取自己想要的三维变换效果的变换矩阵<ol start="3">
+<li>比如我想获得一个让<code>Canvas</code>变换成沿着 $X$ 轴旋转30度然后投影在绝对坐标系平面上的样子，就可以通过 $camera.rotateX(30) \ camera.getMatrix(matrix)$ 获得这个变换矩阵</li>
+</ol>
+</li>
+<li>然后这个变换矩阵就跟前面所有的基本变换矩阵一样，可以通过小鱼或小千叠加作用在你的<code>Canvas</code>上，得到你想要的效果</li>
+</ol>
+<p>下面就让我们来认识一下，<code>Camera</code>通过什么有解释力的API，让使用者可以容易地获取自己想要的三维变换效果的变换矩阵</p>
+<ol>
+<li>前面我们说过，在二维坐标系中进行三维变换的过程可以分为两步：<ol start="2">
+<li>三维变换：把二维物体放在三维空间中进行三维变换操作</li>
+<li>透视投影：把得到的三维物体在二维平面上做一个透视投影<ol start="5">
+<li>在图形学中，投影是一种将三维坐标变换为二维坐标的方法，常用到的有正交投影和透视投影：正交投影多用于三维健模，透视投影则由于和人的视觉系统相似，多用于在二维平面中对三维世界的呈现</li>
+<li>基本的透视投影模型由视点$E$（投影中心）和视平面$P$两部分构成：视点可以认为是观察者的位置，视平面就是渲染三维对象透视图的二维平面<ol start="7">
+<li>对于世界中的任一点$X$，构造一条起点为$E$并经过$X$点的射线$R$，$R$与平面$P$的交点$X_p$即是$X$点的透视投影结果，如下图<img src="https://blog-1258341143.cos.ap-beijing.myqcloud.com/blog/15449501491636.jpg" alt=""></li>
+<li>三维世界的物体可以看作是由点的集合 $\{X_i\}$ 构成的，这样依次构造起点为$E$，并经过点$X_i$的射线$R_i$，这些射线与视平面P的交点集合便是三维世界在当前视点的透视图，如下图<img src="https://blog-1258341143.cos.ap-beijing.myqcloud.com/blog/15449501607899.jpg" alt="-w400"></li>
+<li>但注意，视点、视平面、被投影物体之间并没有强制的位置关系，被投影物体也可以出现在视点和视平面之间（@@@可以有图）</li>
+</ol>
+</li>
+</ol>
+</li>
+</ol>
+</li>
+<li>而<code>Camera</code>变换相关的API也是基于这个变换过程设计的，分为了两类，符合使用者的直觉<ol start="5">
+<li>三维变换<ol start="6">
+<li>基本三维变换跟基本二维变换很像，但只有平移和旋转操作<ol start="7">
+<li>平移：<code>translate(float offsetX, float offsetY, float offsetZ)</code><ol start="8">
+<li>与二维平移一样，只是多了一个z轴的平移量</li>
+</ol>
+</li>
+<li>旋转：<code>rotate(float degreeX, float degreeY, float degreeZ)</code><ol start="9">
+<li>这个方法跟二维变换区别就比较大，二维旋转是绕某点进行旋转，但三维旋转则是绕某个轴进行旋转，而且不能是任意旋转轴，只能是三条坐标轴</li>
+<li>另外还有三个独立的方法可以分别对控制绕某条坐标轴旋转，比较常用，但跟这个方法其实是一样的，不多讲述了</li>
+</ol>
+</li>
+</ol>
+</li>
+<li>为什么基本变换没有缩放操作？猜想是因为只需要控制与投影点的距离，就能实现缩放了，于是没有额外提供缩放API</li>
+</ol>
+</li>
+<li>透视投影<ol start="2">
+<li>前面说了，透视投影的关键是视点和视平面，而在Android中，视平面就是基板，它是固定不变的，于是控制透视投影的关键就只有视点了</li>
+<li><code>Camera</code>提供的控制视点的方法只有改变视点的位置：<code>setLocation(float x, float y, float z)</code><ol start="4">
+<li>这个方法的效果结合透视投影模型很好理解，比较常用的是改变视点的z轴位置</li>
+<li>但是这个方法有几个需要注意的点<ol start="6">
+<li>在Android中，改变视点位置<code>x,y,z</code>的单位不是像素 （感谢扔物线）<ol start="7">
+<li>它的单位是<code>inch</code>（英寸），这种设计源自 Android 底层的图像引擎 Skia，Skia 中 Camera 的位置单位就是英寸，同时最关键的是，英寸和像素的换算单位在 Skia 中被写死为了 72 像素，它不是和设备 dpi 相关的</li>
+<li>所以如果你希望在不同分辨率的手机上看到的移动视点效果是一致的，你需要先用dp为单位算好你希望调整的视点的位置，然后调用系统API根据屏幕分辨率计算得到视点位置的px值，最后把px值除与72得到你要设置的英寸值</li>
+</ol>
+</li>
+<li>但还有一个非常bug的问题，那就是视点的初始位置是<code>(0, 0, -8)</code>（英寸），它也是用英寸表示的<ol start="9">
+<li>于是，即使你没有想改变视点的位置，所有你使用Camera得到的三维变换矩阵，这个变换矩阵的效果在不同分辨率手机上也都是不一样的</li>
+<li>这简直是一个硬核bug，但解决起来并不困难，你只要在所有需要使用camera获取三维变换矩阵之前，都对视点的位置进行重新设置，设置为一个你认为合适的dp值</li>
+</ol>
+</li>
+</ol>
+</li>
+</ol>
+</li>
+</ol>
+</li>
+</ol>
+</li>
+</ol>
+<p>哦对，这些操作也都是小鱼叠加的</p>
+<p>最后有一个需要注意的点，那就是<code>Camera</code>所使用的坐标系是什么样子</p>
+<ol>
+<li>正常我们可能都会认为，2维变3维就是在之前的<code>Canvas</code>坐标系上增加加一个z轴，我们只需要关心z轴的正方向是朝里还是朝外的就好了，但实际上并非如此，除了新增的z轴，<code>Camera</code>的三维坐标系还把 $Y$ 轴的正方向给颠倒了</li>
+<li>下面对两个坐标系做一个简单的对比<ol start="3">
+<li><code>Canvas</code>坐标系：原点位于左上角、 $X$ 轴正方向指向屏幕右侧、 $Y$ 轴正方向指向屏幕下侧、无z轴</li>
+<li><code>Camera</code>坐标系：原点位于左上角、 $Y$ 轴正方向指向屏幕右侧、 $Y$ 轴正方向指向屏幕上侧、z轴正方形垂直屏幕向内</li>
+<li>如图：（@@@）</li>
+</ol>
+</li>
+<li>所以需要特别注意的就是 $Y$ 轴正方向是相反的，不过只要在用到的时候注意一下就行，比较好理解，而且实际情况中需要进行关心 $Y$ 轴正方向的三维变换不太常见</li>
+</ol>
+<h3 id="实践"><a href="#实践" class="headerlink" title="实践"></a>实践</h3><!--
+
+## 在iOS和HTML5中的Canvas变换
+
+HTML5中`Canvas`的二维变换与Android中是完全一致的，camera不知道
+ios不知道
+
+
+看一下`Canvas`和matrix的其他操作，看下会不会跟我讲的一些模型冲突。还好，不太有，就是matrix可能还有一个自定义点的操作，其实不是很重要，简单提一下就行了
+补全上面所有@@@的部分
+开始加例子和实践
+
+-->
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/05/14/Red-Black-Tree-Delete/" rel="next" title="算法3.3.4 红黑树删除操作">
+                <i class="fa fa-chevron-left"></i> 算法3.3.4 红黑树删除操作
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      
+        <div id="gitment-container"></div>
+      
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">BigBear</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1、二维空间中图形变换的朴素表示"><span class="nav-number">1.</span> <span class="nav-text">1、二维空间中图形变换的朴素表示</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2、变换的矩阵表示"><span class="nav-number">2.</span> <span class="nav-text">2、变换的矩阵表示</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#基本表示"><span class="nav-number">2.1.</span> <span class="nav-text">基本表示</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#变换叠加-与-仿射变换的线性表示"><span class="nav-number">2.2.</span> <span class="nav-text">变换叠加 与 仿射变换的线性表示</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用矩阵表示变换的缺点"><span class="nav-number">2.3.</span> <span class="nav-text">使用矩阵表示变换的缺点</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3、变换的叠加"><span class="nav-number">3.</span> <span class="nav-text">3、变换的叠加</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#另一种叠加新变换的方式"><span class="nav-number">3.1.</span> <span class="nav-text">另一种叠加新变换的方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#小鱼叠加的数学表示"><span class="nav-number">3.2.</span> <span class="nav-text">小鱼叠加的数学表示</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#小鱼叠加的第一个问题"><span class="nav-number">3.3.</span> <span class="nav-text">小鱼叠加的第一个问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#小鱼叠加的第二个问题"><span class="nav-number">3.4.</span> <span class="nav-text">小鱼叠加的第二个问题</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4、Canvas绘制模型"><span class="nav-number">4.</span> <span class="nav-text">4、Canvas绘制模型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#不好用的Canvas变换API、神奇操作-和-Matrix"><span class="nav-number">4.1.</span> <span class="nav-text">不好用的Canvas变换API、神奇操作 和 Matrix</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#利用Matrix对Canvas进行变换"><span class="nav-number">4.2.</span> <span class="nav-text">利用Matrix对Canvas进行变换</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6、带偏移中心的操作"><span class="nav-number">5.</span> <span class="nav-text">6、带偏移中心的操作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#小千叠加一个带偏移中心的旋转操作"><span class="nav-number">5.1.</span> <span class="nav-text">小千叠加一个带偏移中心的旋转操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#小鱼叠加一个带偏移中心的旋转操作"><span class="nav-number">5.2.</span> <span class="nav-text">小鱼叠加一个带偏移中心的旋转操作</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#7、Camera与三维变换模型"><span class="nav-number">6.</span> <span class="nav-text">7、Camera与三维变换模型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#理解"><span class="nav-number">6.1.</span> <span class="nav-text">理解</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实践"><span class="nav-number">6.2.</span> <span class="nav-text">实践</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">BigBear</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i> Visitor
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i> Total Visit
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+<!-- LOCAL: You can save these files to your site and update links -->
+    
+        
+        <link rel="stylesheet" href="https://jjeejj.github.io/css/gitment.css">
+        <script src="https://jjeejj.github.io/js/gitment.js"></script>
+    
+<!-- END LOCAL -->
+
+    
+
+    
+      <script type="text/javascript">
+      function renderGitment(){
+        var gitment = new Gitment({
+            id: window.location.pathname,
+            owner: 'SaltedfishCaptain',
+            repo: 'zy-gitment-comments',
+            
+            oauth: {
+            
+            
+                client_secret: 'd146fc6e60a57ef4d238596e6d62f696b0757071',
+            
+                client_id: '8cb146a9a39e15cd2405'
+            }});
+        gitment.render('gitment-container');
+      }
+
+      
+      renderGitment();
+      
+      </script>
+    
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+
+  
+
+  
+
+</body>
+</html>

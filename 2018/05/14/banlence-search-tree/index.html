@@ -1,0 +1,1377 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="我们在前面几节中学习过的算法已经能够很好地用于许多应用程序中，但它们在最坏情况下的性能还是很糟糕在本节中我们会介绍一种二分査找树并能保证：无论如何构造它，它的运行时间都是对数级别的">
+<meta property="og:type" content="article">
+<meta property="og:title" content="算法3.3 平衡查找树">
+<meta property="og:url" content="http://zhengyu.site/2018/05/14/banlence-search-tree/index.html">
+<meta property="og:site_name" content="SaltedBlog">
+<meta property="og:description" content="我们在前面几节中学习过的算法已经能够很好地用于许多应用程序中，但它们在最坏情况下的性能还是很糟糕在本节中我们会介绍一种二分査找树并能保证：无论如何构造它，它的运行时间都是对数级别的">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://ov66b75df.bkt.clouddn.com/15256164630592.png">
+<meta property="og:image" content="http://ov66b75df.bkt.clouddn.com/15256165279280.png">
+<meta property="og:image" content="http://ov66b75df.bkt.clouddn.com/15256165918157.png">
+<meta property="og:image" content="http://ov66b75df.bkt.clouddn.com/15256166103688.png">
+<meta property="og:image" content="http://ov66b75df.bkt.clouddn.com/15256166518223.png">
+<meta property="og:image" content="http://ov66b75df.bkt.clouddn.com/15256166644550.png">
+<meta property="og:image" content="http://ov66b75df.bkt.clouddn.com/15256166853015.png">
+<meta property="og:image" content="http://ov66b75df.bkt.clouddn.com/15256167036414.png">
+<meta property="og:image" content="http://ov66b75df.bkt.clouddn.com/15256167204193.png">
+<meta property="og:image" content="http://ov66b75df.bkt.clouddn.com/15256167320668.png">
+<meta property="og:image" content="http://ov66b75df.bkt.clouddn.com/15256167479381.png">
+<meta property="og:image" content="http://ov66b75df.bkt.clouddn.com/15256167893629.png">
+<meta property="og:image" content="http://ov66b75df.bkt.clouddn.com/15256168142733.png">
+<meta property="og:image" content="http://ov66b75df.bkt.clouddn.com/15256168237608.png">
+<meta property="og:image" content="http://ov66b75df.bkt.clouddn.com/15256168489216.png">
+<meta property="og:image" content="http://ov66b75df.bkt.clouddn.com/15256168688837.png">
+<meta property="og:image" content="http://ov66b75df.bkt.clouddn.com/15256169108887.png">
+<meta property="og:image" content="http://ov66b75df.bkt.clouddn.com/15256169168404.png">
+<meta property="og:image" content="http://ov66b75df.bkt.clouddn.com/15256169498318.png">
+<meta property="og:image" content="http://ov66b75df.bkt.clouddn.com/15256169605745.png">
+<meta property="og:image" content="http://ov66b75df.bkt.clouddn.com/15256169781516.png">
+<meta property="og:image" content="http://ov66b75df.bkt.clouddn.com/15256169906608.png">
+<meta property="og:image" content="http://ov66b75df.bkt.clouddn.com/15256169972760.png">
+<meta property="og:image" content="http://ov66b75df.bkt.clouddn.com/15256170130194.png">
+<meta property="og:image" content="http://ov66b75df.bkt.clouddn.com/15256170339704.png">
+<meta property="og:image" content="http://ov66b75df.bkt.clouddn.com/15256170831932.png">
+<meta property="og:image" content="http://ov66b75df.bkt.clouddn.com/15256171366931.png">
+<meta property="og:image" content="http://ov66b75df.bkt.clouddn.com/15256171452374.png">
+<meta property="og:image" content="http://ov66b75df.bkt.clouddn.com/15256171648458.png">
+<meta property="og:image" content="http://ov66b75df.bkt.clouddn.com/15256171759457.png">
+<meta property="og:image" content="http://ov66b75df.bkt.clouddn.com/15256171866924.png">
+<meta property="og:image" content="http://ov66b75df.bkt.clouddn.com/15256172033134.png">
+<meta property="og:image" content="http://ov66b75df.bkt.clouddn.com/15256172996336.png">
+<meta property="og:updated_time" content="2018-05-14T07:11:18.722Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="算法3.3 平衡查找树">
+<meta name="twitter:description" content="我们在前面几节中学习过的算法已经能够很好地用于许多应用程序中，但它们在最坏情况下的性能还是很糟糕在本节中我们会介绍一种二分査找树并能保证：无论如何构造它，它的运行时间都是对数级别的">
+<meta name="twitter:image" content="http://ov66b75df.bkt.clouddn.com/15256164630592.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://zhengyu.site/2018/05/14/banlence-search-tree/"/>
+
+
+
+
+
+  <title>算法3.3 平衡查找树 | SaltedBlog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">SaltedBlog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://zhengyu.site/2018/05/14/banlence-search-tree/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="BigBear">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="SaltedBlog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">算法3.3 平衡查找树</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-05-14T00:08:48+08:00">
+                2018-05-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i> View
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>我们在前面几节中学习过的算法已经能够很好地用于许多应用程序中，但它们在最坏情况下的性能还是很糟糕<br>在本节中我们会介绍一种二分査找树并能保证：无论如何构造它，它的运行时间都是对数级别的</p>
+<a id="more"></a>
+<ol>
+<li>理想情况下我们希望能够保持二分査找树的平衡性<ol>
+<li>在一棵含有N个结点的树中，我们希望树高为~lgN，这样我们就能保证所有查找都能在~lgN次比较内结束，就和二分査找一样</li>
+</ol>
+</li>
+<li>不幸的是，在动态插入中保证树的完美平衡的代价太高了</li>
+<li>在本节中，我们稍稍放松完美平衡的要求，就能得到一种能够保证字典API中所有操作（范围査找除外）均能够在对数时间内完成的数据结构</li>
+</ol>
+<h2 id="1、2-3查找树"><a href="#1、2-3查找树" class="headerlink" title="1、2-3查找树"></a>1、2-3查找树</h2><p>为了保证査找树的平衡性，我们需要一些灵活性，因此在这里我们允许树中的一个结点保存多个键</p>
+<ol>
+<li>我们将一棵标准的二叉査找树中的结点称为2-结点（含有一个键和两条链接）</li>
+<li>而现在我们引入3-结点，它含有两个键和三条链接</li>
+<li>同时2-结点和3-结点中的每条链接都对应着其中保存的键所分割产生的一个区间</li>
+</ol>
+<p>定义：一棵2-3查找树或为一棵空树，或由以下结点组成：</p>
+<ol>
+<li>2-结点：含有一个键（及其对应的值）和两条链接<ol>
+<li>左链接指向的2-3树中的鍵都小于该结点</li>
+<li>右链接指向的2-3树中的键都大于该结点</li>
+</ol>
+</li>
+<li>3-结点：含有两个键（及其对应的值）和三条链接<ol>
+<li>左链接指向的2-3树中的鍵都小于该结点的两个键</li>
+<li>中链接指向的2-3树中的键都位于该结点的两个键之间</li>
+<li>右链接指向的2-3树中的鍵都大于该结点的两个键</li>
+</ol>
+</li>
+</ol>
+<p>2-3查找树示意图：（和以前一样，我们将指向一棵空树的链接称为空链接）<br><img src="http://ov66b75df.bkt.clouddn.com/15256164630592.png" alt="-w210"></p>
+<p>一棵「完美平衡」的2-3査找树中的「所有空链接到根结点的距离」都应该是「相同」的</p>
+<ol>
+<li>注意，不是叶子节点到根节点的距离相同，这两者是不一样的，叶子节点距离相同会允许有只有一片叶子的父节点，但是空链接距离相同是不允许的</li>
+<li>不止是说所有叶子节点的高度相等，而且所有父节点都是满的（要么是叶子节点没有子节点，要么子节点是满的2个或3个）</li>
+</ol>
+<p>简洁起见，这里我们用2-3树指代一棵完美平衡的2-3査找树（在其他情况下这个词应该表示一种更一般的结构）<br>稍后我们将会学习定义并高效地实现2-结点、3-结点和2-3树的基本操作，现在先假设我们已经能够自如地操作它们并来看看「应该如何将它们用作査找树」。</p>
+<h3 id="1-1-查找"><a href="#1-1-查找" class="headerlink" title="1.1.查找"></a>1.1.查找</h3><p>将二叉査找树的査找算法一般化我们就能够直接得到2-3树的査找算法<br>要判断一个键是否在树中：</p>
+<ol>
+<li>将这个键和根结点中的键比较<ol>
+<li>如果它和其中任意一个相等，査找命中</li>
+<li>否则我们就根据比较的结果找到指向相应区间的链接，并在其指向的子树中递归地继续査找</li>
+<li>如果这是个空链接，査找未命中</li>
+</ol>
+</li>
+<li>在对应子树的根节点中递归查找</li>
+</ol>
+<p>具体査找过程如下图所示：<br><img src="http://ov66b75df.bkt.clouddn.com/15256165279280.png" alt="-w610"></p>
+<h3 id="1-2-向2-结点中插入新键"><a href="#1-2-向2-结点中插入新键" class="headerlink" title="1.2.向2-结点中插入新键"></a>1.2.向2-结点中插入新键</h3><ol>
+<li>要在2-3树中插入一个新结点，我们可以和二叉查找树一样先进行一次未命中的査找，然后把新结点挂在树的底部</li>
+<li>但这样的话树无法保持完美平衡性</li>
+</ol>
+<p>我们使用2-3树的主要原因就在于：它能够在插入后继续保持平衡</p>
+<ol>
+<li>如果未命中的查找结束于一个2-结点，事情就好办了：<ol>
+<li>我们只要把这个2-结点替换为一个3-结点</li>
+<li>然后将要插入的键保存在其中即可</li>
+</ol>
+</li>
+<li>如果未命中的查找结束于一个3-结点，事情就要麻烦一些（下一节讲）</li>
+</ol>
+<p><img src="http://ov66b75df.bkt.clouddn.com/15256165918157.png" alt="-w210"></p>
+<h3 id="1-3-向一棵只含有一个3-结点的树中插入新键"><a href="#1-3-向一棵只含有一个3-结点的树中插入新键" class="headerlink" title="1.3.向一棵只含有一个3-结点的树中插入新键"></a>1.3.向一棵只含有一个3-结点的树中插入新键</h3><p>在考虑一般情况之前，先假设我们需要向一棵只含有一个3-结点的树中插入一个新键，可以这样操作：</p>
+<ol>
+<li>这棵树中有两个键，所以在它唯一的结点中已经没有可插入新键的空间了</li>
+<li>但我们可以先临时将新键存入该结点中，使之成为一个4-结点<ol>
+<li>它很自然地扩展了以前的结点，这下这个节点就含有3个键和4条链接（构造一条新链接）</li>
+</ol>
+</li>
+<li>创建一个临时4-结点会让接下来要做的事变得很方便，因为很容易能将它转换为一棵由3个2-结点组成的树<ol>
+<li>其中一个结点（根）含有中键</li>
+<li>一个结点含有3个键中的最小者（和根结点的左链接相连）</li>
+<li>一个结点含有3个键中的最大者（和根结点的右链接相连）</li>
+</ol>
+</li>
+<li>这棵树既是一棵含有3个结点的二叉査找树，同时也是一棵完美平衡的树，因为其中所有的空链接到根结点的距离都相等</li>
+<li>（同时插入前树的高度为0，插入后树的高度为1）</li>
+</ol>
+<p>这个例子很简单但却值得学习，它说明了2-3树是如何生长的，如下图所示：<br><img src="http://ov66b75df.bkt.clouddn.com/15256166103688.png" alt="-w210"></p>
+<h3 id="1-4-向一个父结点为2-结点的3-结点中插入新键"><a href="#1-4-向一个父结点为2-结点的3-结点中插入新键" class="headerlink" title="1.4.向一个父结点为2-结点的3-结点中插入新键"></a>1.4.向一个父结点为2-结点的3-结点中插入新键</h3><p>作为第二轮热身，假设未命中的査找结束于一个3-结点，而它的父结点是一个2-结点<br>在这种情况下我们需要在维持树的完美平衡的前提下为新键腾出空间</p>
+<ol>
+<li>步骤：<ol>
+<li>先像刚才一样构造一个临时的4-结点</li>
+<li>将这个4-结点分解<ol>
+<li>但此时我们不会为中键创建一个新结点</li>
+<li>而是将其移动至原来的父结点中</li>
+</ol>
+</li>
+</ol>
+</li>
+<li>你可以将这次转换看成：（没什么看的）<ol>
+<li>将「指向原3-结点的一条链接」替换为「新父结点中的原中键左右两边的两条链接」，并分别指向两个新的2-结点</li>
+</ol>
+</li>
+<li>根据我们的假设，父结点中是有空间的：<ol>
+<li>父结点是一个2-结点（一个键两条链接）</li>
+<li>插入之后变为了一个3-结点（两个键3条链接）</li>
+</ol>
+</li>
+<li>另外，这次转换也并不影响2-3树的完美性质：<ol>
+<li>树仍然是有序的，因为中键被移动到父结点中去了</li>
+<li>树仍然是完美平衡的，插入后所有的空链接到根结点的距离仍然相同</li>
+</ol>
+</li>
+</ol>
+<p>请确认你完全理解了这次转换——它是2-3树的动态变化的核心，其过程如下图所示：<br><img src="http://ov66b75df.bkt.clouddn.com/15256166518223.png" alt="-w280"></p>
+<h3 id="1-5-向一个父结点为3-结点的3-结点中插入新键"><a href="#1-5-向一个父结点为3-结点的3-结点中插入新键" class="headerlink" title="1.5.向一个父结点为3-结点的3-结点中插入新键"></a>1.5.向一个父结点为3-结点的3-结点中插入新键</h3><p>现在假设未命中的查找结束于一个父结点为3-结点的结点</p>
+<ol>
+<li>我们再次和刚才一样：<ol>
+<li>构造一个临时的4-结点</li>
+<li>并分解它</li>
+<li>然后将它的中键插入它的父结点中</li>
+</ol>
+</li>
+<li>但父结点也是一个3-结点，因此我们再：<ol>
+<li>用这个中键构造一个新的临时4-结点</li>
+<li>然后在这个结点上进行相同的变换，即：<ol>
+<li>分解这个父结点</li>
+<li>并将它的中键插入到它的父结点中去</li>
+</ol>
+</li>
+</ol>
+</li>
+<li>推广到一般情况：<ol>
+<li>就这样一直向上不断分解临时的4-结点并将中键插入更高层的父结点</li>
+<li>直至遇到一个2-结点并将它替换为一个不需要继续分解的3-结点</li>
+<li>或者是到达3-结点的根来到下一节的操作</li>
+</ol>
+</li>
+</ol>
+<p>该过程如下图所示：<br><img src="http://ov66b75df.bkt.clouddn.com/15256166644550.png" alt="-w280"></p>
+<h3 id="1-6-分解根结点"><a href="#1-6-分解根结点" class="headerlink" title="1.6.分解根结点"></a>1.6.分解根结点</h3><ol>
+<li>如果从插入结点到根结点的路径上全都是3-结点，我们的根结点最终变成一个临时的4-结点</li>
+<li>此时我们可以按照向一棵只有一个3-结点的树中插入新键的方法处理这个问题：<ol>
+<li>我们将临时的4-结点分解为3个2-结点，使得树高加1</li>
+</ol>
+</li>
+</ol>
+<p>请注意，这次最后的变换仍然保持了树的完美平衡性，因为它变换的是根结点。<br><img src="http://ov66b75df.bkt.clouddn.com/15256166853015.png" alt="-w210"></p>
+<h3 id="1-7-操作总结"><a href="#1-7-操作总结" class="headerlink" title="1.7.操作总结"></a>1.7.操作总结</h3><p>将一个4-结点分解为一棵2-3树可能有6种情况（就是上面说的那几种，只是分得更细），都总结在了下图中：</p>
+<ol>
+<li>这个4-结点可能是根结点</li>
+<li>可能是一个2-结点的左子结点或者右子结点</li>
+<li>也可能是一个3-结点的左子结点、中子结点或者右子结点</li>
+</ol>
+<p><img src="http://ov66b75df.bkt.clouddn.com/15256167036414.png" alt="-w610"></p>
+<p>总结一下其实2-3树的插入操作步骤很简单：</p>
+<ol>
+<li>在底部的某个旧节点中插入一个新key</li>
+<li>插入后可能的情况有：<ol>
+<li>2-节点变成3-节点，插入结束</li>
+<li>3-节点变成4-节点<ol>
+<li>考察父节点情况<ol>
+<li>没有父节点<ol>
+<li>4-节点拆分成3个2-节点，中间节点作为父节点，树增高1层，插入结束</li>
+</ol>
+</li>
+<li>父节点为2-节点<ol>
+<li>4-节点拆分成3个2-节点，中间节点插入到父节点中，插入结束</li>
+</ol>
+</li>
+<li>父节点为3-节点<ol>
+<li>4-节点拆分成3个2-节点，中间节点插入到父节点中，父节点变为4-节点，递归考察父节点的父节点</li>
+</ol>
+</li>
+</ol>
+</li>
+</ol>
+</li>
+</ol>
+</li>
+</ol>
+<h3 id="1-8-变换都是局部的，全局性质保持不变"><a href="#1-8-变换都是局部的，全局性质保持不变" class="headerlink" title="1.8.变换都是局部的，全局性质保持不变"></a>1.8.变换都是局部的，全局性质保持不变</h3><p>2-3树插入算法的根本在于这些变换都是局部的：</p>
+<ol>
+<li>每个变换都会将4-结点中的一个键送人它的父结点中，并重构相应的链接而不必涉及树的其他部分</li>
+<li>除了相关的结点和链接之外不必修改或者检查树的其他部分。</li>
+<li>每次变换中，变更的链接数量不会超过一个很小的常数。</li>
+</ol>
+<p>需要特别指出的是，不光是在树的底部，树中的任何地方只要符合相应的模式，变换都可以进行。</p>
+<p>这些局部变换不会影响树的全局有序性和平衡性：任意空链接到根结点的路径长度都是相等的。<br>作为参考，下图所示的是当一个4-结点是一个3-结点的中子结点时的完整变换情况：<br><img src="http://ov66b75df.bkt.clouddn.com/15256167204193.png" alt="-w410"></p>
+<ol>
+<li>如果在变换之前根结点到所有空链接的路径长度为h，那么变换之后该长度仍然为h</li>
+<li>所有的变换都具有这个性质，即使是：<ol>
+<li>将一个4-结点分解为两个2-结点并将其父结点由2-结点变为3-结点</li>
+<li>或是由3-结点变为一个临时的4-结点</li>
+</ol>
+</li>
+<li>只有当根结点被分解为3个2-结点时，所有空链接到根结点的路径长度才会加1</li>
+</ol>
+<p>理解「所有局部变换都不会影响整棵树的有序性和平衡性」是理解这个算法的关键。</p>
+<p>和标准的二叉査找树由上向下生长不同，2-3树的生长是由下向上的<br>如果你花点时间仔细研究一下下图（2-3树的构造轨迹），就能很好地理解2-3树的构造方式了</p>
+<ol>
+<li>它给出了我们的标准索引测试用例中产生的一系列2-3树</li>
+<li>以及一系列由同一组键按照升序依次插入到树中时所产生的所有2-3树<ol>
+<li>还记得在二叉査找树中，按照升序插入10个键会得到高度为9的一棵最差査找树吗？如果使用2-3树，树的高度是2</li>
+</ol>
+</li>
+</ol>
+<p><img src="http://ov66b75df.bkt.clouddn.com/15256167320668.png" alt="-w410"></p>
+<h3 id="1-9-性能分析"><a href="#1-9-性能分析" class="headerlink" title="1.9.性能分析"></a>1.9.性能分析</h3><p>以上的文字已经足够为我们定义一个使用2-3树作为数据结构的字典的实现了，所以接下来我们先借此分析一下性能<br>2-3树的分析和二叉査找树的分析大不相同，因为我们主要感兴趣的是最坏情况下的性能，而非一般情况</p>
+<ol>
+<li>一般情况下我们会用随机键模型分析预期的性能</li>
+<li>但在字典的实现中，一般我们无法控制用例会按照什么顺序向表中插入键，因此对最坏情况的分析是唯一能够提供性能保证的办法</li>
+</ol>
+<p>命题F：在一棵大小为况的2-3树中，査找和插入操作访问的结点必然不超过lgN个</p>
+<ol>
+<li>一棵含有N个结点的2-3树的髙度在（树中全是3-结点）和[lgN]↓（树中全是2-结点）之间</li>
+</ol>
+<p>因此我们可以确定2-3树在最坏情况下仍有较好的性能</p>
+<ol>
+<li>每个操作中处理每个结点的时间都不会超过一个很小的常数，且这两个操作都只会访问一条路径上的结点</li>
+<li>所以任何査找或者插入的成本都肯定不会超过对数级别</li>
+</ol>
+<p>举一个更大的例子：含有10亿个结点的棵2-3树的高度仅在19到30之间</p>
+<ol>
+<li>于是我们最多只需要访问30个结点就能够在10亿个键中进行任意查找和插入操作，这是相当惊人的</li>
+</ol>
+<p>通过对比下图中的2-3树和表3.2.1中由相同的键构造的二叉査找树你也可以看到，完美平衡的2-3树要平展得多<br><img src="http://ov66b75df.bkt.clouddn.com/15256167479381.png" alt="-w410"></p>
+<p>但是，我们和真正的实现还有一段距离：</p>
+<ol>
+<li>因为尽管我们可以用不同的数据类型表示2-结点和3-结点并写出变换所需的代码，但用这种直白的表示方法实现大多数的操作并不方便，因为需要处理的情况实在太多：<ol>
+<li>我们需要维护两种不同类型的结点</li>
+<li>将被査找的键和结点中的每个键进行比较</li>
+<li>将链接和其他信息从一种结点复制到另一种结点</li>
+<li>将结点从一种数据类型转换到另一种数据类型，等等</li>
+</ol>
+</li>
+<li>实现这些不仅需要大量的代码，而且它们所产生的额外开销可能会使算法比标准的二叉査找树更慢</li>
+</ol>
+<p>平衡一棵树的初衷是为了消除最坏情况，但我们希望这种保障所需的代码能够越少越好。（真是想得美）<br>幸运的是你将看到，我们只需要一点点代价就能用一种统一的方式完成所有变换。</p>
+<h2 id="2、红黑二叉查找树"><a href="#2、红黑二叉查找树" class="headerlink" title="2、红黑二叉查找树"></a>2、红黑二叉查找树</h2><p>上文所述的2-3树的插入算法并不难理解，现在我们会看到它也不难实现。<br>我们要学习一种名为红黑二叉査找树的简单数据结构来表达并实现它。<br>最后的代码量并不大，但理解「这些代码是如何工作的」以及「为什么能够工作」却需要一番仔细的探究。</p>
+<h3 id="2-1-替换3-结点"><a href="#2-1-替换3-结点" class="headerlink" title="2.1.替换3-结点"></a>2.1.替换3-结点</h3><p>红黑二叉査找树背后的基本思想是：用标准的二叉査找树（完全由2-结点构成）和一些额外的信息（替换3 -结点）来表示2-3树。</p>
+<p>我们将树中的链接分为两种类型：</p>
+<ol>
+<li>黑链接则是2-3树中的普通链接</li>
+<li><p>红链接将两个2-结点连接起来构成一个3-结点<br>确切地说，我们将3-结点表示为「由一条左斜的红色链接相连的两个2-结点」，如下图所示</p>
+</li>
+<li><p>（两个2-结点其中之一是另一个的左子结点）</p>
+</li>
+<li>（其实红链接就是一个三节点的内部连线，把它看成虚线会更加自然）</li>
+</ol>
+<p><img src="http://ov66b75df.bkt.clouddn.com/15256167893629.png" alt="-w210"></p>
+<p>对于任意的2-3树，只要对结点进行转换，我们都可以立即派生出一棵对应的二叉树<br>我们将用这种方式表示2-3树的二叉査找树称为红黑二叉査找树（以下简称为红黑树）</p>
+<h3 id="2-2-一种等价的定义"><a href="#2-2-一种等价的定义" class="headerlink" title="2.2.一种等价的定义"></a>2.2.一种等价的定义</h3><p>红黑树的另一种定义是：含有红黑链接并满足下列条件的二叉査找树：</p>
+<ol>
+<li>红链接均为左链接（@@@为什么一定是左？答：这是特殊的红黑树，叫左倾红黑树）</li>
+<li>没有任何一个结点同时和两条红链接相连</li>
+<li>该树是完美黑色平衡的，即任意空链接到根结点的路径上的黑链接数量相同（把红链接去掉，就是一棵完美平衡的2-3树）</li>
+</ol>
+<p>满足这样定义的红黑树和相应的2-3树是一一对应的</p>
+<h3 id="2-3-一一对应"><a href="#2-3-一一对应" class="headerlink" title="2.3.一一对应"></a>2.3.一一对应</h3><ol>
+<li>如果我们将一棵红黑树中的红链接画平，所有的空链接到根结点的距离都将是相同的：<ol>
+<li><img src="http://ov66b75df.bkt.clouddn.com/15256168142733.png" alt="-w410"></li>
+</ol>
+</li>
+<li>如果我们将由红链接相连的结点合并，得到的就是一棵2-3树<ol>
+<li><img src="http://ov66b75df.bkt.clouddn.com/15256168237608.png" alt="-w310"></li>
+</ol>
+</li>
+<li>反过来，如果将一棵2-3树中的3-结点画作由红色左链接相连的两个2-结点，那么：<ol>
+<li>不会存在能够和两条红链接相连的结点</li>
+<li>且树必然是完美黑色平衡的<ol>
+<li>因为黑链接即2-3树中的普通链接，根据定义这些链接必然是完美平衡的</li>
+</ol>
+</li>
+</ol>
+</li>
+<li>所以无论我们选择用何种方式去定义它们，红黑树都：既是二叉査找树也是2-3树</li>
+<li>因此如果我们能够在保持一一对应关系的基础上实现2-3树的插入算法，那么我们就能够将两个算法的优点结合起来：<ol>
+<li>二叉査找树中简洁高效的査找方法<ol>
+<li>无需修改就可以直接使用标准二叉査找树的一些方法</li>
+</ol>
+</li>
+<li>2-3树中高效的平衡插入算法</li>
+</ol>
+</li>
+</ol>
+<h3 id="2-4-颜色表示"><a href="#2-4-颜色表示" class="headerlink" title="2.4.颜色表示"></a>2.4.颜色表示</h3><ol>
+<li>方便起见，因为每个结点都只会有一条指向自己的链接（从它的父结点指向它），我们将链接的颜色保存在「被指向的结点」的Node数据类型的布尔变量color中</li>
+<li>如果指向它的链接是红色的，那么该变量为true，黑色则为false<ol>
+<li>为了代码的清晰我们定义了两个常量RED和BLACK来设置和测试这个变量。</li>
+<li>我们使用私有方法isRed()来测试一个结点和它的父结点之间的链接的颜色。</li>
+</ol>
+</li>
+<li>约定空链接为黑色</li>
+<li>当我们提到一个结点的颜色时，我们指的是指向该结点的链接的颜色，反之亦然</li>
+</ol>
+<p>红黑树的结点表示以及颜色表示的代码实现如下所示：<br><img src="http://ov66b75df.bkt.clouddn.com/15256168489216.png" alt="-w410"></p>
+<h3 id="2-5-旋转"><a href="#2-5-旋转" class="headerlink" title="2.5.旋转"></a>2.5.旋转</h3><p>在我们实现的某些操作中可能会出现「红色右链接」或者「两条连续的红链接」（4-结点），但在操作完成前这些情况都会被小心地旋转并修复。</p>
+<p>旋转操作会改变红链接的指向，下面来演示一下：<br>首先，假设我们有一条红色的右链接需要被转化为左链接（如下图左：左旋转h的右链接）<br>这个操作叫做左旋转，假设被指向的结点的右链接是红色的，它对应的方法是：</p>
+<ol>
+<li>接受一条指向红黑树中的某个结点的链接作为参数</li>
+<li>然后会对树进行必要的调整</li>
+<li>并返回一个「指向包含同一组键的子树」且其「左链接为红色」的「根结点的链接」</li>
+</ol>
+<p>如果你对照图示中调整前后的情况逐行阅读这段代码，你会发现这个操作很容易理解（确实）：</p>
+<ol>
+<li>我们只是将「用两个键中的较小者作为根结点的子树」变为「将较大者作为根结点的子树」</li>
+</ol>
+<p>实现将一个红色左链接转换为一个红色右链接的一个右旋转的代码完全相同，只需要将left换成right即可（如下图右：右旋转h的左链接）</p>
+<ol>
+<li>（@@@！这个旋转有什么意义？好好的给转坏了？答：后边3-结点插入后调整连续红链接的时候需要左旋转）</li>
+</ol>
+<p><img src="http://ov66b75df.bkt.clouddn.com/15256168688837.png" alt="-w510"></p>
+<h3 id="2-6-在旋转后重置父结点的链接"><a href="#2-6-在旋转后重置父结点的链接" class="headerlink" title="2.6.在旋转后重置父结点的链接"></a>2.6.在旋转后重置父结点的链接</h3><ol>
+<li>无论左旋转还是右旋转，旋转操作都会返回一条链接</li>
+<li>返回的链接可能是左链接也可能是右链接，但是我们总会将它賦予父结点中的链接<ol>
+<li>也就是我们总是会用rotateRight()或rotateLeft()的返回值重置父结点（或是根结点）中相应的链接</li>
+</ol>
+</li>
+<li>例如，代码「h = rotateLeft(h)」<ol>
+<li>将旋转结点h的红色右链接</li>
+<li>使得h指向了旋转后的子树的根结点</li>
+<li>（组成该子树中的所有键和旋转前相同，只是根结点发生了变化）</li>
+</ol>
+</li>
+<li>这种简洁的代码是我们使用递归实现二叉査找树的各种方法的主要原因</li>
+<li>它使得旋转操作成为了普通插入操作的一个简单补充</li>
+</ol>
+<p>注意：</p>
+<ol>
+<li>rotate返回的链接颜色跟rotate之前是一样的（rotateLeft()和rotateRight()都通过将x.color设为h.color保留它原来的颜色）</li>
+<li>而rotate之前的颜色是插入新节点后产生的，这时候有可能有连续红连接（其实就是4-结点）</li>
+<li>于是rotate之后也可能继续有两条连续的红链接，但我们后面的算法会继续用旋转操作修正这种情况</li>
+</ol>
+<p>通过旋转保证红黑树性质</p>
+<ol>
+<li>在插入新的键时我们可以使用旋转操作帮助我们保证2-3树和红黑树之间的一一对应关系</li>
+<li>因为旋转操作可以自动保持红黑树的两个重要性质：有序性和完美平衡性<ol>
+<li>也就是说，我们在红黑树中进行旋转时无需为树的有序性或者完美平衡性担心</li>
+<li>（原因很简单，因为用红键连接的两个节点就是一个节点，自然是无论连哪个都是一样的）</li>
+</ol>
+</li>
+<li>下面我们来看看应该如何使用旋转操作来保持红黑树的另外两个重要性质：<ol>
+<li>不存在两条连续的红链接</li>
+<li>不存在红色的右链接</li>
+</ol>
+</li>
+</ol>
+<p>我们先用一些简单的情况热热身</p>
+<h3 id="2-7-向唯一的2-结点中插入新键"><a href="#2-7-向唯一的2-结点中插入新键" class="headerlink" title="2.7.向唯一的2-结点中插入新键"></a>2.7.向唯一的2-结点中插入新键</h3><p>一棵只含有一个键的红黑树只含有一个2-结点，插入另一个键之后</p>
+<ol>
+<li>如果新键小于老键<ol>
+<li>我们只需要新增一个红色的结点即可，它产生的是红色左链接，不用做任何其他操作</li>
+<li>新的红黑树和单个3-结点完全等价</li>
+</ol>
+</li>
+<li>如果新键大于老键<ol>
+<li>那么新增的红色结点将会产生一条红色的右链接</li>
+<li>我们需要使用「root = rotateLeft(root)」来将其旋转为红色左链接，并修正根结点的链接，插入操作才算完成</li>
+</ol>
+</li>
+<li>两种情况的结果均为一棵和单个3-结点等价的红黑树，其中含有两个键，一条红链接，树的黑链接高度为1</li>
+</ol>
+<p>（这个操作等价于2-3树中最基础的元操作，往2-点中直接加入新点，这个操作在红黑树中也一样简单，只需要可能多做一步左旋转）<br> <img src="http://ov66b75df.bkt.clouddn.com/15256169108887.png" alt="-w150"><img src="http://ov66b75df.bkt.clouddn.com/15256169168404.png" alt="-w150"></p>
+<h3 id="2-8-向树底部的2-结点插入新键"><a href="#2-8-向树底部的2-结点插入新键" class="headerlink" title="2.8.向树底部的2-结点插入新键"></a>2.8.向树底部的2-结点插入新键</h3><p>用和二叉査找树相同的方式向一棵红黑树中插入一个新键会在树的底部新增一个结点（为了保证有序性）<br>我们可以总是用红链接将新结点和它的父结点相连<br>如果它的父结点是一个2-结点，那么上一小节讨论的处理方法仍然适用：</p>
+<ol>
+<li>如果指向新结点的是父结点的左链接，那么父结点就直接成为了一个3-结点</li>
+<li>如果指向新结点的是父结点的右链接，这就是一个错误的3-结点，但一次左旋转就能够修正它</li>
+</ol>
+<p><img src="http://ov66b75df.bkt.clouddn.com/15256169498318.png" alt="-w150"></p>
+<h3 id="2-9-向一棵双键树（即只有一个3-结点）中插入新键"><a href="#2-9-向一棵双键树（即只有一个3-结点）中插入新键" class="headerlink" title="2.9.向一棵双键树（即只有一个3-结点）中插入新键"></a>2.9.向一棵双键树（即只有一个3-结点）中插入新键</h3><p>这种情况又可分为三种子情况：新键小于树中的两个键，在两者之间，或是大于树中的两个键<br>每种情况中都会产生一个同时连接到两条红链接的结点，而我们的目标就是修正这一点</p>
+<ol>
+<li>最简单的情况是：新键最大（新键大于原树中的两个键）<ol>
+<li>因此新键被连接到3-结点的右链接（如下图左）</li>
+<li>此时树还是平衡的，根结点为中间大小的键，但它有两条红链接分别和较小和较大的结点相连</li>
+<li>如果我们将两条链接的颜色都由红变黑，那么我们就得到了一棵由三个结点组成、高为2的平衡树</li>
+<li>它正好能够对应一棵2-3树</li>
+<li>你会发现其他两种情况最终也会转化为这种情况</li>
+</ol>
+</li>
+<li>如果新键最小（新键小于原树中的两个键）<ol>
+<li>它会被连接到最左边的空链接，这样就产生了两条连续的红链接（如下图中）</li>
+<li>此时我们只需要将上层的红链接右旋转即可得到第一种情况（中值键为根结点并和其他两个结点用红链接相连）</li>
+</ol>
+</li>
+<li>如果新键介于原树中的两个键之间<ol>
+<li>这又会产生两条连续的红链接，一条红色左链接接一条红色右链接（如下图右）</li>
+<li>此时我们只需要将下层的红链接左旋转即可得到第二种情况（两条连续的红色左链接）</li>
+</ol>
+</li>
+</ol>
+<p><img src="http://ov66b75df.bkt.clouddn.com/15256169605745.png" alt="-w410"></p>
+<p>总的来说，我们通过0次、1次和2次旋转以及其颜色的变化得到了期望的结果。<br>在2-3树中，请确认你完全理解了这些转换，它们是红黑树的动态变化的关键。<br>（其实这是2-3树里3-节点增加节点时要做的操作的第一步，第二步是链接颜色变化并向上传递）</p>
+<h3 id="2-10-颜色转换"><a href="#2-10-颜色转换" class="headerlink" title="2.10.颜色转换"></a>2.10.颜色转换</h3><ol>
+<li>我们专门用一个方法flipColors()来转换一个结点的两个红色子结点的颜色<ol>
+<li><img src="http://ov66b75df.bkt.clouddn.com/15256169781516.png" alt="-w190"></li>
+<li>这个过程除了将子结点的颜色由红变黑之外，同时还要将父结点的颜色由黑变红</li>
+</ol>
+</li>
+<li>这项操作最重要的性质在于：它和旋转操作一样是局部变换，不会影响整棵树的黑色平衡性（这点厉害了）</li>
+<li>根椐这一点，我们马上能够在下面完整地实现红黑树</li>
+</ol>
+<p>分解4-节点的同时转换链接的颜色：<br><img src="http://ov66b75df.bkt.clouddn.com/15256169906608.png" alt="-w250"> <img src="http://ov66b75df.bkt.clouddn.com/15256169972760.png" alt="-w250"></p>
+<h3 id="2-11-根结点总是黑色"><a href="#2-11-根结点总是黑色" class="headerlink" title="2.11.根结点总是黑色"></a>2.11.根结点总是黑色</h3><ol>
+<li>2.9中的颜色转换会使根结点变红色，这也可能出在很大的红黑树中</li>
+<li>而红色的根结点说明根结点是一个3-结点的一部分，但实际情况并不是这样。</li>
+<li>因此我们在每次插入后都会将根结点设为黑色。</li>
+<li>注意，每当根结点由红变黑时树的黑链接高度就会加1</li>
+</ol>
+<p>（@@@这里说的是顶层的那个根节点吧？答：对）</p>
+<h3 id="2-12-向树底部的3-结点插入新键"><a href="#2-12-向树底部的3-结点插入新键" class="headerlink" title="2.12.向树底部的3-结点插入新键"></a>2.12.向树底部的3-结点插入新键</h3><p>现在假设我们需要在树的底部的一个3-结点下加入一个新结点，前面讨论过的三种情况都会出现<br>指向新结点的链接可能是3-结点的（2.9的三种情况）</p>
+<ol>
+<li>右链接（此时我们只需要转换颜色即可）</li>
+<li>或是左链接（此时我们需要进行右旋转然后再转换颜色）</li>
+<li>或是中链接（此时我们需要先左旋转下层链接然后右旋转上层链接，最后再转换颜色）</li>
+</ol>
+<p>颜色转换会使到中结点的链接变红，相当于将它送入了父结点<br>这意味着在父结点中继续插入一个新键，我们也会继续用相同的办法解决这个问题。<br><img src="http://ov66b75df.bkt.clouddn.com/15256170130194.png" alt="-w310"></p>
+<h3 id="2-13-将红链接在树中向上传递"><a href="#2-13-将红链接在树中向上传递" class="headerlink" title="2.13.将红链接在树中向上传递"></a>2.13.将红链接在树中向上传递</h3><p>2- 3树中的插入算法需要我们分解3-结点，将中间键插入父结点，如此这般直到遇到一个2-结点或是根结点。<br>我们所考虑过的所有情况都正是为了达成这个目标：</p>
+<ol>
+<li>每次必要的旋转之后我们都会进行颜色转换，这使得上一层的中结点变红</li>
+</ol>
+<p>在父结点看来，处理这样一个红色结点的方式和处理一个新插入的红色结点完全相同，即：</p>
+<ol>
+<li>继续把红链接转移到上一层的中结点上去</li>
+</ol>
+<p>下图中总结的三种情况显示了在红黑树中实现2-3树的插入算法的关键操作所需的步骤：</p>
+<ol>
+<li>要在一个3-结点下插入新键，先创建一个临时的4-结点（也就是两条连续红链接）</li>
+<li>然后将其分解并将红链接由中间键传递给它的父结点。</li>
+<li>重复这个过程，我们就能将红链接在树中向上传递，直至遇到一个2-结点或者根结点。</li>
+</ol>
+<p>红黑树的红链向上传递：（就是2.9里的三种情况的一个总结）<br><img src="http://ov66b75df.bkt.clouddn.com/15256170339704.png" alt="-w310"></p>
+<p>总之，只要谨慎地使用左旋转、右旋转和颜色转换这三种简单的操作，我们就能够保证插入操作后红黑树和2-3树的一一对应关系。<br>在沿着插入点到根结点的路径向上移动时在所经过的每个结点中顺序完成以下操作，我们就能完成插入操作：</p>
+<ol>
+<li>如果右子结点是红色的而左子结点是黑色的，进行左旋转。这个操作表示了两种情况：<ol>
+<li>将一个2-结点变为一个3-结点</li>
+<li>插入的新结点与树底部的3-结点通过它的中链接相连</li>
+</ol>
+</li>
+<li>如果左子结点是红色的且它的左子结点也是红色的，进行右旋转</li>
+<li>如果左右子结点均为红色，进行颜色转换</li>
+</ol>
+<p>你应该花点时间确认以上步骤处理了前文描述的所有情况</p>
+<p>其实就是几种元操作</p>
+<ol>
+<li>插入2-<ol>
+<li>不用关心上一级结点</li>
+<li>两种插入点，一种直接加红，一种加红后旋转</li>
+</ol>
+</li>
+<li>插入3-<ol>
+<li>先是三种插入点，都先加红（变4结点），然后要么转1次，要么转2次，要么不转，最后颜色转换，把红链接传到上一级</li>
+<li>红链接传上去之后，还要继续处理，这时根据上一级的不同又有三种情况：<ol>
+<li>2-结点：接着走上面的插入2-步骤</li>
+<li>3-结点：接着递归走这里的插入3-步骤</li>
+<li>没有上一级，这个就是根结点<ol>
+<li>把这个根节点的颜色直接变黑，相当于树加高一层</li>
+</ol>
+</li>
+</ol>
+</li>
+</ol>
+</li>
+</ol>
+<h2 id="3、实现"><a href="#3、实现" class="headerlink" title="3、实现"></a>3、实现</h2><p>因为保持树的平衡性所需的操作是由下向上在每个所经过的结点中进行的，将它们植入我们已有的实现中十分简单：</p>
+<ol>
+<li>只需要在递归调用之后完成这些操作即可，如算法3.4所示。</li>
+<li>上一节最后列出的三种操作都可以通过一个检测两个结点的颜色的if语句完成。</li>
+<li>尽管实现所需的代码量很小，但如果没有我们学习过的两种抽象数据结构（2-3树和红黑树）作为铺垫，这段实现仍然会非常难以理解。</li>
+<li>在检査了三到五个结点的顔色之后（也许还需要进行一两次旋转以及顔色转换），我们就可以得到一棵近乎完美平衡的二叉査找树。</li>
+</ol>
+<p>算法3.4：红黑树的插入算法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">RedBlackBST</span>&lt;<span class="title">Key</span> <span class="keyword">extends</span> <span class="title">Comparable</span>&lt;<span class="title">Key</span>&gt;, <span class="title">Value</span>&gt; </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> Node root;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">put</span><span class="params">(Key key, Value val)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 查找Key，找到则更新其值，否则为它新建一个结点</span></span><br><span class="line">        root = put(root, key, val);</span><br><span class="line">        root.color = BLACK;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> Node <span class="title">put</span><span class="params">(Node h, Key key, Value val)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 标准的插入操作，和父结点用红链接相连</span></span><br><span class="line">        <span class="keyword">if</span> (h == <span class="keyword">null</span>) <span class="keyword">return</span> <span class="keyword">new</span> Node(key, val, RED, <span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">int</span> cmp = key.compareTo(h.key);</span><br><span class="line">        <span class="keyword">if</span>      (cmp &lt; <span class="number">0</span>) h.left  = put(h.left,  key, val);</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (cmp &gt; <span class="number">0</span>) h.right = put(h.right, key, val);</span><br><span class="line">        <span class="keyword">else</span>              h.val   = val;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (isRed(h.right) &amp;&amp; !isRed(h.left))      h = rotateLeft(h);</span><br><span class="line">        <span class="keyword">if</span> (isRed(h.left)  &amp;&amp;  isRed(h.left.left)) h = rotateRight(h);</span><br><span class="line">        <span class="keyword">if</span> (isRed(h.left)  &amp;&amp;  isRed(h.right))     flipColors(h);</span><br><span class="line"></span><br><span class="line">        h.size = size(h.left) + size(h.right) + <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">return</span> h;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol>
+<li>除了递归调用后的三条if语句，红黑树中put()的递归实现和「二叉査找树」中put()的实现完全相同。</li>
+<li>这三条if语句在査找路径上保证了红黑树和「2-3树」的一一对应关系，使得树的平衡性接近完美：<ol>
+<li>第一条if语句会将任意含有红色右链接的3-结点（或临时的4-结点）向左旋转；</li>
+<li>第二条if语句会将临时的4-结点中两条连续红链接中的上层链接向右旋转；</li>
+<li>第三条if语句会进行顔色转换并将红链接在树中向上传递<ol>
+<li>（@@@这里没有递归啊，是怎么向上传递的？知道了，因为是递归调用put，而这个颜色转换会在每次上面递归结束后调用，就相当于递归调用颜色转换了）</li>
+</ol>
+</li>
+</ol>
+</li>
+</ol>
+<p>下图给出了使用我们的「标准索引测试用例」（左）和用「同一组键按照升序」（右）「构造一棵红黑树」的测试轨迹：<br><img src="http://ov66b75df.bkt.clouddn.com/15256170831932.png" alt="-w410"></p>
+<p>练习方式</p>
+<ol>
+<li>仅从红黑树的三种标准操作的角度分析这些例子对我们理解问题很有帮助，之前我们也是这样做的</li>
+<li>另一个基本练习是检査它们和2-3树的一一对应关系（可以对比阁3.3.10中由同一组键构造的2-3树）</li>
+<li>在两种情况中你都能通过思考将P插入红黑树所需的转换来检验你对算法的理解程度（请见练习3.3.12)</li>
+</ol>
+<h2 id="4、删除操作"><a href="#4、删除操作" class="headerlink" title="4、删除操作"></a>4、删除操作</h2><p>见另一篇笔记：3.3.4 红黑树删除操作</p>
+<h2 id="5、红黑树的性质"><a href="#5、红黑树的性质" class="headerlink" title="5、红黑树的性质"></a>5、红黑树的性质</h2><p>研究红黑树的性质就是要检査对应的2-3树并对相应的2-3树进行分析的过程<br>我们的最终结论是：所有基于红黑树的字典实现都能保证操作的运行时间为对数级别</p>
+<ol>
+<li>（范围查找除外，它所需的额外时间和返回的键的数量成正比）<br>我们重复并强调这一点是因为它十分重要</li>
+</ol>
+<h3 id="5-1-性能分析"><a href="#5-1-性能分析" class="headerlink" title="5.1.性能分析"></a>5.1.性能分析</h3><p>首先，无论键的插入顺序如何，红黑树都几乎是完美平衡的</p>
+<ol>
+<li>这从它和2-3树的一一对应关系以及2-3树的重要性质可以得到</li>
+<li>（如下图：使用随机键构造的典型红黑树）</li>
+</ol>
+<p><img src="http://ov66b75df.bkt.clouddn.com/15256171366931.png" alt="-w410"></p>
+<p>命题G：一棵大小为N的红黑树的高度不会超过2lgN</p>
+<ol>
+<li>红黑树的最坏情况是它所对应的2-3树中构成最左边的路径结点全部都是3-结点而其余均为2-结点</li>
+<li>最左边的路径长度是只包含2-结点的路径长度（~lgN，最短路径）的两倍</li>
+<li>要按照某种順序构造一棵平均路径长度为2lgN的最差红黑树虽然可能，但并不容易</li>
+</ol>
+<p><img src="http://ov66b75df.bkt.clouddn.com/15256171452374.png" alt="-w210"></p>
+<h4 id="5-1-1-实际操作比较次数"><a href="#5-1-1-实际操作比较次数" class="headerlink" title="5.1.1.实际操作比较次数"></a>5.1.1.实际操作比较次数</h4><ol>
+<li>使用随机的键序列和典型应用中常见的键序列进行的实验都证明，在一棵大小为N的红黑树中一次査找所需的比较次数约为「1.00lgN-0.5」</li>
+<li>在实际情况下你不太可能遇到比这个数字高得多的平均比较次数，如表所示：<br>使用RedBlackBST的FrequencyCounter的每次put()操作平均所需的比较次数</li>
+</ol>
+<p><img src="http://ov66b75df.bkt.clouddn.com/15256171648458.png" alt="-w510"></p>
+<p>命题H：一棵大小为N的红黑树中，根结点到任意结点的平均路径长度为~lgN<br>例证：</p>
+<ol>
+<li>和典型的二叉査找树相比，一棵典型的红黑树的平衡性是很好的，比如上面用随机键构造的红黑树</li>
+<li>而上表显示的数据表明FrequencyCounter在运行中构造的红黑树的路径长度（即査找成本）比初等二叉査找树低40%左右，和预期相符</li>
+<li>自红黑树的发明以来，无数的实验和实际应用都印证了这种性能改进<br>以使用FrequencyCounter在处理长度大于等于8的单词时put()操作的成本为例，我们可以看到平均成本降低得更多：</li>
+</ol>
+<p><img src="http://ov66b75df.bkt.clouddn.com/15256171759457.png" alt="-w510"></p>
+<ol>
+<li>这又一次验证了理论模型所预测的对数级別的运行时间，只不过这次的惊喜比二叉査找树的小，因为性质G已经向我们保证了这一点</li>
+<li>节约的总成本低于在査找上节约的40%的成本，因为除了比较我们也统计了旋转和颜色变换的次数</li>
+</ol>
+<h4 id="5-1-2-查找成本"><a href="#5-1-2-查找成本" class="headerlink" title="5.1.2.查找成本"></a>5.1.2.查找成本</h4><p>查找数量远远超过插入的数量，搜索的平均成本是多少？</p>
+<ol>
+<li>如果每个树节点可能被寻找的可能性相同，则计算树的内部路径长度并除以N</li>
+<li>一个N=8的例子<ol>
+<li>内部路径长度：0 + 1 + 1 + 2 + 2 + 2 + 2 + 3 = 13</li>
+<li>平均搜索成本：13/8 = 1.625</li>
+<li><img src="http://ov66b75df.bkt.clouddn.com/15256171866924.png" alt="-w210"></li>
+</ol>
+</li>
+</ol>
+<p>评价</p>
+<ol>
+<li>红黑树的查找方法不用检査结点的颜色，因此平衡性相关的操作不会对查找产生任何负担，又因为树是平衡的，所以査找比二叉査找树更快</li>
+<li>每个键只会被插入一次，但却可能被査找无数次，因此最后我们只用了很小的代价就取得了和最优情况近似的査找时间<ol>
+<li>很小的代价：和二分査找不同，我们可以保证插入操作是对数级别的</li>
+<li>和最优情况近似的査找时间：因为树是接近完美平衡的，且査找过程中不会进行任何平衡性的操作</li>
+</ol>
+</li>
+<li>査找的内循环只会进行一次比较并更新一条链接，非常简短，和二分査找的内循环类似（只有比较和索引运算）</li>
+</ol>
+<p>这是我们见到的第一个能够保证对数级别的査找和插入操作的实现，它的内循环更紧凑。<br>它通过了各种应用的考验，包括许多库实现。</p>
+<h3 id="5-2-有序字典API"><a href="#5-2-有序字典API" class="headerlink" title="5.2.有序字典API"></a>5.2.有序字典API</h3><ol>
+<li>红黑树最吸引人的一点是它的实现中最复杂的代码仅限于put()和delete()方法</li>
+<li>二叉査找树中的査找最大和最小键、select()、rank()、floor()、ceillng()和范围査找方法不做任何变动即可继续使用<ol>
+<li>因为红黑树也是二叉查找树而这些操作也不会涉及结点的颜色</li>
+</ol>
+</li>
+<li>算法3.4和这些方法和删除方法一起完整地实现了我们的有序字典API</li>
+<li>这些方法都能从红黑树近乎完美的平衡性中受益，因为它们最多所需的时间都和树高成正比</li>
+<li>因此命题G和命题E一起保证了所有操作的运行时间是对数级别的</li>
+</ol>
+<p>命题I：在一棵红黑树中，以下操作在最坏情况下所需的时间是对数级别的：</p>
+<ol>
+<li>査找（get()）、插入（put()）、査找最小键、査找最大键、floor()、ceillng()、rank()、select()、删除最小鍵（deleteMln()）、删除最大鍵（deleteMax()）、删除（delete()）和范围査询（range()）</li>
+</ol>
+<p>证明：</p>
+<ol>
+<li>我们已经讨论过put()、get()和delete()方法</li>
+<li>对于其他方法，代码可以从3.2节中照搬（它们不涉及结点颜色）</li>
+<li>命题G和命题E可以保证算法是对数级别的，所有操作在所经过的结点上只会进行常数次数的操作也说明了这一点</li>
+</ol>
+<p>各种字典实现的性能总结如下表所示：<br><img src="http://ov66b75df.bkt.clouddn.com/15256172033134.png" alt="-w510"></p>
+<p>想想看，这样的保证是一个非凡的成就。<br>在信息世界的汪洋大海中，表的大小可能上千亿，但我们仍能够确保在几十次比较之内就完成这些操作。</p>
+<h3 id="5-3-不同平衡二叉树（BST）实现对比"><a href="#5-3-不同平衡二叉树（BST）实现对比" class="headerlink" title="5.3.不同平衡二叉树（BST）实现对比"></a>5.3.不同平衡二叉树（BST）实现对比</h3><p>用不同方式实现的BST插入操作代码行数对比：</p>
+<ol>
+<li>Java的TreeMap的实现</li>
+<li>普通红黑树实现</li>
+<li>左倾红黑树实现</li>
+</ol>
+<p><img src="http://ov66b75df.bkt.clouddn.com/15256172996336.png" alt="-w310"></p>
+<p>普通红黑树：（Guibas-Sedgewick，1978）</p>
+<ol>
+<li>不同的情况非常多</li>
+<li>需要使用父指针</li>
+<li><p>核心算法有400多行代码<br>左倾的红黑树：（Guibas-Sedgewick，2008）</p>
+</li>
+<li><p>单一传递（如果并发很重要，则删除递归）</p>
+</li>
+<li>核心算法的&lt;80行代码</li>
+<li>较少的代码意味着更快的插入，删除</li>
+<li>减少代码意味着更容易维护和迁移</li>
+</ol>
+<h2 id="答疑"><a href="#答疑" class="headerlink" title="答疑"></a>答疑</h2><ol>
+<li>为什么不允许存在红色右链接和4-结点？<ol>
+<li>它们都是可用的，并且已经应用了几十年了，在练习中你会遇到它们</li>
+<li>只允许红色左链接的存在能够减少可能出现的情况，因此实现所需的代码会少得多</li>
+</ol>
+</li>
+<li>为什么不在Node类型中使用一个Key类型的数组来表示2-结点、3-结点和4-结点？<ol>
+<li>问得好，这正是我们在B-树（请见第6章）的实现中使用的方案，它的每个结点中可以保存更多的键</li>
+<li>因为2-3树中的结点较少，数组所带来的额外开销太高了。</li>
+</ol>
+</li>
+<li>在分解一个4-结点时，我们有时会在rotateRight()中将右结点的颜色设为RED（红）然后立即在flipColors()中将它的颜色变为BLACK（黑），这不是浪费时间吗？<ol>
+<li>是的，有时我们还会不必要地反复改变中结点的颜色</li>
+<li>从整体来看，多余的几次颜色变换和将所有方法的运行时间的增长数量级从线性级別提升到对数级别不是一个级别的。</li>
+<li>当然，在有性能要求的应用中，你可以将rotateRight()和flipColors()的代码在所需要的地方展开来消除那些额外的开销</li>
+<li>在能够保证树的完美平衡的前提下，它们更加容易使用、理解和维护。</li>
+</ol>
+</li>
+</ol>
+<p>思考：</p>
+<p>发现其实不需要2-3树，直接就是2-3-4树，2和4都是临时情况，2不方便删除，4不方便添加，但强求3不仅太难，而且根本做不到，于是就允许临时存在2和4，在删除的时候把2变成3，在插入的时候把4变成2和3<br>然这还有两种流派，一种是从上到下再从下到上，一种是只有从上到下，其实不会差太多</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/05/14/Red-Black-Tree-Delete/" rel="prev" title="算法3.3.4 红黑树删除操作">
+                算法3.3.4 红黑树删除操作 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      
+        <div id="gitment-container"></div>
+      
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">BigBear</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1、2-3查找树"><span class="nav-number">1.</span> <span class="nav-text">1、2-3查找树</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-查找"><span class="nav-number">1.1.</span> <span class="nav-text">1.1.查找</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-向2-结点中插入新键"><span class="nav-number">1.2.</span> <span class="nav-text">1.2.向2-结点中插入新键</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-3-向一棵只含有一个3-结点的树中插入新键"><span class="nav-number">1.3.</span> <span class="nav-text">1.3.向一棵只含有一个3-结点的树中插入新键</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-4-向一个父结点为2-结点的3-结点中插入新键"><span class="nav-number">1.4.</span> <span class="nav-text">1.4.向一个父结点为2-结点的3-结点中插入新键</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-5-向一个父结点为3-结点的3-结点中插入新键"><span class="nav-number">1.5.</span> <span class="nav-text">1.5.向一个父结点为3-结点的3-结点中插入新键</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-6-分解根结点"><span class="nav-number">1.6.</span> <span class="nav-text">1.6.分解根结点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-7-操作总结"><span class="nav-number">1.7.</span> <span class="nav-text">1.7.操作总结</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-8-变换都是局部的，全局性质保持不变"><span class="nav-number">1.8.</span> <span class="nav-text">1.8.变换都是局部的，全局性质保持不变</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-9-性能分析"><span class="nav-number">1.9.</span> <span class="nav-text">1.9.性能分析</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2、红黑二叉查找树"><span class="nav-number">2.</span> <span class="nav-text">2、红黑二叉查找树</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-替换3-结点"><span class="nav-number">2.1.</span> <span class="nav-text">2.1.替换3-结点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-一种等价的定义"><span class="nav-number">2.2.</span> <span class="nav-text">2.2.一种等价的定义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-一一对应"><span class="nav-number">2.3.</span> <span class="nav-text">2.3.一一对应</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-4-颜色表示"><span class="nav-number">2.4.</span> <span class="nav-text">2.4.颜色表示</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-5-旋转"><span class="nav-number">2.5.</span> <span class="nav-text">2.5.旋转</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-6-在旋转后重置父结点的链接"><span class="nav-number">2.6.</span> <span class="nav-text">2.6.在旋转后重置父结点的链接</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-7-向唯一的2-结点中插入新键"><span class="nav-number">2.7.</span> <span class="nav-text">2.7.向唯一的2-结点中插入新键</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-8-向树底部的2-结点插入新键"><span class="nav-number">2.8.</span> <span class="nav-text">2.8.向树底部的2-结点插入新键</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-9-向一棵双键树（即只有一个3-结点）中插入新键"><span class="nav-number">2.9.</span> <span class="nav-text">2.9.向一棵双键树（即只有一个3-结点）中插入新键</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-10-颜色转换"><span class="nav-number">2.10.</span> <span class="nav-text">2.10.颜色转换</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-11-根结点总是黑色"><span class="nav-number">2.11.</span> <span class="nav-text">2.11.根结点总是黑色</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-12-向树底部的3-结点插入新键"><span class="nav-number">2.12.</span> <span class="nav-text">2.12.向树底部的3-结点插入新键</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-13-将红链接在树中向上传递"><span class="nav-number">2.13.</span> <span class="nav-text">2.13.将红链接在树中向上传递</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3、实现"><span class="nav-number">3.</span> <span class="nav-text">3、实现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4、删除操作"><span class="nav-number">4.</span> <span class="nav-text">4、删除操作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5、红黑树的性质"><span class="nav-number">5.</span> <span class="nav-text">5、红黑树的性质</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#5-1-性能分析"><span class="nav-number">5.1.</span> <span class="nav-text">5.1.性能分析</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#5-1-1-实际操作比较次数"><span class="nav-number">5.1.1.</span> <span class="nav-text">5.1.1.实际操作比较次数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-1-2-查找成本"><span class="nav-number">5.1.2.</span> <span class="nav-text">5.1.2.查找成本</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-2-有序字典API"><span class="nav-number">5.2.</span> <span class="nav-text">5.2.有序字典API</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-3-不同平衡二叉树（BST）实现对比"><span class="nav-number">5.3.</span> <span class="nav-text">5.3.不同平衡二叉树（BST）实现对比</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#答疑"><span class="nav-number">6.</span> <span class="nav-text">答疑</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">BigBear</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i> Visitor
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i> Total Visit
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+<!-- LOCAL: You can save these files to your site and update links -->
+    
+        
+        <link rel="stylesheet" href="https://jjeejj.github.io/css/gitment.css">
+        <script src="https://jjeejj.github.io/js/gitment.js"></script>
+    
+<!-- END LOCAL -->
+
+    
+
+    
+      <script type="text/javascript">
+      function renderGitment(){
+        var gitment = new Gitment({
+            id: window.location.pathname,
+            owner: 'SaltedfishCaptain',
+            repo: 'zy-gitment-comments',
+            
+            oauth: {
+            
+            
+                client_secret: 'd146fc6e60a57ef4d238596e6d62f696b0757071',
+            
+                client_id: '8cb146a9a39e15cd2405'
+            }});
+        gitment.render('gitment-container');
+      }
+
+      
+      renderGitment();
+      
+      </script>
+    
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+
+  
+
+  
+
+</body>
+</html>

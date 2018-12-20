@@ -1,0 +1,1057 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="算法3.4中的put()方法是本书中最复杂的实现之一（还好，原理说清楚之后逻辑还是很简单），而红黑树的deleteMln()、deleteMax()和delete()的实现更麻烦，我们将它们的完整实现留做练习，但这里仍然需要学习它们的基本原理（也就是下面只是用2-3-4树简单讲一下删除的原理，真正的红黑树的删除其实没有讲）。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="算法3.3.4 红黑树删除操作">
+<meta property="og:url" content="http://zhengyu.site/2018/05/14/Red-Black-Tree-Delete/index.html">
+<meta property="og:site_name" content="SaltedBlog">
+<meta property="og:description" content="算法3.4中的put()方法是本书中最复杂的实现之一（还好，原理说清楚之后逻辑还是很简单），而红黑树的deleteMln()、deleteMax()和delete()的实现更麻烦，我们将它们的完整实现留做练习，但这里仍然需要学习它们的基本原理（也就是下面只是用2-3-4树简单讲一下删除的原理，真正的红黑树的删除其实没有讲）。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://ov66b75df.bkt.clouddn.com/15256236544039.png">
+<meta property="og:image" content="http://ov66b75df.bkt.clouddn.com/15256237139512.png">
+<meta property="og:image" content="http://ov66b75df.bkt.clouddn.com/15256237223372.png">
+<meta property="og:image" content="http://ov66b75df.bkt.clouddn.com/15256237331478.png">
+<meta property="og:image" content="http://ov66b75df.bkt.clouddn.com/15256237411438.png">
+<meta property="og:image" content="http://ov66b75df.bkt.clouddn.com/15256237541216.png">
+<meta property="og:image" content="http://ov66b75df.bkt.clouddn.com/15256238699945.jpg">
+<meta property="og:image" content="http://ov66b75df.bkt.clouddn.com/15256238817754.png">
+<meta property="og:image" content="http://ov66b75df.bkt.clouddn.com/15256238908362.png">
+<meta property="og:image" content="http://ov66b75df.bkt.clouddn.com/15256239323688.png">
+<meta property="og:image" content="http://ov66b75df.bkt.clouddn.com/15256239417626.png">
+<meta property="og:image" content="http://ov66b75df.bkt.clouddn.com/15256239509560.png">
+<meta property="og:image" content="http://ov66b75df.bkt.clouddn.com/15256239597521.png">
+<meta property="og:updated_time" content="2018-05-14T08:59:54.720Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="算法3.3.4 红黑树删除操作">
+<meta name="twitter:description" content="算法3.4中的put()方法是本书中最复杂的实现之一（还好，原理说清楚之后逻辑还是很简单），而红黑树的deleteMln()、deleteMax()和delete()的实现更麻烦，我们将它们的完整实现留做练习，但这里仍然需要学习它们的基本原理（也就是下面只是用2-3-4树简单讲一下删除的原理，真正的红黑树的删除其实没有讲）。">
+<meta name="twitter:image" content="http://ov66b75df.bkt.clouddn.com/15256236544039.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://zhengyu.site/2018/05/14/Red-Black-Tree-Delete/"/>
+
+
+
+
+
+  <title>算法3.3.4 红黑树删除操作 | SaltedBlog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">SaltedBlog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://zhengyu.site/2018/05/14/Red-Black-Tree-Delete/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="BigBear">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="SaltedBlog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">算法3.3.4 红黑树删除操作</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-05-14T16:53:19+08:00">
+                2018-05-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i> View
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>算法3.4中的put()方法是本书中最复杂的实现之一（还好，原理说清楚之后逻辑还是很简单），而红黑树的deleteMln()、deleteMax()和delete()的实现更麻烦，我们将它们的完整实现留做练习，但这里仍然需要学习它们的基本原理（也就是下面只是用2-3-4树简单讲一下删除的原理，真正的红黑树的删除其实没有讲）。</p>
+<a id="more"></a>
+<p>和插入操作一样，我们也可以「定义一系列局部变换」来在「删除一个结点的同时保持树的完美平衡性」<br>这个过程比插入一个结点更加复杂：</p>
+<ol>
+<li>不仅需要为了删除结点去构造临时4-结点，一路沿着査找路径向下进行变换</li>
+<li>还要为了分解遗留的4-结点，沿着査找路径向上进行变换</li>
+</ol>
+<p>下面三个步骤将是本文的大纲：</p>
+<p><strong>步骤一：熟悉2-3-4树</strong><br>要描述删除算法，首先我们要先学习一下2-3-4树<br>只是2-3树还不行，因为2-3树的删除过程会需要构造4-结点：</p>
+<ol>
+<li>某些情况下只有3-结点不行，还得用上4-结点</li>
+<li>虽然2-3树插入出现过临时4-结点，但是下一步马上就干掉了，并不算是真正的4-节点</li>
+<li>而在删除的时候，这个4-结点会稳定存在一段时间</li>
+</ol>
+<p><strong>步骤二：让被删除结点满足删除条件</strong><br>然后我们要明确，删除操作需要满足这些条件：</p>
+<ol>
+<li>只能从3-节点或更大的结点中删除（红色结点）「大结点条件」<ol>
+<li>因为2-结点删除一个键会留下一个空结点，导致破坏平衡（在底部删除3-结点中的键就不会有问题）</li>
+</ol>
+</li>
+<li>只能发生在树的底部「底部条件」<ol>
+<li>因为如果在树的中部删除，就要面临合并两棵树的问题（更复杂）</li>
+</ol>
+</li>
+</ol>
+<p>只要满足这两个条件，删除就变得非常简单了：</p>
+<ol>
+<li>对于删除树底部的3-结点或4-结点中的键，只需要直接把对应指针置为null就好了<br>所以后边的讨论都是在考虑如何让被删除的结点一定满足此条件</li>
+</ol>
+<p><strong>步骤三：2-3树删除操作映射红黑树操作</strong><br>最后，我们上一步的讨论是基于2-3树的，我们需要把所有操作都映射到红黑树中，并在这里讨论具体的红黑树删除算法</p>
+<h2 id="1、熟悉2-3-4树"><a href="#1、熟悉2-3-4树" class="headerlink" title="1、熟悉2-3-4树"></a>1、熟悉2-3-4树</h2><p>2-3-4树跟2-3树的不同就是：它里边允许存在我们以前见过的4-结点，而不用立刻分解掉<br>我们下面将通过2-3-4树的插入算法来熟悉2-3-4树</p>
+<ol>
+<li>从根结点开始，往下查找位置准备插入，但还顺路对一路上的4-结点做一些操作<ol>
+<li>（你会发现这些都是你熟悉的操作，就是在2-3树中对分解4-结点的操作）</li>
+<li>如果这个4-结点「没有父节点」<ol>
+<li>说明它就是根节点，我们就将它分解成三个2-结点，使得树高加1</li>
+</ol>
+</li>
+<li>如果这个4-结点的「父结点为2-结点」<ol>
+<li>将4-结点分解为两个2-结点并将中间键传递给它的父结点，使得父结点变为一个3-结点</li>
+</ol>
+</li>
+<li>如果这个4-结点的「父结点为3-结点」<ol>
+<li>将4-结点分解为两个2-结点并将中间键传递给它的父结点，使得父结点变为一个4-结点<ol>
+<li>（这步其实跟上一种情况一样）</li>
+<li>（因为这个树中允许存在4-结点，所以这样就可以了）</li>
+</ol>
+</li>
+</ol>
+</li>
+<li>（不必担心会遇到父结点为4-结点的4-结点，因为作为父节点的那个4-结点肯定在上一步已经被处理了）</li>
+</ol>
+</li>
+<li>到达树的底部之后，我们也只会遇到2-结点或者3-结点（底部要是有4-结点，也在刚刚走到这儿的时候马上被处理了），于是我们可以直接在2-结点或3-结点中插入新的键，变成3-结点或4-结点</li>
+</ol>
+<p><img src="http://ov66b75df.bkt.clouddn.com/15256236544039.png" alt="-w200"></p>
+<p>要用红黑树实现这个算法，我们需要：</p>
+<ol>
+<li>将4-结点表示为由三个2-结点组成的一棵平衡的子树，根结点和两个子结点都用红链接相连</li>
+<li>在向下的过程中分解所有4-结点并进行颜色转换；</li>
+<li>和插入操作一样，在向上的过程中用旋转将4-结点配平（@@@？配平是什么意思？）<ol>
+<li>因为4-结点可以存在，所以可以允许一个结点同时连接到两条链接</li>
+</ol>
+</li>
+</ol>
+<p>令人惊讶的是，你只需要移动算法3.4的put()方法中的一行代码就能实现2-3-4树中的插入操作：</p>
+<ol>
+<li>将colorFlip()语句（及其if语句）移动到递归调用之前（null测试和比较操作之间）</li>
+</ol>
+<p>在多个进程可以同时访问同一棵树的应用中这个算法优于2-3树，因为它操作的总是当前结点的一个或两个链接。<br>我们下面要讲的删除算法和它的插入算法类似，而且也适用于2-3树。</p>
+<h2 id="2、让被删除节点满足删除条件"><a href="#2、让被删除节点满足删除条件" class="headerlink" title="2、让被删除节点满足删除条件"></a>2、让被删除节点满足删除条件</h2><h3 id="2-1-删除最小键"><a href="#2-1-删除最小键" class="headerlink" title="2.1.删除最小键"></a>2.1.删除最小键</h3><p>这里我们就要正式对删除操作下手了，先讨论较为简单的：在「2-3树」（注意不是2-3-4树，但允许构造临时4-结点）中删除「最小键」的操作</p>
+<p>考察删除最小键的操作是否满足删除条件</p>
+<ol>
+<li>不一定满足「大结点条件」</li>
+<li>一定满足「底部条件」<ol>
+<li>因为在一棵2-3树中，是完全平衡的，最小键只能在树的最左侧，它就一定位于底部</li>
+</ol>
+</li>
+</ol>
+<p>所以删除最小键的关键就是怎么让被删除的键位于3-结点中（或是临时4-结点中）</p>
+<ol>
+<li>直接的思路就是：如果需要在2-结点中删除键，那就先把它变成一个3-结点，再进行删除操作</li>
+<li>现在问题变成：怎么把当前这个2-结点变成一个3-结点？</li>
+</ol>
+<p>可以设想两种情况：</p>
+<ol>
+<li>亲兄弟（相邻的兄弟）结点也是2-结点<ol>
+<li>把亲兄弟节点和父节点中的一个键合并到自己中，自己就变成了一个4-结点（临时）</li>
+<li>这时候需要另外满足条件：<ol>
+<li>如果父结点不是根结点，那么它必须是一个3-结点或临时4-结点<ol>
+<li>才能保证父结点能够借出一个键来</li>
+<li>（另外，一定会有亲兄弟结点的，而且只要父亲借完不是空结点，那肯定还会有兄弟结点，一定是平衡的）</li>
+</ol>
+</li>
+<li>如果父结点是根结点，那么它也可以是2-结点<ol>
+<li>这时候的操作就是直接把2-结点的父结点和2-结点的亲兄弟结点合并过来，树的高度减1</li>
+</ol>
+</li>
+</ol>
+</li>
+</ol>
+</li>
+<li>亲兄弟（相邻的兄弟）结点是3-结点或临时4-结点<ol>
+<li>从亲兄弟结点中借一个键过来，让自己变成3-结点</li>
+<li>不需要满足其他条件</li>
+<li>更确切地说是：进行左旋转，把亲兄弟中一个键转给父结点，父结点一个键转给当前2-结点</li>
+</ol>
+</li>
+</ol>
+<p>这两种情况基本涵盖了所有情形，唯一的例外是要求：当前节点的父结点如果不是根节点的话，它必须是3-结点或临时4-结点<br>有没有发现这个要求很递归？哈哈，对，如果我们能保证从根节点开始，往下到最左侧结点的一路上每个结点都不是2-结点，那自然每一个结点都能从2-结点变成3-结点</p>
+<p>所以这个算法要做的事情就是：沿着左链接向下进行变换，确保每一个途径的结点不是2-结点，到达底部后进行删除操作</p>
+<ol>
+<li>首先从根结点开始，根结点可能有两种情况<ol>
+<li>如果根是2-结点且它的两个子结点都是2-结点，我们可以直接将这三个结点变成一个临时4-结点<ol>
+<li><img src="http://ov66b75df.bkt.clouddn.com/15256237139512.png" alt=""></li>
+</ol>
+</li>
+<li>否则，我们需要保证根结点的左子结点不是2-结点（3-结点或4-结点），如有必要可以从它右侧的兄弟结点“借”一个键来<ol>
+<li><img src="http://ov66b75df.bkt.clouddn.com/15256237223372.png" alt=""></li>
+</ol>
+</li>
+</ol>
+</li>
+<li>然后在沿着左链接向下的过程中，保证以下情况之一成立：<ol>
+<li>如果当前结点的左子结点不是2-结点，就什么都不用干，继续往下走</li>
+<li>如果当前结点的左子结点是2-结点，而它的亲兄弟结点不是2-结点<ol>
+<li>将左子结点的兄弟结点中的一个键移动到左子结点中</li>
+<li><img src="http://ov66b75df.bkt.clouddn.com/15256237331478.png" alt=""></li>
+</ol>
+</li>
+<li>如果当前结点的左子结点和它的亲兄弟结点都是2-结点<ol>
+<li>将左子结点、父结点中的小键和左子结点最近的兄弟结点合并为一个4-结点<ol>
+<li>（上面步骤保证了父结点一定不是2-结点，有键可以借，因为一路过来都在消灭2-结点）</li>
+</ol>
+</li>
+<li>使父结点由3-结点变为2-结点或者由4-结点变为3-结点</li>
+<li><img src="http://ov66b75df.bkt.clouddn.com/15256237411438.png" alt=""></li>
+</ol>
+</li>
+</ol>
+</li>
+<li>最后走到我们要删除的最左侧结点，它必定是一个含有最小键的3-结点或者4-结点<ol>
+<li>然后我们就可以直接从中将其删除：<ol>
+<li>将3-结点变为2-结点，或者将4-结点变为3-结点</li>
+<li><img src="http://ov66b75df.bkt.clouddn.com/15256237541216.png" alt=""></li>
+</ol>
+</li>
+<li>然后我们再回头向上分解所有临时的4-结点（因为这是2-3树，所以刚才产生的临时4-结点需要分解掉）</li>
+</ol>
+</li>
+</ol>
+<p>用同样的思路考虑删除最大键的情景也是一样的：</p>
+<ol>
+<li>只需要沿着右链接向下进行变换，确保每一个途径的结点不是2-结点，到达底部后进行删除操作</li>
+<li>而确保不是2-结点的方式也是要么合并父亲和兄弟，要么向兄弟借（右旋转）</li>
+</ol>
+<h3 id="2-2-删除任意键"><a href="#2-2-删除任意键" class="headerlink" title="2.2.删除任意键"></a>2.2.删除任意键</h3><p>进一步考察更一般的操作是否满足删除条件：删除任意键</p>
+<ol>
+<li>不一定满足「大结点条件」</li>
+<li>不一定满足「底部条件」</li>
+</ol>
+<p>你会发现两个条件都不满足，让我们来一一处理：</p>
+<ol>
+<li>对于大结点条件，我们仍然可以用删除最小键时用过的方法来处理</li>
+<li>而对于底部条件，有一个非常简单的方法能够处理：将它和它的后继结点交换，在它后继结点的位置把它删除<ol>
+<li>为什么能这么做？具体有两个问题<ol>
+<li>为什么能交换？<ol>
+<li>同二叉树一样，它的后继节点放进来不会影响平衡</li>
+</ol>
+</li>
+<li>为什么交换了就能删除？<ol>
+<li>它的后继结点一定是以它的右子节点为根节点的子树中最小的键，那么就跟之前删除最小键一样，能用同样的方法删除</li>
+<li>你可能会担心几个极端情况：<ol>
+<li>这个节点位于底部，没有子结点：那么正好可以直接删除</li>
+<li>这个节点位于倒数第二层，它的子节点没有子节点了：那么需要删除的就是它的这个子结点，因为在底层，也可以直接删除</li>
+<li>这个节点是2-节点，怎么删除最小键：不会2-节点，你一路往下会进行变换</li>
+</ol>
+</li>
+</ol>
+</li>
+</ol>
+</li>
+<li>所以在交换后，删除任意键的问题就化归为删除最小键的问题，满足了底部条件</li>
+</ol>
+</li>
+</ol>
+<p>所以总的来说，在2-3树中删除任意键的思路是：</p>
+<ol>
+<li>向下查找这个键</li>
+<li>并在沿途进行变换，确保每一个途径的结点不是2-结点</li>
+<li>如果在树的底部找到，可以直接删除它</li>
+<li>如果不是在树的底部找到，那么将它和它的后继结点交换，问题就转化为在一棵根结点不是2-结点的子树中删除最小的键</li>
+<li>向上回溯并分解余下的4-结点</li>
+</ol>
+<h2 id="3、2-3树删除操作映射红黑树删除操作"><a href="#3、2-3树删除操作映射红黑树删除操作" class="headerlink" title="3、2-3树删除操作映射红黑树删除操作"></a>3、2-3树删除操作映射红黑树删除操作</h2><h3 id="3-1-删除最小键"><a href="#3-1-删除最小键" class="headerlink" title="3.1.删除最小键"></a>3.1.删除最小键</h3><p>跟2-3树删除最小键的思路是一样的，直接来看代码吧：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">deleteMin</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">// if both children of root are black, set root to red</span></span><br><span class="line">    <span class="keyword">if</span> (!isRed(root.left) &amp;&amp; !isRed(root.right))&#123;</span><br><span class="line">        root.color = RED;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    root = deleteMin(root);</span><br><span class="line">    root.color = BLACK;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> Node <span class="title">deleteMin</span><span class="params">(Node h)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (h.left == <span class="keyword">null</span>) <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!isRed(h.left) &amp;&amp; !isRed(h.left.left))&#123;</span><br><span class="line">        h = moveRedLeft(h);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    h.left = deleteMin(h.left);</span><br><span class="line">    <span class="keyword">return</span> balance(h);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> Node <span class="title">moveRedLeft</span><span class="params">(Node h)</span> </span>&#123;</span><br><span class="line">    flipColors(h);</span><br><span class="line">    <span class="keyword">if</span> (isRed(h.right.left)) &#123;</span><br><span class="line">        h.right = rotateRight(h.right);</span><br><span class="line">        h = rotateLeft(h);</span><br><span class="line">        flipColors(h);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> h;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> Node <span class="title">balance</span><span class="params">(Node h)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (isRed(h.right))                      h = rotateLeft(h);</span><br><span class="line">    <span class="keyword">if</span> (isRed(h.left) &amp;&amp; isRed(h.left.left)) h = rotateRight(h);</span><br><span class="line">    <span class="keyword">if</span> (isRed(h.left) &amp;&amp; isRed(h.right))     flipColors(h);</span><br><span class="line"></span><br><span class="line">    h.size = size(h.left) + size(h.right) + <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">return</span> h;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>步骤：</p>
+<ol>
+<li>查看跟节点的两个子节点颜色，其实是确定跟节点是不是3-节点，如果不是的话，把根节点变红<ol>
+<li>（@@@？根节点不知道怎么处理的，PPT上对应的话也看不懂：h或h.left是红色的）</li>
+</ol>
+</li>
+<li>然后从根节点开始，沿着最左侧路径往下递归遍历</li>
+<li>递归方法的返回值重新赋值给该被递归的节点，方便把以该节点为根节点的子树直接进行替换<ol>
+<li>（替换成另一颗子树、替换成原树经过旋转变换的结果、替换成空树-也就是删除该节点）</li>
+</ol>
+</li>
+<li>在递归方法中：「Node deleteMin(Node h)」<ol>
+<li>如果左子节点为null，说明递归到底部了，当前节点就是最小值，OK，把当前节点删掉就一切结束了，删掉只需要返回null，剩下的事情交给上层递归处理（恢复平衡）</li>
+<li>如果左子节点是黑节点，左孙节点也是黑节点，说明左子节点是个2-节点，它待会一定需要借节点，父亲提前帮他一把，直接把节点借好送它：「Node moveRedLeft(Node h)」（给左子节点借个节点）（这样就不用使用父指针了）<ol>
+<li>跟用2-3树分析时的一样，借节点时会遇到两种情况：</li>
+<li>左子节点的兄弟结点是3-结点<ol>
+<li>通过查看右子节点的左子节点是红色就能确定右子节点是3-节点<ol>
+<li>因为这是左倾红黑树，只用看左子节点的颜色</li>
+</ol>
+</li>
+<li>这时候就需要把作为兄弟的右子节点中的一个键借出来给左子节点</li>
+<li>这个过程在2-3树分析时很简单，但是用红黑树实现的时候还是稍显复杂（不过仰仗我们抽取的简单好用的颜色翻转和旋转方法，整个过程还是很简单的）（如图1，代码的每一步都跟图一一对应）</li>
+</ol>
+</li>
+<li>左子节点的兄弟结点是2-结点<ol>
+<li>这时候就需要把兄弟结点整个拿来，同时把父结点的一个也拿来，跟自己一起，3个结点组成一个临时4-结点</li>
+<li>这个步骤出人意料地简单，只需要翻转一下颜色就完成了（如图2）</li>
+</ol>
+</li>
+</ol>
+</li>
+</ol>
+</li>
+<li>就这么一直递归下去直到删除节点，控制权又从底层一层交上来，上层递归逐层进行收尾工作：恢复平衡<ol>
+<li>收尾工作很简单</li>
+<li>对象是一路上经过的所有节点（也就是最左侧的节点）</li>
+<li>做法还是之前说过的3个步骤：<ol>
+<li>右节点是红色，左旋转（右倾-&gt;左倾）</li>
+<li>左边连续两个红节点，右旋转（调整4-节点姿势）</li>
+<li>如果当前是4-节点，颜色翻转（拆分4-节点）</li>
+</ol>
+</li>
+</ol>
+</li>
+</ol>
+<p>图1：左节点向3-节点的右兄弟借节点：<br><img src="http://ov66b75df.bkt.clouddn.com/15256238699945.jpg" alt=""></p>
+<p>图2：左节点向2-节点的右兄弟借节点：<br><img src="http://ov66b75df.bkt.clouddn.com/15256238817754.png" alt=""></p>
+<p>一个删除最小键的例子：<br><img src="http://ov66b75df.bkt.clouddn.com/15256238908362.png" alt=""></p>
+<h3 id="3-2-删除最大键"><a href="#3-2-删除最大键" class="headerlink" title="3.2.删除最大键"></a>3.2.删除最大键</h3><ol>
+<li>删除最大键跟删除最小键是差不多的，除了以下几个区别，就一毛一样了</li>
+<li>几个区别：<ol>
+<li>沿着右侧往下递归遍历</li>
+<li>最大的区别：因为树是左倾的，如果删除右节点，就需要一路上先把左倾变成右倾</li>
+<li>不重要的区别：右节点借左节点的键时能少一步旋转</li>
+</ol>
+</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">deleteMax</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">// if both children of root are black, set root to red</span></span><br><span class="line">    <span class="keyword">if</span> (!isRed(root.left) &amp;&amp; !isRed(root.right))&#123;</span><br><span class="line">        root.color = RED;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    root = deleteMax(root);</span><br><span class="line">    root.color = BLACK;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> Node <span class="title">deleteMax</span><span class="params">(Node h)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (isRed(h.left)) h = rotateRight(h);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (h.right == <span class="keyword">null</span>) <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!isRed(h.right) &amp;&amp; !isRed(h.right.left)) &#123;</span><br><span class="line">        h = moveRedRight(h);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    h.right = deleteMax(h.right);</span><br><span class="line">    <span class="keyword">return</span> balance(h);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> Node <span class="title">moveRedRight</span><span class="params">(Node h)</span> </span>&#123;</span><br><span class="line">    flipColors(h);</span><br><span class="line">    <span class="keyword">if</span> (isRed(h.left.left)) &#123;</span><br><span class="line">        h = rotateRight(h);</span><br><span class="line">        flipColors(h);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> h;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>右节点向3-节点的左兄弟借节点：<br><img src="http://ov66b75df.bkt.clouddn.com/15256239323688.png" alt=""></p>
+<p>右节点向2-节点的左兄弟借节点：<br><img src="http://ov66b75df.bkt.clouddn.com/15256239417626.png" alt=""></p>
+<p>例子1：<br><img src="http://ov66b75df.bkt.clouddn.com/15256239509560.png" alt=""></p>
+<p>例子2：<br><img src="http://ov66b75df.bkt.clouddn.com/15256239597521.png" alt=""></p>
+<h3 id="3-3-删除任意键"><a href="#3-3-删除任意键" class="headerlink" title="3.3.删除任意键"></a>3.3.删除任意键</h3><p>跟2-3树删除任意键的思路是一样的，实现需要多注意一些细节，直接来看代码吧</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">delete</span><span class="params">(Key key)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// if both children of root are black, set root to red</span></span><br><span class="line">    <span class="keyword">if</span> (!isRed(root.left) &amp;&amp; !isRed(root.right)) &#123;</span><br><span class="line">        root.color = RED;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    root = delete(root, key);</span><br><span class="line">    root.color = BLACK;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> Node <span class="title">delete</span><span class="params">(Node h, Key key)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> cmp = key.compareTo(h.key);</span><br><span class="line">    <span class="keyword">if</span> (cmp &lt; <span class="number">0</span>)  &#123;</span><br><span class="line">        <span class="keyword">if</span> (!isRed(h.left) &amp;&amp; !isRed(h.left.left)) &#123;</span><br><span class="line">            h = moveRedLeft(h);</span><br><span class="line">        &#125;</span><br><span class="line">        h.left = delete(h.left, key);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (isRed(h.left)) h = rotateRight(h);</span><br><span class="line">        <span class="keyword">if</span> (cmp == <span class="number">0</span> &amp;&amp; (h.right == <span class="keyword">null</span>)) <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (!isRed(h.right) &amp;&amp; !isRed(h.right.left)) &#123;</span><br><span class="line">            h = moveRedRight(h);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (cmp == <span class="number">0</span>) &#123;</span><br><span class="line">            Node x = min(h.right);</span><br><span class="line">            h.key = x.key;</span><br><span class="line">            h.val = x.val;</span><br><span class="line">            h.right = deleteMin(h.right);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            h.right = delete(h.right, key);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> balance(h);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>直接从递归方法开始吧</p>
+<ol>
+<li>在每一个节点上，先比较了一下，以确定下一步走哪个方向</li>
+<li>如果走左边<ol>
+<li>（进行跟删除最小键一样的操作）</li>
+<li>借键保证左子节点不是2-节点（进行跟删除最小键一样的操作）</li>
+<li>（继续往下递归，并在递归返回时调整平衡）</li>
+</ol>
+</li>
+<li>如果走右边<ol>
+<li>（进行跟删除最大键一样的操作）</li>
+<li>左倾 -&gt; 右倾</li>
+<li>借键保证右子节点不是2-节点</li>
+<li>（继续往下递归，并在递归返回时调整平衡）</li>
+</ol>
+</li>
+<li>如果就是删当前节点<ol>
+<li>左倾 -&gt; 右倾</li>
+<li>通过右子节点是否为null判断当前节点是否在底部，分两种情况：<ol>
+<li>（这里理论上应该用新的当前节点重新判断一下key是否等于当前节点，但其实不重新判断也行，因为如果旋转了那此时一定不会在底部，跟旋转导致不相等的结果是一样的，反正都不会删除当前新的不相等的节点）</li>
+<li>当前节点在底部<ol>
+<li>直接删除，结束，递归返回</li>
+</ol>
+</li>
+<li>当前节点不在底部<ol>
+<li>借键保证右子节点不是2-节点（因为待会会往右边走）</li>
+<li>把右子树中的最小键拷贝到当前节点，然后递归地删除右子树的最小键</li>
+</ol>
+</li>
+</ol>
+</li>
+<li>（在递归返回时调整平衡）</li>
+</ol>
+</li>
+</ol>
+<h2 id="4、后记"><a href="#4、后记" class="headerlink" title="4、后记"></a>4、后记</h2><p>对算法研究感兴趣的读者应该认识到这些方法的重要性，因为这是我们见过的第一种能够同时实现高效的查找、插入和删除的字典实现，下面我们将会验证这一点。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/05/14/banlence-search-tree/" rel="next" title="算法3.3 平衡查找树">
+                <i class="fa fa-chevron-left"></i> 算法3.3 平衡查找树
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/12/20/canvas-transform/" rel="prev" title="【透镜系列】Canvas变换">
+                【透镜系列】Canvas变换 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      
+        <div id="gitment-container"></div>
+      
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">BigBear</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1、熟悉2-3-4树"><span class="nav-number">1.</span> <span class="nav-text">1、熟悉2-3-4树</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2、让被删除节点满足删除条件"><span class="nav-number">2.</span> <span class="nav-text">2、让被删除节点满足删除条件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-删除最小键"><span class="nav-number">2.1.</span> <span class="nav-text">2.1.删除最小键</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-删除任意键"><span class="nav-number">2.2.</span> <span class="nav-text">2.2.删除任意键</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3、2-3树删除操作映射红黑树删除操作"><span class="nav-number">3.</span> <span class="nav-text">3、2-3树删除操作映射红黑树删除操作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-删除最小键"><span class="nav-number">3.1.</span> <span class="nav-text">3.1.删除最小键</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-删除最大键"><span class="nav-number">3.2.</span> <span class="nav-text">3.2.删除最大键</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3-删除任意键"><span class="nav-number">3.3.</span> <span class="nav-text">3.3.删除任意键</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4、后记"><span class="nav-number">4.</span> <span class="nav-text">4、后记</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">BigBear</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i> Visitor
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i> Total Visit
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+<!-- LOCAL: You can save these files to your site and update links -->
+    
+        
+        <link rel="stylesheet" href="https://jjeejj.github.io/css/gitment.css">
+        <script src="https://jjeejj.github.io/js/gitment.js"></script>
+    
+<!-- END LOCAL -->
+
+    
+
+    
+      <script type="text/javascript">
+      function renderGitment(){
+        var gitment = new Gitment({
+            id: window.location.pathname,
+            owner: 'SaltedfishCaptain',
+            repo: 'zy-gitment-comments',
+            
+            oauth: {
+            
+            
+                client_secret: 'd146fc6e60a57ef4d238596e6d62f696b0757071',
+            
+                client_id: '8cb146a9a39e15cd2405'
+            }});
+        gitment.render('gitment-container');
+      }
+
+      
+      renderGitment();
+      
+      </script>
+    
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+
+  
+
+  
+
+</body>
+</html>
