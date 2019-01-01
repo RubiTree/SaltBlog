@@ -79,20 +79,20 @@
 
 
 
-<meta name="description" content="【透镜系列】看穿 事件分发（@@@动态题图）">
+<meta name="description" content="（@@@动态题图）">
 <meta property="og:type" content="article">
-<meta property="og:title" content="SaltedBlog">
+<meta property="og:title" content="【透镜系列】看穿 事件分发">
 <meta property="og:url" content="http://zhengyu.site/2019/01/01/event_dispatch/index.html">
 <meta property="og:site_name" content="SaltedBlog">
-<meta property="og:description" content="【透镜系列】看穿 事件分发（@@@动态题图）">
+<meta property="og:description" content="（@@@动态题图）">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://blog-1258341143.cos.ap-beijing.myqcloud.com/blog/6C9609F1-7EEB-41B3-8FEC-F4F041377253.png">
 <meta property="og:image" content="https://blog-1258341143.cos.ap-beijing.myqcloud.com/blog/45107265-0557-4E55-9FEB-EA54AB9E7E20.png">
 <meta property="og:image" content="https://blog-1258341143.cos.ap-beijing.myqcloud.com/blog/IMG_20181227_143236.jpg">
-<meta property="og:updated_time" content="2019-01-01T13:39:10.751Z">
+<meta property="og:updated_time" content="2019-01-01T13:41:23.388Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="SaltedBlog">
-<meta name="twitter:description" content="【透镜系列】看穿 事件分发（@@@动态题图）">
+<meta name="twitter:title" content="【透镜系列】看穿 事件分发">
+<meta name="twitter:description" content="（@@@动态题图）">
 <meta name="twitter:image" content="https://blog-1258341143.cos.ap-beijing.myqcloud.com/blog/6C9609F1-7EEB-41B3-8FEC-F4F041377253.png">
 
 
@@ -129,7 +129,7 @@
 
 
 
-  <title> | SaltedBlog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  <title>【透镜系列】看穿 事件分发 | SaltedBlog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
   
 
 
@@ -253,7 +253,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline"></h1>
+          <h1 class="post-title" itemprop="name headline">【透镜系列】看穿 事件分发</h1>
         
 
         <div class="post-meta">
@@ -265,7 +265,7 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-01T21:38:37+08:00">
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-01T21:41:48+08:00">
                 2019-01-01
               </time>
             
@@ -308,7 +308,7 @@
       
 
       
-        <h1 id="【透镜系列】看穿-事件分发"><a href="#【透镜系列】看穿-事件分发" class="headerlink" title="【透镜系列】看穿 事件分发"></a>【透镜系列】看穿 事件分发</h1><p>（@@@动态题图）</p>
+        <p>（@@@动态题图）</p>
 <a id="more"></a>
 <h2 id="引子"><a href="#引子" class="headerlink" title="引子"></a>引子</h2><p>事件分发，我想大部分人都能说几句，哦，三大方法，哦，那段经典伪代码，哦，责任链，或者是多一些东西<br>但如果要让你完完整整捋一遍，你可能就开始支支吾吾了，只能想到啥说啥</p>
 <p>这块的东西确实麻烦，说出来不怕吓到你，事件流到底怎么流与这些因素都有关系：是什么事件类型（<code>DOWN/MOVE/UP/CANCEL</code>）、所在的View种类（<code>Activity/ViewGroup/View</code>）、在哪个回调方法（<code>dispatch()/onIntercept()/onTouch()</code>）、回调方法给不同的返回值（<code>true/false/super.xxx</code>），甚至对当前事件的不同处理还会对同一事件流中接下来的事件造成不同影响<br>比如我可以问：重写某个<code>ViewGroup</code>里的<code>dispatchTouchEvent</code>方法，对<code>MOVE</code>事件返回<code>false</code>，会怎么影响接下来的事件分发流？</p>
@@ -795,7 +795,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#【透镜系列】看穿-事件分发"><span class="nav-number">1.</span> <span class="nav-text">【透镜系列】看穿 事件分发</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#引子"><span class="nav-number">1.1.</span> <span class="nav-text">引子</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#试造轮子"><span class="nav-number">1.2.</span> <span class="nav-text">试造轮子</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#第一次试造"><span class="nav-number">1.2.1.</span> <span class="nav-text">第一次试造</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第二次试造"><span class="nav-number">1.2.2.</span> <span class="nav-text">第二次试造</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第三次试造"><span class="nav-number">1.2.3.</span> <span class="nav-text">第三次试造</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第四次试造"><span class="nav-number">1.2.4.</span> <span class="nav-text">第四次试造</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第五次试造"><span class="nav-number">1.2.5.</span> <span class="nav-text">第五次试造</span></a></li></ol></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#引子"><span class="nav-number">1.</span> <span class="nav-text">引子</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#试造轮子"><span class="nav-number">2.</span> <span class="nav-text">试造轮子</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#第一次试造"><span class="nav-number">2.1.</span> <span class="nav-text">第一次试造</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第二次试造"><span class="nav-number">2.2.</span> <span class="nav-text">第二次试造</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第三次试造"><span class="nav-number">2.3.</span> <span class="nav-text">第三次试造</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第四次试造"><span class="nav-number">2.4.</span> <span class="nav-text">第四次试造</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第五次试造"><span class="nav-number">2.5.</span> <span class="nav-text">第五次试造</span></a></li></ol></li></ol></div>
             
 
           </div>
