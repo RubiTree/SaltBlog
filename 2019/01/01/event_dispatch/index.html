@@ -89,7 +89,7 @@
 <meta property="og:image" content="https://blog-1258341143.cos.ap-beijing.myqcloud.com/blog/6C9609F1-7EEB-41B3-8FEC-F4F041377253.png">
 <meta property="og:image" content="https://blog-1258341143.cos.ap-beijing.myqcloud.com/blog/45107265-0557-4E55-9FEB-EA54AB9E7E20.png">
 <meta property="og:image" content="https://blog-1258341143.cos.ap-beijing.myqcloud.com/blog/IMG_20181227_143236.jpg">
-<meta property="og:updated_time" content="2019-01-01T13:41:23.388Z">
+<meta property="og:updated_time" content="2019-01-01T13:46:33.276Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="【透镜系列】看穿 事件分发">
 <meta name="twitter:description" content="（@@@动态题图）">
@@ -312,7 +312,9 @@
 <a id="more"></a>
 <h2 id="引子"><a href="#引子" class="headerlink" title="引子"></a>引子</h2><p>事件分发，我想大部分人都能说几句，哦，三大方法，哦，那段经典伪代码，哦，责任链，或者是多一些东西<br>但如果要让你完完整整捋一遍，你可能就开始支支吾吾了，只能想到啥说啥</p>
 <p>这块的东西确实麻烦，说出来不怕吓到你，事件流到底怎么流与这些因素都有关系：是什么事件类型（<code>DOWN/MOVE/UP/CANCEL</code>）、所在的View种类（<code>Activity/ViewGroup/View</code>）、在哪个回调方法（<code>dispatch()/onIntercept()/onTouch()</code>）、回调方法给不同的返回值（<code>true/false/super.xxx</code>），甚至对当前事件的不同处理还会对同一事件流中接下来的事件造成不同影响<br>比如我可以问：重写某个<code>ViewGroup</code>里的<code>dispatchTouchEvent</code>方法，对<code>MOVE</code>事件返回<code>false</code>，会怎么影响接下来的事件分发流？</p>
-<p>于是就有人对这些情况进行了总结，画出了纷繁复杂的分发流程图：<br><img src="https://blog-1258341143.cos.ap-beijing.myqcloud.com/blog/6C9609F1-7EEB-41B3-8FEC-F4F041377253.png" alt="-w250">× N     <img src="https://blog-1258341143.cos.ap-beijing.myqcloud.com/blog/45107265-0557-4E55-9FEB-EA54AB9E7E20.png" alt="-w330">  × N<br>甚至还有类似题图这样的动态流程图，然后他们也总结了很多规律<br>（是的，这张吸引你点击的题图居然是反面教材，我也很心疼啊，画了我一个下午呢，结果并没有太大的帮助）</p>
+<p>于是就有人对这些情况进行了总结，画出了纷繁复杂的分发流程图：<br><img src="https://blog-1258341143.cos.ap-beijing.myqcloud.com/blog/6C9609F1-7EEB-41B3-8FEC-F4F041377253.png" width="250"><br><img src="https://blog-1258341143.cos.ap-beijing.myqcloud.com/blog/45107265-0557-4E55-9FEB-EA54AB9E7E20.png" width="330"></p>
+<!-- ![-w250](https://blog-1258341143.cos.ap-beijing.myqcloud.com/blog/6C9609F1-7EEB-41B3-8FEC-F4F041377253.png)× N     ![-w330](https://blog-1258341143.cos.ap-beijing.myqcloud.com/blog/45107265-0557-4E55-9FEB-EA54AB9E7E20.png)× N -->
+<p>甚至还有类似题图这样的动态流程图，然后他们也总结了很多规律<br>（是的，这张吸引你点击的题图居然是反面教材，我也很心疼啊，画了我一个下午呢，结果并没有太大的帮助）</p>
 <p>这些流程图和规律确实是对的，而且某种意义上也是非常清晰的，能帮助你在调试bug的时候找到一点方向<br>你或许可以奋发图强，把这些流程图和规律背下来，在需要的时候一通叽里呱啦背完大家大眼瞪小眼</p>
 <!--这样的所谓的规则、规律之类的它是什么样的东西我能给你写一打-->
 <p>但这些流程图和规律并不一定能让你真正理解事件分发是什么样子，面对「是什么、为什么、怎么办」三连，你只能摇头叹息</p>
@@ -321,11 +323,11 @@
 <p>那要怎么理解它呢？如果你去请教大牛，大牛说，这简单啊，去看<code>View</code>和<code>ViewGroup</code>这几个方法的源码，看懂你就会了<br>大牛说得没毛病，不过我们菜鸡可能还是很懵逼，这几个方法的源码没有长到没法看的程度，但一堆其他的细节也把基本的逻辑涂抹地面目全非，所以这几个方法不是不能看，而且最后一定要看，只是不太适合一开始就直接看</p>
 <p>于是我把这部分代码中与事件分发相关的内容剥离了出来</p>
 <ol>
-<li>相比源码，这份代码足够短足够简单，那些跟事件分发无关的东西通通不要来干扰我<ol start="2">
+<li>相比源码，这份代码足够短足够简单，那些跟事件分发无关的东西通通不要来干扰我<ol>
 <li>它长度总共不超过150行，剔除了所有跟事件分发无关的代码，并且把一些因为其他细节导致写得比较复杂的逻辑，用更简单直接的方式表达了</li>
 </ol>
 </li>
-<li>相比那段经典的事件分发伪代码（见附录），这份代码又足够详细，详细到能告诉你所有你需要知道的具体的行为<ol start="3">
+<li>相比那段经典的事件分发伪代码（见附录），这份代码又足够详细，详细到能告诉你所有你需要知道的具体的行为<ol>
 <li>那段经典伪代码只能起到提纲挈领的作用，而这份麻雀代码虽然极其精简但它五脏俱全，全到可以运行</li>
 <li>你可以用它进行为伪布局，然后触发触摸事件，如果在回调中打印日志，它打印出的事件分发过程与你使用系统控件真实布局时事件分发的过程是一模一样的（后文会提供一个方便的事件分发日志打印工具）</li>
 </ol>
@@ -349,12 +351,12 @@
 <h2 id="试造轮子"><a href="#试造轮子" class="headerlink" title="试造轮子"></a>试造轮子</h2><h3 id="第一次试造"><a href="#第一次试造" class="headerlink" title="第一次试造"></a>第一次试造</h3><p>我们先实现一个最简单的需求：<code>Activity</code>中有一堆层层嵌套的View，有且只有最里边那个View要处理事件，比如点击事件</p>
 <p>示意图（俯视图@@@）</p>
 <p>思考方案：</p>
-<ol start="2">
+<ol>
 <li>首先事件从哪儿来，肯定得从父亲那来，因为子View被一层层包裹在最里面，没有直接与外界通信的办法，而实际中<code>Activity</code>连接着根View<code>DecorView</code>，它是通往外界的桥梁，能接收到屏幕硬件发送过来的触摸事件</li>
 <li>所以事件是从<code>Activity</code>开始，一层一层从<code>ViewGroup</code>传到最里边的子View</li>
 <li>这时只需要一个从外向里传递事件的<code>passEvent(ev)</code>方法，父亲一层层往里调，能把事件传递过去，就完成了需求</li>
 </ol>
-<p>示意图（@@@得改一下，里边那个view深色）：<br><img src="https://blog-1258341143.cos.ap-beijing.myqcloud.com/blog/IMG_20181227_143236.jpg" alt="-w300"></p>
+<p>示意图（@@@得改一下，里边那个view深色）：<br><!-- ![-w300](https://blog-1258341143.cos.ap-beijing.myqcloud.com/blog/IMG_20181227_143236.jpg) --><br><img src="https://blog-1258341143.cos.ap-beijing.myqcloud.com/blog/IMG_20181227_143236.jpg" width="330"></p>
 <p>麻雀代码：</p>
 <figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">open</span> <span class="class"><span class="keyword">class</span> <span class="title">MView</span> </span>&#123;</span><br><span class="line">    <span class="keyword">open</span> <span class="function"><span class="keyword">fun</span> <span class="title">passEvent</span><span class="params">(ev: <span class="type">MotionEvent</span>)</span></span> &#123;</span><br><span class="line">        <span class="comment">// do sth</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MViewGroup</span></span>(<span class="keyword">private</span> <span class="keyword">val</span> child: MView) : MView() &#123;</span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">passEvent</span><span class="params">(ev: <span class="type">MotionEvent</span>)</span></span> &#123;</span><br><span class="line">        child.passEvent(ev)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <ol>
@@ -366,11 +368,11 @@
 <ol>
 <li>要求这条原则是为了让操作的反馈符合用户直觉</li>
 <li>很容易理解，正常情况下人只会想一次就做一件事<ol>
-<li>比如一个列表条目，列表可以点击进入详情，列表上还有个编辑按钮，点击可以编辑条目<ol start="2">
+<li>比如一个列表条目，列表可以点击进入详情，列表上还有个编辑按钮，点击可以编辑条目<ol>
 <li>这是一个上下两个View都能点击的场景，但用户点一个地方，肯定只想去做一件事，要么进入详情，要么是编辑条目，如果你点编辑结果跳了两个页面，那肯定是不合适的</li>
 </ol>
 </li>
-<li>再比如在一个可点击Item组成的列表里（比如微信的消息界面），Item可以点击进入某个聊天，列表还能滑动上下查看<ol start="3">
+<li>再比如在一个可点击Item组成的列表里（比如微信的消息界面），Item可以点击进入某个聊天，列表还能滑动上下查看<ol>
 <li>如果你让Item和列表都处理事件，那在你滑动的时候，你可能得跳一堆你不想去的聊天页面</li>
 </ol>
 </li>
@@ -405,7 +407,7 @@
 </ol>
 <h3 id="第三次试造"><a href="#第三次试造" class="headerlink" title="第三次试造"></a>第三次试造</h3><p>上文的实现看上去已经初具雏形了，但其实连开始提的那条原则都没实现完，因为原则要求一次操作只能有一个View进行处理，而我们实现的是一个触摸事件只能有一个View进行处理<br>这里就涉及到一次触摸操作和一个触摸事件的区别</p>
 <ol>
-<li>假设还没有触摸事件的概念，我们要怎么区分一次触摸操作呢？<ol start="2">
+<li>假设还没有触摸事件的概念，我们要怎么区分一次触摸操作呢？<ol>
 <li>把触摸操作细分一下，大概有按下动作、抬起动作、与屏幕接触时的移动和停留动作</li>
 <li>很容易想到，要区分两次触摸操作，可以通过按下和抬起动作进行区分，按下动作开始了一次触摸操作，抬起动作结束了一次触摸，按下和抬起中间的移动和停留都属于这一次触摸操作，至于移动和停留是否要区分，目前没有看到区分的必要，可以都作为触摸中来处理</li>
 </ol>
@@ -434,11 +436,11 @@
 <p>所以直接使用现在的模型去实现的「条目可点击的滑动列表」，它会永远滑动不了</p>
 <p>那怎么办呢？</p>
 <ol>
-<li>难道要让里面的可点击View去感知一下（层层往上找），自己是不是被一个能消费事件的View包裹？是的话自己就不消费事件了？<ol start="2">
+<li>难道要让里面的可点击View去感知一下（层层往上找），自己是不是被一个能消费事件的View包裹？是的话自己就不消费事件了？<ol>
 <li>这肯定是不行的，先不说子View层层反向遍历父亲是不是个好实现，至少不能外面是可以滑动的，里边View的点击事件就全部失效</li>
 </ol>
 </li>
-<li>或者我们调整<code>dispatch</code>方法在传入事件过程中的人设，让它不是只能往里传递事件，而是在自己能消费事件的时候把事件给自己<ol start="3">
+<li>或者我们调整<code>dispatch</code>方法在传入事件过程中的人设，让它不是只能往里传递事件，而是在自己能消费事件的时候把事件给自己<ol>
 <li>这肯定也是不行的，跟第一个办法的主要问题一样</li>
 </ol>
 </li>
@@ -452,7 +454,7 @@
 </ol>
 <p><del>我*，这不傻*了吗，还搞什么GUI啊，大家都用命令行吧</del><br>等等，不要着急，GUI还是得搞的，不搞没饭吃的我跟你讲，所以你还是得想想，想尽办法去做到</p>
 <p>你先忘记前面说的原则，你想想，不考虑其他因素，也不是只能用<code>DOWN</code>事件，只要你能判断用户的想法就行，你有什么办法</p>
-<ol start="8">
+<ol>
 <li>办法肯定是有的，你可以多等一会，看用户接下来的行为能匹配哪种操作模式<ol>
 <li>点击是这样：用户先<code>DOWN</code>，然后<code>MOVE</code>很小一段，也不会MOVE出这个子View，关键是比较短的时间就<code>UP</code></li>
 <li>滑动是这样：用户先<code>DOWN</code>，然后开始<code>MOVE</code>，这时候可能会MOVE出这个子View，也可能不，但关键是比较长的时间也没有在<code>UP</code>，一直是在<code>MOVE</code></li>
@@ -478,14 +480,14 @@
 <p>所以要实现这个判断方案，就肯定要对现在的事件处理框架进行修改，而且看上去一不小心就会大改</p>
 <ol>
 <li>仔细想想，大概有这样两个改动相对小的思路：<ol>
-<li>思路一：<ol start="2">
+<li>思路一：<ol>
 <li>当事件走到可滑动父View的时候，它先处理事件，并且把事件攒着</li>
 <li>当攒了几个事件，判断出不是自己要的时候，再把事件一股脑给子View，触发里边的点击事件</li>
 </ol>
 </li>
-<li>思路二：<ol start="3">
+<li>思路二：<ol>
 <li>当事件走到到可滑动父View的时候，它先把事件往里传，里边可能会处理事件，可能不会，可滑动父View都先不关心</li>
-<li>但可滑动父View也不是放手不管，它开始暗中观察<ol start="6">
+<li>但可滑动父View也不是放手不管，它开始暗中观察<ol>
 <li>假如里边处理事件，它就会绷紧神经准备伺机而动，先观察事件是不是符合触发自己消费事件的模式，一旦发现符合条件的事件模式，它就把事件拦截下来，即使里边在处理，它也不往里<code>disptach</code>了，而是直接给自己的<code>onTouch</code></li>
 <li>假如里边不处理事件，那啥问题没有，它直接处理事件就好了</li>
 </ol>
@@ -494,13 +496,13 @@
 </li>
 </ol>
 </li>
-<li>两个思路总结一下：<ol start="15">
+<li>两个思路总结一下：<ol>
 <li>思路一：外面的父View先拦事件，如果判断拦错了，再把事件往里发</li>
 <li>思路二：外面的父View先不拦事件，在判断应该拦的时候，突然把事件拦下来</li>
 </ol>
 </li>
 <li>这两个思路看似都要对当前框架做改变，看似差不多，但其实还是有比较明显的优劣的<ol>
-<li>思路一问题比较明显：<ol start="2">
+<li>思路一问题比较明显：<ol>
 <li>父View把事件拦下来了，然后发现拦错了再给子View，但其实子View又并不一定能消费事件，这不就是白做一步吗</li>
 <li>等到子View不处理事件，又把事件们还给父View，它还得继续处理事件</li>
 <li>整个过程不仅繁琐，而且会让开发者感觉到别扭</li>
@@ -508,7 +510,7 @@
 </ol>
 </li>
 <li>思路二就相对正常多了，只有一个问题（下一节再讲，你可以猜一猜，这里我先当没发现），而且框架要做的改变也很少：<ol>
-<li>父View在往里<code>dispatch</code>事件前，增加一个分析拦截方法，开发者可以覆写这个方法，加入自己的事件模式分析代码，并且可以在确定要拦截的时候进行拦截<ol start="2">
+<li>父View在往里<code>dispatch</code>事件前，增加一个分析拦截方法，开发者可以覆写这个方法，加入自己的事件模式分析代码，并且可以在确定要拦截的时候进行拦截<ol>
 <li>把分析拦截逻辑抽成一个方法非常合理：什么时候拦，什么时候不拦，内里的逻辑很多，但对外暴露的API可以很小，非常适合抽出去</li>
 </ol>
 </li>
@@ -524,7 +526,7 @@
 <p>写的过程中增加了一些对细节的处理：</p>
 <ol>
 <li>不仅是在<code>DOWN</code>事件的<code>dispatch</code>前需要拦截，在后续事件中，也需要加入拦截，否则无法实现中途拦截的目标</li>
-<li>在某一个事件判断拦截之后，还需要在后续事件中再判断一次是否要拦截吗？<ol start="2">
+<li>在某一个事件判断拦截之后，还需要在后续事件中再判断一次是否要拦截吗？<ol>
 <li>完全不需要，我们希望的就是在一次触摸中，尽可能只有1个对象去消费事件，决定是你了，那就不要变</li>
 <li>所以增加一个<code>isSelfNeedEvent</code>记录自己是否拦截过事件，如果拦截过，后续事件直接就交给自己处理</li>
 </ol>
@@ -544,7 +546,7 @@
 <li>里边的View接收了一半事件，但还没有开始处理，或者在进行可以被取消的处理<ol>
 <li>比如对于一个可点击的View，View的默认实现是只要被touch了，就会有<code>press</code>状态，如果你设置了对应的<code>background</code>，你的View就会有高亮效果</li>
 <li>这种高亮即使被中断也没事，不会让用户感觉到奇怪，不信你自己试试微信的聊天列表</li>
-<li>但是，一个值得注意的点是，如果你只是直接不发送<code>MOVE</code>事件了，这会有问题，就这个按下高亮的例子，如果你只是不传<code>MOVE</code>事件了，那谁来告诉里边的子View取消高亮呢？所以你需要在中断的时候也传一个结束事件<ol start="4">
+<li>但是，一个值得注意的点是，如果你只是直接不发送<code>MOVE</code>事件了，这会有问题，就这个按下高亮的例子，如果你只是不传<code>MOVE</code>事件了，那谁来告诉里边的子View取消高亮呢？所以你需要在中断的时候也传一个结束事件<ol>
 <li>但是，你能直接传一个<code>UP</code>事件吗？也是不行的，因为这样就匹配了里边点击的模式了，会直接触发一个点击事件，这显然不是我们想要的</li>
 <li>于是外面需要给一个新的事件，这个事件的类型就叫取消事件好了<code>CANCEL</code></li>
 </ol>
@@ -558,14 +560,14 @@
 </li>
 <li>里边的View接收了一半事件，已经开始处理了，而且最好不要去取消，或者取消了会显得很怪<ol>
 <li>这个时候，事情会复杂一些，而且这个场景发生的远比你想象中的多，形式也多种多样，不处理好的后果也比只是让用户感觉上奇怪要严重得多，可能会有的功能会实现不了，下面举两个例子<ol>
-<li>在<code>ViewPager</code>里有三个page，page里是<code>ScrollView</code>，<code>ViewPager</code>可以横向滑动，page里的<code>ScrollView</code>可以竖向滑动<ol start="2">
+<li>在<code>ViewPager</code>里有三个page，page里是<code>ScrollView</code>，<code>ViewPager</code>可以横向滑动，page里的<code>ScrollView</code>可以竖向滑动<ol>
 <li>如果按前面逻辑，当<code>ViewPager</code>把事件给里边<code>ScrollView</code>之后，它也会偷偷观察，如果你一直是竖向滑动，那没话说，<code>ViewPager</code>不会触发拦截事件</li>
 <li>但如果你竖着滑着滑着，手抖了，开始横滑（或者只是斜滑），<code>ViewPager</code>就会开始紧张，想「主人你这是要临幸我吗？真的假的，那我可就不客气了」，于是在你斜滑一定距离之后，忽然发现，你划不动<code>ScrollView</code>了，而<code>ViewPager</code>开始动</li>
 <li>原因就是<code>ScrollView</code>的竖滑被取消了，<code>ViewPager</code>把事件拦下来，开始横滑</li>
 <li>这个体验还是比较怪的，会有种过于灵敏的感觉，会让用户只能小心翼翼地滑动</li>
 </ol>
 </li>
-<li>在一个<code>ScrollView</code>里有一些按钮，按钮有长按事件，长按再拖动就可以移动按钮<ol start="3">
+<li>在一个<code>ScrollView</code>里有一些按钮，按钮有长按事件，长按再拖动就可以移动按钮<ol>
 <li>（更常见的例子是一个列表，里边的条目可以长按拖动）</li>
 <li>同样按前面的逻辑，当你长按后准备拖动按钮时，你怎么保证不让<code>ScrollView</code>把事件拦下来呢？</li>
 </ol>
@@ -573,11 +575,11 @@
 </ol>
 </li>
 <li>所以这类问题是一定要解决的，但要怎么解决呢<ol>
-<li>还是先从业务上看，从用户的角度看，当里边已经开始做一些特殊处理了，外面应不应该把事件抢走？<ol start="2">
+<li>还是先从业务上看，从用户的角度看，当里边已经开始做一些特殊处理了，外面应不应该把事件抢走？<ol>
 <li>不应该对吧，OK，解决方针就是不应该让外边的View抢事件</li>
 </ol>
 </li>
-<li>所以接下来的问题是：谁先判断出外边的View不该抢事件，里边的子View还是外边的父View？然后怎么不让外边的View抢？<ol start="3">
+<li>所以接下来的问题是：谁先判断出外边的View不该抢事件，里边的子View还是外边的父View？然后怎么不让外边的View抢？<ol>
 <li>首先，肯定是里边的View做出判断：这个事件，真的，外边的View你最好别抢，要不用户不开心了</li>
 <li>然后里边就得告知外边，你别抢了，告知可以有几个方式<ol>
 <li>外边抢之前问一下里边，我能不能抢</li>
@@ -598,7 +600,7 @@
 <ol>
 <li>对于可消费事件的View进行嵌套的情况，怎么判定事件的归属会变得非常麻烦，无法立刻在<code>DOWN</code>事件时就确定，只能在后续的事件流中进一步判断</li>
 <li>于是在没判断归属的时候，先由里边的子View消费事件，外面暗中观察，然后两方同时对事件类型做进一步匹配，并准备在匹配成功后对事件归属进行抢拍</li>
-<li>抢拍是先抢先得<ol start="2">
+<li>抢拍是先抢先得<ol>
 <li>父亲先抢到，发个<code>CANCEL</code>事件给儿子就完了</li>
 <li>儿子先抢到，就得大喊大叫，撒泼耍赖，爸爸们行行好吧，最后得以安心处理事件</li>
 </ol>
@@ -619,11 +621,11 @@
 <figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">interface</span> <span class="title">ViewParent</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">requestDisallowInterceptTouchEvent</span><span class="params">(isDisallowIntercept: <span class="type">Boolean</span>)</span></span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">open</span> <span class="class"><span class="keyword">class</span> <span class="title">MView</span> </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> parent: ViewParent? = <span class="literal">null</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">open</span> <span class="function"><span class="keyword">fun</span> <span class="title">dispatch</span><span class="params">(ev: <span class="type">MotionEvent</span>)</span></span>: <span class="built_in">Boolean</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> onTouch(ev)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">open</span> <span class="function"><span class="keyword">fun</span> <span class="title">onTouch</span><span class="params">(ev: <span class="type">MotionEvent</span>)</span></span>: <span class="built_in">Boolean</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">open</span> <span class="class"><span class="keyword">class</span> <span class="title">MViewGroup</span></span>(<span class="keyword">private</span> <span class="keyword">val</span> child: MView) : MView(), ViewParent &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">var</span> isChildNeedEvent = <span class="literal">false</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">var</span> isSelfNeedEvent = <span class="literal">false</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">var</span> isDisallowIntercept = <span class="literal">false</span></span><br><span class="line"></span><br><span class="line">    init &#123;</span><br><span class="line">        child.parent = <span class="keyword">this</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">dispatch</span><span class="params">(ev: <span class="type">MotionEvent</span>)</span></span>: <span class="built_in">Boolean</span> &#123;</span><br><span class="line">        <span class="keyword">var</span> handled = <span class="literal">false</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (ev.actionMasked == MotionEvent.ACTION_DOWN) &#123;</span><br><span class="line">            clearStatus()</span><br><span class="line"></span><br><span class="line">            <span class="comment">// add isDisallowIntercept</span></span><br><span class="line">            <span class="keyword">if</span> (!isDisallowIntercept &amp;&amp; onIntercept(ev)) &#123;</span><br><span class="line">                isSelfNeedEvent = <span class="literal">true</span></span><br><span class="line">                handled = onTouch(ev)</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                handled = child.dispatch(ev)</span><br><span class="line">                <span class="keyword">if</span> (handled) isChildNeedEvent = <span class="literal">true</span></span><br><span class="line"></span><br><span class="line">                <span class="keyword">if</span> (!handled) &#123;</span><br><span class="line">                    handled = onTouch(ev)</span><br><span class="line">                    <span class="keyword">if</span> (handled) isSelfNeedEvent = <span class="literal">true</span></span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> (isSelfNeedEvent) &#123;</span><br><span class="line">                handled = onTouch(ev)</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> (isChildNeedEvent) &#123;</span><br><span class="line">                <span class="comment">// add isDisallowIntercept</span></span><br><span class="line">                <span class="keyword">if</span> (!isDisallowIntercept &amp;&amp; onIntercept(ev)) &#123;</span><br><span class="line">                    isSelfNeedEvent = <span class="literal">true</span></span><br><span class="line"></span><br><span class="line">                    <span class="comment">// add cancel</span></span><br><span class="line">                    <span class="keyword">val</span> cancel = MotionEvent.obtain(ev)</span><br><span class="line">                    cancel.action = MotionEvent.ACTION_CANCEL</span><br><span class="line">                    handled = child.dispatch(cancel)</span><br><span class="line">                    cancel.recycle()</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    handled = child.dispatch(ev)</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (ev.actionMasked == MotionEvent.ACTION_UP</span><br><span class="line">            || ev.actionMasked == MotionEvent.ACTION_CANCEL) &#123;</span><br><span class="line">            clearStatus()</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> handled</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="function"><span class="keyword">fun</span> <span class="title">clearStatus</span><span class="params">()</span></span> &#123;</span><br><span class="line">        isChildNeedEvent = <span class="literal">false</span></span><br><span class="line">        isSelfNeedEvent = <span class="literal">false</span></span><br><span class="line">        isDisallowIntercept = <span class="literal">false</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">onTouch</span><span class="params">(ev: <span class="type">MotionEvent</span>)</span></span>: <span class="built_in">Boolean</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">open</span> <span class="function"><span class="keyword">fun</span> <span class="title">onIntercept</span><span class="params">(ev: <span class="type">MotionEvent</span>)</span></span>: <span class="built_in">Boolean</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">requestDisallowInterceptTouchEvent</span><span class="params">(isDisallowIntercept: <span class="type">Boolean</span>)</span></span> &#123;</span><br><span class="line">        <span class="keyword">this</span>.isDisallowIntercept = isDisallowIntercept</span><br><span class="line">        parent?.requestDisallowInterceptTouchEvent(isDisallowIntercept)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>这次改动主要是增加了发出<code>CANCEL</code>事件和<code>requestDisallowInterceptTouchEvent</code>机制</p>
 <ol>
-<li>在发出<code>CANCEL</code>事件时有一个细节：没有在给child分发<code>CANCEL</code>事件的同时继续把原事件分发给自己的<code>onTouch</code><ol start="2">
+<li>在发出<code>CANCEL</code>事件时有一个细节：没有在给child分发<code>CANCEL</code>事件的同时继续把原事件分发给自己的<code>onTouch</code><ol>
 <li>这是源码中的写法，不是我故意的，可能是为了让一个事件也只能有一个View处理，避免出现bug</li>
 </ol>
 </li>
-<li>实现<code>requestDisallowInterceptTouchEvent</code>机制时，增加了<code>ViewParent</code>接口<ol start="4">
+<li>实现<code>requestDisallowInterceptTouchEvent</code>机制时，增加了<code>ViewParent</code>接口<ol>
 <li>不使用这种写法也行，但使用它从代码整洁的角度看会更优雅，比如避免反向依赖，而且这也是源码的写法，于是直接搬来了</li>
 </ol>
 </li>
