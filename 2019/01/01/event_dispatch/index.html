@@ -1,0 +1,1081 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="【透镜系列】看穿 事件分发（@@@动态题图）">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SaltedBlog">
+<meta property="og:url" content="http://zhengyu.site/2019/01/01/event_dispatch/index.html">
+<meta property="og:site_name" content="SaltedBlog">
+<meta property="og:description" content="【透镜系列】看穿 事件分发（@@@动态题图）">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://blog-1258341143.cos.ap-beijing.myqcloud.com/blog/6C9609F1-7EEB-41B3-8FEC-F4F041377253.png">
+<meta property="og:image" content="https://blog-1258341143.cos.ap-beijing.myqcloud.com/blog/45107265-0557-4E55-9FEB-EA54AB9E7E20.png">
+<meta property="og:image" content="https://blog-1258341143.cos.ap-beijing.myqcloud.com/blog/IMG_20181227_143236.jpg">
+<meta property="og:updated_time" content="2019-01-01T13:39:10.751Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="SaltedBlog">
+<meta name="twitter:description" content="【透镜系列】看穿 事件分发（@@@动态题图）">
+<meta name="twitter:image" content="https://blog-1258341143.cos.ap-beijing.myqcloud.com/blog/6C9609F1-7EEB-41B3-8FEC-F4F041377253.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://zhengyu.site/2019/01/01/event_dispatch/"/>
+
+
+
+
+
+  <title> | SaltedBlog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">SaltedBlog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://zhengyu.site/2019/01/01/event_dispatch/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="BigBear">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="SaltedBlog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline"></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-01T21:38:37+08:00">
+                2019-01-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i> View
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="【透镜系列】看穿-事件分发"><a href="#【透镜系列】看穿-事件分发" class="headerlink" title="【透镜系列】看穿 事件分发"></a>【透镜系列】看穿 事件分发</h1><p>（@@@动态题图）</p>
+<a id="more"></a>
+<h2 id="引子"><a href="#引子" class="headerlink" title="引子"></a>引子</h2><p>事件分发，我想大部分人都能说几句，哦，三大方法，哦，那段经典伪代码，哦，责任链，或者是多一些东西<br>但如果要让你完完整整捋一遍，你可能就开始支支吾吾了，只能想到啥说啥</p>
+<p>这块的东西确实麻烦，说出来不怕吓到你，事件流到底怎么流与这些因素都有关系：是什么事件类型（<code>DOWN/MOVE/UP/CANCEL</code>）、所在的View种类（<code>Activity/ViewGroup/View</code>）、在哪个回调方法（<code>dispatch()/onIntercept()/onTouch()</code>）、回调方法给不同的返回值（<code>true/false/super.xxx</code>），甚至对当前事件的不同处理还会对同一事件流中接下来的事件造成不同影响<br>比如我可以问：重写某个<code>ViewGroup</code>里的<code>dispatchTouchEvent</code>方法，对<code>MOVE</code>事件返回<code>false</code>，会怎么影响接下来的事件分发流？</p>
+<p>于是就有人对这些情况进行了总结，画出了纷繁复杂的分发流程图：<br><img src="https://blog-1258341143.cos.ap-beijing.myqcloud.com/blog/6C9609F1-7EEB-41B3-8FEC-F4F041377253.png" alt="-w250">× N     <img src="https://blog-1258341143.cos.ap-beijing.myqcloud.com/blog/45107265-0557-4E55-9FEB-EA54AB9E7E20.png" alt="-w330">  × N<br>甚至还有类似题图这样的动态流程图，然后他们也总结了很多规律<br>（是的，这张吸引你点击的题图居然是反面教材，我也很心疼啊，画了我一个下午呢，结果并没有太大的帮助）</p>
+<p>这些流程图和规律确实是对的，而且某种意义上也是非常清晰的，能帮助你在调试bug的时候找到一点方向<br>你或许可以奋发图强，把这些流程图和规律背下来，在需要的时候一通叽里呱啦背完大家大眼瞪小眼</p>
+<!--这样的所谓的规则、规律之类的它是什么样的东西我能给你写一打-->
+<p>但这些流程图和规律并不一定能让你真正理解事件分发是什么样子，面对「是什么、为什么、怎么办」三连，你只能摇头叹息</p>
+<!--这显然不太行，真正理解的人不是这个样子，你得把握其背后的逻辑，你得对其是什么样以及为什么是这样都了如指掌-->
+<!--但事件分发真的有那么复杂吗？真的有必要那么复杂吗？显然不是，不就分发个事件吗..-->
+<p>那要怎么理解它呢？如果你去请教大牛，大牛说，这简单啊，去看<code>View</code>和<code>ViewGroup</code>这几个方法的源码，看懂你就会了<br>大牛说得没毛病，不过我们菜鸡可能还是很懵逼，这几个方法的源码没有长到没法看的程度，但一堆其他的细节也把基本的逻辑涂抹地面目全非，所以这几个方法不是不能看，而且最后一定要看，只是不太适合一开始就直接看</p>
+<p>于是我把这部分代码中与事件分发相关的内容剥离了出来</p>
+<ol>
+<li>相比源码，这份代码足够短足够简单，那些跟事件分发无关的东西通通不要来干扰我<ol start="2">
+<li>它长度总共不超过150行，剔除了所有跟事件分发无关的代码，并且把一些因为其他细节导致写得比较复杂的逻辑，用更简单直接的方式表达了</li>
+</ol>
+</li>
+<li>相比那段经典的事件分发伪代码（见附录），这份代码又足够详细，详细到能告诉你所有你需要知道的具体的行为<ol start="3">
+<li>那段经典伪代码只能起到提纲挈领的作用，而这份麻雀代码虽然极其精简但它五脏俱全，全到可以运行</li>
+<li>你可以用它进行为伪布局，然后触发触摸事件，如果在回调中打印日志，它打印出的事件分发过程与你使用系统控件真实布局时事件分发的过程是一模一样的（后文会提供一个方便的事件分发日志打印工具）</li>
+</ol>
+</li>
+</ol>
+<!--
+好吧，虽然这很精辟，但是看了它，你能知道在不同的函数返回不同的值代表什么意思吗？会怎么影响后续的事件流?
+你不知道，只能去看源码
+但是源码这都是些什么啊，怎么这么多flag，还有assceeiblity，touchtarget又是什么？
+所以你需要一份代码，它要足够详细，详细到能告诉你所有你需要知道的具体的行为，它又要足够简单，那些跟事件分发无关的东西通通不要来干扰我
+这份代码就是为了满足这个要求而生的
+-->
+<p>先开门见山直接把小麻雀贴出来：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">interface</span> <span class="title">ViewParent</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">requestDisallowInterceptTouchEvent</span><span class="params">(isDisallowIntercept: <span class="type">Boolean</span>)</span></span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">open</span> <span class="class"><span class="keyword">class</span> <span class="title">MView</span> </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> parent: ViewParent? = <span class="literal">null</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">open</span> <span class="function"><span class="keyword">fun</span> <span class="title">dispatch</span><span class="params">(ev: <span class="type">MotionEvent</span>)</span></span>: <span class="built_in">Boolean</span> &#123;</span><br><span class="line">        <span class="comment">// 源码里没有这么直接但区别不大，主要会考虑是否设置了onTouchListener和是否enable</span></span><br><span class="line">        <span class="keyword">return</span> onTouch(ev)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">open</span> <span class="function"><span class="keyword">fun</span> <span class="title">onTouch</span><span class="params">(ev: <span class="type">MotionEvent</span>)</span></span>: <span class="built_in">Boolean</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">open</span> <span class="class"><span class="keyword">class</span> <span class="title">MViewGroup</span></span>(<span class="keyword">private</span> <span class="keyword">val</span> child: MView) : MView(), ViewParent &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">var</span> isChildNeedEvent = <span class="literal">false</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">var</span> isSelfNeedEvent = <span class="literal">false</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">var</span> isDisallowIntercept = <span class="literal">false</span></span><br><span class="line"></span><br><span class="line">    init &#123;</span><br><span class="line">        child.parent = <span class="keyword">this</span> <span class="comment">// 这里只是示意，实际中不建议这么写，会造成提前发布未构造完成的实例</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">dispatch</span><span class="params">(ev: <span class="type">MotionEvent</span>)</span></span>: <span class="built_in">Boolean</span> &#123;</span><br><span class="line">        <span class="keyword">var</span> handled = <span class="literal">false</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (ev.actionMasked == MotionEvent.ACTION_DOWN) &#123;</span><br><span class="line">            clearStatus()</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (!isDisallowIntercept &amp;&amp; onIntercept(ev)) &#123;</span><br><span class="line">                isSelfNeedEvent = <span class="literal">true</span></span><br><span class="line">                handled = onTouch(ev)</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                handled = child.dispatch(ev)</span><br><span class="line">                <span class="keyword">if</span> (handled) isChildNeedEvent = <span class="literal">true</span></span><br><span class="line"></span><br><span class="line">                <span class="keyword">if</span> (!handled) &#123; <span class="comment">// 这里没有用 if else 是因为这样写上下一致，更清晰</span></span><br><span class="line">                    handled = onTouch(ev)</span><br><span class="line">                    <span class="keyword">if</span> (handled) isSelfNeedEvent = <span class="literal">true</span></span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="comment">// 这里 isSelfNeedEvent 条件判断应该放在 isChildNeedEvent 前面</span></span><br><span class="line">            <span class="comment">// 因为两个都为真的情况只能是自己之后通过 onIntercept 抢了控制权，那这之后的控制权就不会去 child 那儿了</span></span><br><span class="line">            <span class="keyword">if</span> (isSelfNeedEvent) &#123;</span><br><span class="line">                handled = onTouch(ev)</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> (isChildNeedEvent) &#123;</span><br><span class="line">                <span class="keyword">if</span> (!isDisallowIntercept &amp;&amp; onIntercept(ev)) &#123;</span><br><span class="line">                    isSelfNeedEvent = <span class="literal">true</span></span><br><span class="line"></span><br><span class="line">                    <span class="keyword">val</span> cancel = MotionEvent.obtain(ev)</span><br><span class="line">                    cancel.action = MotionEvent.ACTION_CANCEL</span><br><span class="line">                    handled = child.dispatch(cancel)</span><br><span class="line">                    cancel.recycle()</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    handled = child.dispatch(ev)</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">// 这里不用再 else 了，因为如果 isSelfNeedEvent 和 isChildNeedEvent 都不为 true，上面不会再发事件下来了</span></span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (ev.actionMasked == MotionEvent.ACTION_UP</span><br><span class="line">            || ev.actionMasked == MotionEvent.ACTION_CANCEL) &#123;</span><br><span class="line">            clearStatus()</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> handled</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="function"><span class="keyword">fun</span> <span class="title">clearStatus</span><span class="params">()</span></span> &#123;</span><br><span class="line">        isChildNeedEvent = <span class="literal">false</span></span><br><span class="line">        isSelfNeedEvent = <span class="literal">false</span></span><br><span class="line">        isDisallowIntercept = <span class="literal">false</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">onTouch</span><span class="params">(ev: <span class="type">MotionEvent</span>)</span></span>: <span class="built_in">Boolean</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">open</span> <span class="function"><span class="keyword">fun</span> <span class="title">onIntercept</span><span class="params">(ev: <span class="type">MotionEvent</span>)</span></span>: <span class="built_in">Boolean</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">requestDisallowInterceptTouchEvent</span><span class="params">(isDisallowIntercept: <span class="type">Boolean</span>)</span></span> &#123;</span><br><span class="line">        <span class="keyword">this</span>.isDisallowIntercept = isDisallowIntercept</span><br><span class="line">        parent?.requestDisallowInterceptTouchEvent(isDisallowIntercept)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 这里的大逻辑类似 MViewGroup，但细节很多不同，主要因为没有 onIntercept，会简单一些</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">open</span> <span class="class"><span class="keyword">class</span> <span class="title">MActivity</span></span>(<span class="keyword">private</span> <span class="keyword">val</span> childGroup: MViewGroup) &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">var</span> isChildNeedEvent = <span class="literal">false</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">var</span> isSelfNeedEvent = <span class="literal">false</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">open</span> <span class="function"><span class="keyword">fun</span> <span class="title">dispatch</span><span class="params">(ev: <span class="type">MotionEvent</span>)</span></span>: <span class="built_in">Boolean</span> &#123;</span><br><span class="line">        <span class="keyword">var</span> handled = <span class="literal">false</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (ev.actionMasked == MotionEvent.ACTION_DOWN) &#123;</span><br><span class="line">            clearStatus()</span><br><span class="line"></span><br><span class="line">            handled = childGroup.dispatch(ev)</span><br><span class="line">            <span class="keyword">if</span> (handled) isChildNeedEvent = <span class="literal">true</span></span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (!handled) &#123;</span><br><span class="line">                handled = onTouch(ev)</span><br><span class="line">                <span class="keyword">if</span> (handled) isSelfNeedEvent = <span class="literal">true</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="comment">// 这里 isSelfNeedEvent 和 isChildNeedEvent 不会同时为真，顺序无所谓</span></span><br><span class="line">            <span class="keyword">if</span> (isSelfNeedEvent) &#123;</span><br><span class="line">                handled = onTouch(ev)</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> (isChildNeedEvent) &#123;</span><br><span class="line">                handled = childGroup.dispatch(ev)</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (!handled) handled = onTouch(ev)</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (ev.actionMasked == MotionEvent.ACTION_UP</span><br><span class="line">            || ev.actionMasked == MotionEvent.ACTION_CANCEL) &#123;</span><br><span class="line">            clearStatus()</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> handled</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="function"><span class="keyword">fun</span> <span class="title">clearStatus</span><span class="params">()</span></span> &#123;</span><br><span class="line">        isChildNeedEvent = <span class="literal">false</span></span><br><span class="line">        isSelfNeedEvent = <span class="literal">false</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">open</span> <span class="function"><span class="keyword">fun</span> <span class="title">onTouch</span><span class="params">(ev: <span class="type">MotionEvent</span>)</span></span>: <span class="built_in">Boolean</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol>
+<li>小麻雀在模拟布局的时候做了一些简化：View的父子关系通过构造器建立，而且是独生子女，一个父容器中只有一个子元素</li>
+</ol>
+<p>感觉有点乱是不是，没有想象中那么简单啊，它是不是对的呢，你写的是代码还是bug啊？<br>没事，让我们来测试一下，@@@（一个测试框架、例子）</p>
+<p>这段不长的代码能让你相对容易地对事件分发具体是什么样有所了解<br>但讲道理，它还是有点复杂，而且看完你也不一定能理解它为什么是这样，这也是读别人代码的困难之处：没有思路<br>所以能不能再简单一点呢？</p>
+<p>能！我理想中的可读代码应该是长这样的：要实现的需求 -&gt; 所使用的方案 -&gt; 操作的细节 -&gt; 具体的代码<br>所以本着己所不欲勿施于人的朴实道理，下面我将假设我们要从头造一个事件分发的框架，先从最简单的需求开始思考方案编写代码，然后不断增加需求并继续思考方案编写代码，最后得到上面这段基本逻辑与Android源码接近的麻雀代码</p>
+<h2 id="试造轮子"><a href="#试造轮子" class="headerlink" title="试造轮子"></a>试造轮子</h2><h3 id="第一次试造"><a href="#第一次试造" class="headerlink" title="第一次试造"></a>第一次试造</h3><p>我们先实现一个最简单的需求：<code>Activity</code>中有一堆层层嵌套的View，有且只有最里边那个View要处理事件，比如点击事件</p>
+<p>示意图（俯视图@@@）</p>
+<p>思考方案：</p>
+<ol start="2">
+<li>首先事件从哪儿来，肯定得从父亲那来，因为子View被一层层包裹在最里面，没有直接与外界通信的办法，而实际中<code>Activity</code>连接着根View<code>DecorView</code>，它是通往外界的桥梁，能接收到屏幕硬件发送过来的触摸事件</li>
+<li>所以事件是从<code>Activity</code>开始，一层一层从<code>ViewGroup</code>传到最里边的子View</li>
+<li>这时只需要一个从外向里传递事件的<code>passEvent(ev)</code>方法，父亲一层层往里调，能把事件传递过去，就完成了需求</li>
+</ol>
+<p>示意图（@@@得改一下，里边那个view深色）：<br><img src="https://blog-1258341143.cos.ap-beijing.myqcloud.com/blog/IMG_20181227_143236.jpg" alt="-w300"></p>
+<p>麻雀代码：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">open</span> <span class="class"><span class="keyword">class</span> <span class="title">MView</span> </span>&#123;</span><br><span class="line">    <span class="keyword">open</span> <span class="function"><span class="keyword">fun</span> <span class="title">passEvent</span><span class="params">(ev: <span class="type">MotionEvent</span>)</span></span> &#123;</span><br><span class="line">        <span class="comment">// do sth</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MViewGroup</span></span>(<span class="keyword">private</span> <span class="keyword">val</span> child: MView) : MView() &#123;</span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">passEvent</span><span class="params">(ev: <span class="type">MotionEvent</span>)</span></span> &#123;</span><br><span class="line">        child.passEvent(ev)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol>
+<li>暂时把<code>Activity</code>当成<code>MViewGroup</code>处理也没有问题</li>
+<li>为什么是<code>MViewGroup</code>继承<code>MView</code>而不是反过来，跟事件分发没有关系，这里就按照习惯来</li>
+</ol>
+<h3 id="第二次试造"><a href="#第二次试造" class="headerlink" title="第二次试造"></a>第二次试造</h3><p>然后我们增加一条需求，让情况复杂一点：<code>Activity</code>中有一堆层层嵌套的View，有好几个叠着的View能处理事件<br>示意图（@@@，两个view深色）</p>
+<p>同时需要增加一条设计原则：<strong>用户的一次操作，只能被一个View真正处理（消费）</strong></p>
+<ol>
+<li>要求这条原则是为了让操作的反馈符合用户直觉</li>
+<li>很容易理解，正常情况下人只会想一次就做一件事<ol>
+<li>比如一个列表条目，列表可以点击进入详情，列表上还有个编辑按钮，点击可以编辑条目<ol start="2">
+<li>这是一个上下两个View都能点击的场景，但用户点一个地方，肯定只想去做一件事，要么进入详情，要么是编辑条目，如果你点编辑结果跳了两个页面，那肯定是不合适的</li>
+</ol>
+</li>
+<li>再比如在一个可点击Item组成的列表里（比如微信的消息界面），Item可以点击进入某个聊天，列表还能滑动上下查看<ol start="3">
+<li>如果你让Item和列表都处理事件，那在你滑动的时候，你可能得跳一堆你不想去的聊天页面</li>
+</ol>
+</li>
+</ol>
+</li>
+<li>（@@@可能有好事者会举手问，你个乡巴佬没见过coordarylayout吗。首先，其实还是一个View消费，一个View消费对开发者的好处是，减少代码的耦合，coordarylayout是一个View消费事件作出自己的反应后，其他相关的依赖View会作出相应的变换，另外其实这是用在开发者确实需要几个View配合作出符合用户直觉的效果的场景，而不是你瞎几把写出的大家乱搞的场景）</li>
+</ol>
+<p>如果使用第一次试造的框架，要遵守这条原则，就需要在每一个可以处理事件的View层级，判断出自己要处理事件后，不继续调用<code>child</code>的<code>passEvent</code>方法了，保证只有自己处理了事件<br>但如果真这样实现了，在大部分场景下会显得怪怪的，因为处理事件的顺序不对</p>
+<ol>
+<li>比如还是上面的列表，当用户点击按钮想编辑条目的时候，点击事件先传到条目，如果你在条目中判断需要事件，然后把事件消费了不传给子View，用户就永远点不开编辑条目了</li>
+<li>而且换个角度看更加明显，用户肯定希望点哪，哪儿最靠上、离手指最近的东西被触发</li>
+</ol>
+<p>所以新增需求的一个得分点是：<strong>找到那个适合处理事件的View</strong>，而我们当前的答案是：<strong>那个最里面的View适合处理事件</strong></p>
+<p>这就不能是等<code>parent</code>不处理事件了才把事件传给<code>child</code>，应该反过来，你需要事件的处理顺序是从里向外：里边的<code>child</code>不要事件了，才调用<code>parent</code>的<code>passEvent</code>方法把事件传出来<br>于是得加一条向外的通道，只能在这条向外的通道上处理事件，前面向里的通道什么都不干，只管把事件往里传<br>所以这时你有了两条通道，改个名字吧，向里传递事件是<code>passIn</code>方法，向外传递并处理事件是<code>passOut</code>方法</p>
+<p>示意图@@@</p>
+<p>麻雀代码：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">open</span> <span class="class"><span class="keyword">class</span> <span class="title">MView</span> </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> parent: MView? = <span class="literal">null</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">open</span> <span class="function"><span class="keyword">fun</span> <span class="title">passIn</span><span class="params">(ev: <span class="type">MotionEvent</span>)</span></span> &#123;</span><br><span class="line">        passOut(ev)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">open</span> <span class="function"><span class="keyword">fun</span> <span class="title">passOut</span><span class="params">(ev: <span class="type">MotionEvent</span>)</span></span> &#123;</span><br><span class="line">        parent?.passOut(ev)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MViewGroup</span></span>(<span class="keyword">private</span> <span class="keyword">val</span> child: MView) : MView() &#123;</span><br><span class="line">    init &#123;</span><br><span class="line">        child.parent = <span class="keyword">this</span> <span class="comment">// 示意写法</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">passIn</span><span class="params">(ev: <span class="type">MotionEvent</span>)</span></span> &#123;</span><br><span class="line">        child.passIn(ev)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这段代码没有问题，非常简单，但是它对需求意图的表达不够清晰，增加了框架的使用难度</p>
+<ol>
+<li>如前所述，我们希望<code>passIn</code>的时候只传递事件，希望在<code>passOut</code>的时候每个View决定是否要处理事件，并进行处理，而且在处理事件后，不再调用<code>parent</code>的<code>passOut</code>方法把事件传出来</li>
+<li>你会发现，这其中包含了两类职责，一类是事件传递控制逻辑，另一类是事件处理钩子</li>
+<li>其中事件传递控制逻辑基本不会变化，事件处理的钩子中可能做任何事情</li>
+<li>我们需要把不同职责的代码分开，更需要把变化的和不变的分开，减少框架使用者的关注点</li>
+</ol>
+<p>于是我把事件传递控制逻辑放在<code>dispatch</code>方法中，把<code>onTouch</code>方法作为事件处理钩子，而且钩子有一个返回值，表示钩子中是否处理了事件</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">open</span> <span class="class"><span class="keyword">class</span> <span class="title">MView</span> </span>&#123;</span><br><span class="line">    <span class="keyword">open</span> <span class="function"><span class="keyword">fun</span> <span class="title">dispatch</span><span class="params">(ev: <span class="type">MotionEvent</span>)</span></span>: <span class="built_in">Boolean</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> onTouch(ev)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">open</span> <span class="function"><span class="keyword">fun</span> <span class="title">onTouch</span><span class="params">(ev: <span class="type">MotionEvent</span>)</span></span>: <span class="built_in">Boolean</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MViewGroup</span></span>(<span class="keyword">private</span> <span class="keyword">val</span> child: MView) : MView() &#123;</span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">dispatch</span><span class="params">(ev: <span class="type">MotionEvent</span>)</span></span>: <span class="built_in">Boolean</span> &#123;</span><br><span class="line">        <span class="keyword">var</span> handled = child.dispatch(ev)</span><br><span class="line">        <span class="keyword">if</span> (!handled) handled = onTouch(ev)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> handled</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">onTouch</span><span class="params">(ev: <span class="type">MotionEvent</span>)</span></span>: <span class="built_in">Boolean</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这样写完，你会发现：</p>
+<ol>
+<li>控制逻辑集中在<code>dispatch</code>中，一目了然</li>
+<li><code>onTouch</code>单纯是一个钩子，框架使用者只需要关心这个钩子和它的返回值，不用太关心控制流程</li>
+<li>另外，连<code>parent</code>也不需要了</li>
+</ol>
+<h3 id="第三次试造"><a href="#第三次试造" class="headerlink" title="第三次试造"></a>第三次试造</h3><p>上文的实现看上去已经初具雏形了，但其实连开始提的那条原则都没实现完，因为原则要求一次操作只能有一个View进行处理，而我们实现的是一个触摸事件只能有一个View进行处理<br>这里就涉及到一次触摸操作和一个触摸事件的区别</p>
+<ol>
+<li>假设还没有触摸事件的概念，我们要怎么区分一次触摸操作呢？<ol start="2">
+<li>把触摸操作细分一下，大概有按下动作、抬起动作、与屏幕接触时的移动和停留动作</li>
+<li>很容易想到，要区分两次触摸操作，可以通过按下和抬起动作进行区分，按下动作开始了一次触摸操作，抬起动作结束了一次触摸，按下和抬起中间的移动和停留都属于这一次触摸操作，至于移动和停留是否要区分，目前没有看到区分的必要，可以都作为触摸中来处理</li>
+</ol>
+</li>
+<li>于是在一次触摸操作中就有了三种动作的类型：<code>DOWN/UP/ING</code>，其中<code>ING</code>有点不够专业，改个名字叫<code>MOVE</code>吧</li>
+<li>而每个触摸动作会在软件系统中产生一个同样类型的触摸事件</li>
+<li>所以最后，一次触摸操作就是由一组从<code>DOWN</code>事件开始、中间是多个<code>MOVE</code>事件、最后结束于<code>UP</code>事件的事件流组成</li>
+</ol>
+<p>于是设计原则更确切地说就是：<strong>一次触摸产生的事件流，只能被一个View消费</strong></p>
+<p>在上次试造的基础上把一个事件变成一个组事件流，其实非常简单，只需要：处理<code>DOWN</code>事件时跟前面处理一个事件时一样，但需要同时记住<code>DOWN</code>事件的消费对象，后续的<code>MOVE/UP</code>事件直接交给它就行了</p>
+<p>麻雀代码：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">open</span> <span class="class"><span class="keyword">class</span> <span class="title">MView</span> </span>&#123;</span><br><span class="line">    <span class="keyword">open</span> <span class="function"><span class="keyword">fun</span> <span class="title">dispatch</span><span class="params">(ev: <span class="type">MotionEvent</span>)</span></span>: <span class="built_in">Boolean</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> onTouch(ev)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">open</span> <span class="function"><span class="keyword">fun</span> <span class="title">onTouch</span><span class="params">(ev: <span class="type">MotionEvent</span>)</span></span>: <span class="built_in">Boolean</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MViewGroup</span></span>(<span class="keyword">private</span> <span class="keyword">val</span> child: MView) : MView() &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">var</span> isChildNeedEvent = <span class="literal">false</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">dispatch</span><span class="params">(ev: <span class="type">MotionEvent</span>)</span></span>: <span class="built_in">Boolean</span> &#123;</span><br><span class="line">        <span class="keyword">var</span> handled = <span class="literal">false</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (ev.actionMasked == MotionEvent.ACTION_DOWN) &#123;</span><br><span class="line">            clearStatus()</span><br><span class="line"></span><br><span class="line">            handled = child.dispatch(ev)</span><br><span class="line">            <span class="keyword">if</span> (handled) isChildNeedEvent = <span class="literal">true</span></span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (!handled) handled = onTouch(ev)</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> (isChildNeedEvent) handled = child.dispatch(ev)</span><br><span class="line">            <span class="keyword">if</span> (!handled) handled = onTouch(ev)</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (ev.actionMasked == MotionEvent.ACTION_UP) &#123;</span><br><span class="line">            clearStatus()</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> handled</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="function"><span class="keyword">fun</span> <span class="title">clearStatus</span><span class="params">()</span></span> &#123;</span><br><span class="line">        isChildNeedEvent = <span class="literal">false</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">onTouch</span><span class="params">(ev: <span class="type">MotionEvent</span>)</span></span>: <span class="built_in">Boolean</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol>
+<li>增加了一个<code>isChildNeedEvent</code>状态，对是子View是否处理了<code>DOWN</code>事件进行记录</li>
+<li>在收到<code>DOWN</code>事件的最开始和收到<code>UP</code>事件的最后，重置状态</li>
+</ol>
+<p>此时框架使用者还是只需要关心<code>onTouch</code>钩子，在需要处理事件时进行处理并返回<code>true</code>，其他事情框架都做好了</p>
+<h3 id="第四次试造"><a href="#第四次试造" class="headerlink" title="第四次试造"></a>第四次试造</h3><p>上面的框架已经能完成基本的事件分发工作了，但下面这个需求，你尝试一下用现在框架能实现吗？<br>需求：<strong>在可滑动View中有一个可点击View，需要让用户即使按下的位置是可点击View，再进行滑动时，也可以滑动外面的的可滑动View</strong><br>这个需求其实非常常见，比如所有「条目可点击的滑动列表」就是这样的（微信/QQ聊天列表）</p>
+<p>示意图@@@</p>
+<p>假如使用上面的框架：</p>
+<ol>
+<li>可滑动View会先把事件传到里边的可点击View</li>
+<li>可点击View一看来事件了，我又能点击，那舍我其谁啊</li>
+<li>然后外面的可滑动View就永远无法处理事件，也就无法滑动</li>
+</ol>
+<p>所以直接使用现在的模型去实现的「条目可点击的滑动列表」，它会永远滑动不了</p>
+<p>那怎么办呢？</p>
+<ol>
+<li>难道要让里面的可点击View去感知一下（层层往上找），自己是不是被一个能消费事件的View包裹？是的话自己就不消费事件了？<ol start="2">
+<li>这肯定是不行的，先不说子View层层反向遍历父亲是不是个好实现，至少不能外面是可以滑动的，里边View的点击事件就全部失效</li>
+</ol>
+</li>
+<li>或者我们调整<code>dispatch</code>方法在传入事件过程中的人设，让它不是只能往里传递事件，而是在自己能消费事件的时候把事件给自己<ol start="3">
+<li>这肯定也是不行的，跟第一个办法的主要问题一样</li>
+</ol>
+</li>
+</ol>
+<p>直接想实现觉得到处是矛盾，找不到突破口，那就从头开始吧，从什么样的触摸反馈是用户觉得自然的出发，看看这种符合直觉的反馈方案是否存在，找出来它是什么，再考虑我们要怎么实现</p>
+<ol>
+<li>当用户面对一个滑动View里有一个可点击View，当他摸在可点击View上时，他是要做什么？</li>
+<li>显然，只有两个可能性，要么用户想点这个可点击View，要么用户想滑动这个可滑动View</li>
+<li>那么，当用户刚用手指接触的时候，也就是<code>DOWN</code>事件刚来的时候，能判断用户想干什么吗？很抱歉，不能</li>
+<li>所以，客观条件下，你就是不可能在<code>DOWN</code>事件传过来的时候，判断出用户到底想做什么，于是两个View其实都不能确定自己是否要消费事件</li>
+</ol>
+<p><del>我*，这不傻*了吗，还搞什么GUI啊，大家都用命令行吧</del><br>等等，不要着急，GUI还是得搞的，不搞没饭吃的我跟你讲，所以你还是得想想，想尽办法去做到</p>
+<p>你先忘记前面说的原则，你想想，不考虑其他因素，也不是只能用<code>DOWN</code>事件，只要你能判断用户的想法就行，你有什么办法</p>
+<ol start="8">
+<li>办法肯定是有的，你可以多等一会，看用户接下来的行为能匹配哪种操作模式<ol>
+<li>点击是这样：用户先<code>DOWN</code>，然后<code>MOVE</code>很小一段，也不会MOVE出这个子View，关键是比较短的时间就<code>UP</code></li>
+<li>滑动是这样：用户先<code>DOWN</code>，然后开始<code>MOVE</code>，这时候可能会MOVE出这个子View，也可能不，但关键是比较长的时间也没有在<code>UP</code>，一直是在<code>MOVE</code></li>
+</ol>
+</li>
+<li>所以你的结论是，<strong>只有<code>DOWN</code>不行，还得看接下来的事件流</strong></li>
+<li>再多考虑个长按的情况，总结就是：<ol>
+<li>如果在某个时间内<code>UP</code>，就是点击里边的View</li>
+<li>如果比较长的时间<code>UP</code>，但没怎么<code>MOVE</code>，就是长按里边的View</li>
+<li>如果在比较短的时间<code>MOVE</code>比较长的距离，就是滑动外面的View</li>
+</ol>
+</li>
+</ol>
+<p>看上去这个方案很不错，安排得明明白白，但我们现有的事件处理框架实现不了这样的判断方案，存在以下冲突点：</p>
+<ol>
+<li>因为你无法在<code>DOWN</code>的时候判断当前事件流的归属，所以一开始子View和父View都只能返回<code>false</code>，但为了能对后续事件做判断，你又希望事件继续流过它们，这就与当前的框架冲突了</li>
+<li>然后事件流了一会，子View和父View可能都会对事件的归属做出自己的判断，然后就看谁先下手消费事件，下手早的就需要通知另一方你下手晚了，我先要了，但问题来了：<ol>
+<li>如果子View先下手，就要通知父View别要事件了，这比较简单，就是返回<code>true</code>，不与当前框架冲突</li>
+<li>如果父View要了事件，要通知子View别要了，目前的框架是做不到的，做的话需要调整dispatch在传入事件过程中的人设，需要能在往里传递事件前加一个拦截，能够看情况直接给自己的onTouch处理</li>
+</ol>
+</li>
+</ol>
+<p>所以要实现这个判断方案，就肯定要对现在的事件处理框架进行修改，而且看上去一不小心就会大改</p>
+<ol>
+<li>仔细想想，大概有这样两个改动相对小的思路：<ol>
+<li>思路一：<ol start="2">
+<li>当事件走到可滑动父View的时候，它先处理事件，并且把事件攒着</li>
+<li>当攒了几个事件，判断出不是自己要的时候，再把事件一股脑给子View，触发里边的点击事件</li>
+</ol>
+</li>
+<li>思路二：<ol start="3">
+<li>当事件走到到可滑动父View的时候，它先把事件往里传，里边可能会处理事件，可能不会，可滑动父View都先不关心</li>
+<li>但可滑动父View也不是放手不管，它开始暗中观察<ol start="6">
+<li>假如里边处理事件，它就会绷紧神经准备伺机而动，先观察事件是不是符合触发自己消费事件的模式，一旦发现符合条件的事件模式，它就把事件拦截下来，即使里边在处理，它也不往里<code>disptach</code>了，而是直接给自己的<code>onTouch</code></li>
+<li>假如里边不处理事件，那啥问题没有，它直接处理事件就好了</li>
+</ol>
+</li>
+</ol>
+</li>
+</ol>
+</li>
+<li>两个思路总结一下：<ol start="15">
+<li>思路一：外面的父View先拦事件，如果判断拦错了，再把事件往里发</li>
+<li>思路二：外面的父View先不拦事件，在判断应该拦的时候，突然把事件拦下来</li>
+</ol>
+</li>
+<li>这两个思路看似都要对当前框架做改变，看似差不多，但其实还是有比较明显的优劣的<ol>
+<li>思路一问题比较明显：<ol start="2">
+<li>父View把事件拦下来了，然后发现拦错了再给子View，但其实子View又并不一定能消费事件，这不就是白做一步吗</li>
+<li>等到子View不处理事件，又把事件们还给父View，它还得继续处理事件</li>
+<li>整个过程不仅繁琐，而且会让开发者感觉到别扭</li>
+<li>所以这个思路是不行的，还得是把事件先给子View</li>
+</ol>
+</li>
+<li>思路二就相对正常多了，只有一个问题（下一节再讲，你可以猜一猜，这里我先当没发现），而且框架要做的改变也很少：<ol>
+<li>父View在往里<code>dispatch</code>事件前，增加一个分析拦截方法，开发者可以覆写这个方法，加入自己的事件模式分析代码，并且可以在确定要拦截的时候进行拦截<ol start="2">
+<li>把分析拦截逻辑抽成一个方法非常合理：什么时候拦，什么时候不拦，内里的逻辑很多，但对外暴露的API可以很小，非常适合抽出去</li>
+</ol>
+</li>
+<li>在确定自己要拦截事件的时候，即使里边在一开始消费了事件，也不把事件往里传了，直接给自己的<code>onTouch</code></li>
+</ol>
+</li>
+</ol>
+</li>
+</ol>
+<p>图@@@：</p>
+<p>于是使用思路二，能写出以下代码：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">open</span> <span class="class"><span class="keyword">class</span> <span class="title">MView</span> </span>&#123;</span><br><span class="line">    <span class="keyword">open</span> <span class="function"><span class="keyword">fun</span> <span class="title">dispatch</span><span class="params">(ev: <span class="type">MotionEvent</span>)</span></span>: <span class="built_in">Boolean</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> onTouch(ev)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">open</span> <span class="function"><span class="keyword">fun</span> <span class="title">onTouch</span><span class="params">(ev: <span class="type">MotionEvent</span>)</span></span>: <span class="built_in">Boolean</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MViewGroup</span></span>(<span class="keyword">private</span> <span class="keyword">val</span> child: MView) : MView() &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">var</span> isChildNeedEvent = <span class="literal">false</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">var</span> isSelfNeedEvent = <span class="literal">false</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">dispatch</span><span class="params">(ev: <span class="type">MotionEvent</span>)</span></span>: <span class="built_in">Boolean</span> &#123;</span><br><span class="line">        <span class="keyword">var</span> handled = <span class="literal">false</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (ev.actionMasked == MotionEvent.ACTION_DOWN) &#123;</span><br><span class="line">            clearStatus()</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (onIntercept(ev)) &#123;</span><br><span class="line">                isSelfNeedEvent = <span class="literal">true</span></span><br><span class="line">                handled = onTouch(ev)</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                handled = child.dispatch(ev)</span><br><span class="line">                <span class="keyword">if</span> (handled) isChildNeedEvent = <span class="literal">true</span></span><br><span class="line"></span><br><span class="line">                <span class="keyword">if</span> (!handled) &#123;</span><br><span class="line">                    handled = onTouch(ev)</span><br><span class="line">                    <span class="keyword">if</span> (handled) isSelfNeedEvent = <span class="literal">true</span></span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> (isSelfNeedEvent) &#123;</span><br><span class="line">                handled = onTouch(ev)</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> (isChildNeedEvent) &#123;</span><br><span class="line">                <span class="keyword">if</span> (onIntercept(ev)) &#123;</span><br><span class="line">                    isSelfNeedEvent = <span class="literal">true</span></span><br><span class="line">                    handled = onTouch(ev)</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    handled = child.dispatch(ev)</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (ev.actionMasked == MotionEvent.ACTION_UP) &#123;</span><br><span class="line">            clearStatus()</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> handled</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="function"><span class="keyword">fun</span> <span class="title">clearStatus</span><span class="params">()</span></span> &#123;</span><br><span class="line">        isChildNeedEvent = <span class="literal">false</span></span><br><span class="line">        isSelfNeedEvent = <span class="literal">false</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">onTouch</span><span class="params">(ev: <span class="type">MotionEvent</span>)</span></span>: <span class="built_in">Boolean</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">open</span> <span class="function"><span class="keyword">fun</span> <span class="title">onIntercept</span><span class="params">(ev: <span class="type">MotionEvent</span>)</span></span>: <span class="built_in">Boolean</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>写的过程中增加了一些对细节的处理：</p>
+<ol>
+<li>不仅是在<code>DOWN</code>事件的<code>dispatch</code>前需要拦截，在后续事件中，也需要加入拦截，否则无法实现中途拦截的目标</li>
+<li>在某一个事件判断拦截之后，还需要在后续事件中再判断一次是否要拦截吗？<ol start="2">
+<li>完全不需要，我们希望的就是在一次触摸中，尽可能只有1个对象去消费事件，决定是你了，那就不要变</li>
+<li>所以增加一个<code>isSelfNeedEvent</code>记录自己是否拦截过事件，如果拦截过，后续事件直接就交给自己处理</li>
+</ol>
+</li>
+<li>在后续事件时，子View没有处理事件，外面也不再处理了，同样因为只能有一个View处理，（Actvity会处理这样的事件，后面会提到）</li>
+</ol>
+<p>这一下代码是不是看上去瞬间复杂了，但其实只是增加了一个事件拦截机制，对比上一次试造的轮子，会更容易理解（要是Markdown支持代码块内自定义着色就好了）<br>而且对于框架的使用者来说，关注点一样非常少</p>
+<ol>
+<li>重写<code>onIntercept</code>方法，判断什么时候需要拦截事件，需要拦截时返回<code>true</code></li>
+<li>重写<code>onTouch</code>方法，如果处理了事件，返回<code>true</code></li>
+</ol>
+<h3 id="第五次试造"><a href="#第五次试造" class="headerlink" title="第五次试造"></a>第五次试造</h3><p>上面的处理思路虽然实现了需求，但可能会导致一个问题：里边的子View接收了一半的事件，可能都已经开始处理并做了一些事情，父View忽然就不把后续事件给它了，会不会违背用户操作的直觉？甚至出现更奇怪的现象？</p>
+<!--但会造成一个非常明显的与原则违背的情况，那就是可能不止一个View会消费到事件，两个View，三个View，甚至极端情况多个View都有可能
+（因为两个和多个是一样的，下文只用两个View的情况举例）-->
+<p>这个问题确实比较麻烦，分两个情况讨论</p>
+<ol>
+<li>里边的View接收了一半事件，但还没有开始处理，或者在进行可以被取消的处理<ol>
+<li>比如对于一个可点击的View，View的默认实现是只要被touch了，就会有<code>press</code>状态，如果你设置了对应的<code>background</code>，你的View就会有高亮效果</li>
+<li>这种高亮即使被中断也没事，不会让用户感觉到奇怪，不信你自己试试微信的聊天列表</li>
+<li>但是，一个值得注意的点是，如果你只是直接不发送<code>MOVE</code>事件了，这会有问题，就这个按下高亮的例子，如果你只是不传<code>MOVE</code>事件了，那谁来告诉里边的子View取消高亮呢？所以你需要在中断的时候也传一个结束事件<ol start="4">
+<li>但是，你能直接传一个<code>UP</code>事件吗？也是不行的，因为这样就匹配了里边点击的模式了，会直接触发一个点击事件，这显然不是我们想要的</li>
+<li>于是外面需要给一个新的事件，这个事件的类型就叫取消事件好了<code>CANCEL</code></li>
+</ol>
+</li>
+<li>总结一下，对于这种简单的可被取消情况，你可以这样去处理：<ol>
+<li>在确定要拦截的时候，在把真正的事件转发给自己的<code>onTouch</code>的同时，另外生成一个新的事件发给自己的子View，事件类型是<code>CANCEL</code>，它将是子View收到的最后一个事件</li>
+<li>子View可以在收到这个事件后，对当前的一些行为进行取消</li>
+</ol>
+</li>
+</ol>
+</li>
+<li>里边的View接收了一半事件，已经开始处理了，而且最好不要去取消，或者取消了会显得很怪<ol>
+<li>这个时候，事情会复杂一些，而且这个场景发生的远比你想象中的多，形式也多种多样，不处理好的后果也比只是让用户感觉上奇怪要严重得多，可能会有的功能会实现不了，下面举两个例子<ol>
+<li>在<code>ViewPager</code>里有三个page，page里是<code>ScrollView</code>，<code>ViewPager</code>可以横向滑动，page里的<code>ScrollView</code>可以竖向滑动<ol start="2">
+<li>如果按前面逻辑，当<code>ViewPager</code>把事件给里边<code>ScrollView</code>之后，它也会偷偷观察，如果你一直是竖向滑动，那没话说，<code>ViewPager</code>不会触发拦截事件</li>
+<li>但如果你竖着滑着滑着，手抖了，开始横滑（或者只是斜滑），<code>ViewPager</code>就会开始紧张，想「主人你这是要临幸我吗？真的假的，那我可就不客气了」，于是在你斜滑一定距离之后，忽然发现，你划不动<code>ScrollView</code>了，而<code>ViewPager</code>开始动</li>
+<li>原因就是<code>ScrollView</code>的竖滑被取消了，<code>ViewPager</code>把事件拦下来，开始横滑</li>
+<li>这个体验还是比较怪的，会有种过于灵敏的感觉，会让用户只能小心翼翼地滑动</li>
+</ol>
+</li>
+<li>在一个<code>ScrollView</code>里有一些按钮，按钮有长按事件，长按再拖动就可以移动按钮<ol start="3">
+<li>（更常见的例子是一个列表，里边的条目可以长按拖动）</li>
+<li>同样按前面的逻辑，当你长按后准备拖动按钮时，你怎么保证不让<code>ScrollView</code>把事件拦下来呢？</li>
+</ol>
+</li>
+</ol>
+</li>
+<li>所以这类问题是一定要解决的，但要怎么解决呢<ol>
+<li>还是先从业务上看，从用户的角度看，当里边已经开始做一些特殊处理了，外面应不应该把事件抢走？<ol start="2">
+<li>不应该对吧，OK，解决方针就是不应该让外边的View抢事件</li>
+</ol>
+</li>
+<li>所以接下来的问题是：谁先判断出外边的View不该抢事件，里边的子View还是外边的父View？然后怎么不让外边的View抢？<ol start="3">
+<li>首先，肯定是里边的View做出判断：这个事件，真的，外边的View你最好别抢，要不用户不开心了</li>
+<li>然后里边就得告知外边，你别抢了，告知可以有几个方式<ol>
+<li>外边抢之前问一下里边，我能不能抢</li>
+<li>里边在确定这个事件不能被抢之后，从<code>dispatch</code>方法返回一个特别的值给外边（之前只是<code>true</code>和<code>false</code>，现在要加一个）</li>
+<li>里边通过别的方式通知外边，你不要抢</li>
+</ol>
+</li>
+<li>讲道理，我觉得三个方式都行，但第三个方式最为简单直接，而且不用改之前的大逻辑，Android也使用了这个方式，父View给子View提供了一个方法<code>requestDisallowInterceptTouchEvent</code>，子View调用它改变父View的一个状态，然后父View每次在准备拦截前都会判断这个状态，当然这个状态只对当前事件流有效</li>
+<li>然后，这个情况还得再注意一点，它应该是向外递归的，也就是，在复杂的情况中，有可能有多个上级在暗中观察，当里边的View决定要处理事件而且不准备交出去的时候，外面所有的暗中观察的父View都应该把脑袋转回去</li>
+</ol>
+</li>
+</ol>
+</li>
+</ol>
+</li>
+</ol>
+<p>所以，连同上一次试造，总结一下</p>
+<ol>
+<li>对于可消费事件的View进行嵌套的情况，怎么判定事件的归属会变得非常麻烦，无法立刻在<code>DOWN</code>事件时就确定，只能在后续的事件流中进一步判断</li>
+<li>于是在没判断归属的时候，先由里边的子View消费事件，外面暗中观察，然后两方同时对事件类型做进一步匹配，并准备在匹配成功后对事件归属进行抢拍</li>
+<li>抢拍是先抢先得<ol start="2">
+<li>父亲先抢到，发个<code>CANCEL</code>事件给儿子就完了</li>
+<li>儿子先抢到，就得大喊大叫，撒泼耍赖，爸爸们行行好吧，最后得以安心处理事件</li>
+</ol>
+</li>
+</ol>
+<p>另外有几个值得一提的地方：</p>
+<ol>
+<li>这种先抢先得的方式感觉上有点乱来是吧，但也没有更好的办法了，一般都是调试者自己根据实际用户体验调整，让父亲或儿子，在最适合的时机准确及时地抢到应得的事件（@@@这块是这样吗？）</li>
+<li>父View在拦截下事件后，把接下来的事件传给<code>onTouch</code>，<code>onTouch</code>只会收到后半部分的事件，这样会不会有问题呢？<ol>
+<li>确实直接给后半部分会有问题，所以一般情况是，在没拦截的时候就做好如果要处理事件的一些准备工作，以便之后拦截事件了，只使用后半部分事件也能实现符合用户直觉的反馈</li>
+</ol>
+</li>
+</ol>
+<!--1. 源码对于在可滑动View中的子View这种情况，还进一步做了一处体验上的优化：
+    - 正常里边的子View在按下就会直接显示按下状态，只是只有在马上抬起时才表现为点击，如果只是`MOVE`不抬起，那就是滑外面了，就取消按下状态
+    - 这样可行，但Android觉得这个体验还是不够好，于是会让里边的子View感知自己是不是在一个可滑动View里边，如果是的话，它不会下按下直接显示按下状态，而是稍微晚那么一点点显示出啦，提升了一点用户体验-->
+<p>到现在，代码就跟一开始贴出的麻雀一模一样了</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">interface</span> <span class="title">ViewParent</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">requestDisallowInterceptTouchEvent</span><span class="params">(isDisallowIntercept: <span class="type">Boolean</span>)</span></span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">open</span> <span class="class"><span class="keyword">class</span> <span class="title">MView</span> </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> parent: ViewParent? = <span class="literal">null</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">open</span> <span class="function"><span class="keyword">fun</span> <span class="title">dispatch</span><span class="params">(ev: <span class="type">MotionEvent</span>)</span></span>: <span class="built_in">Boolean</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> onTouch(ev)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">open</span> <span class="function"><span class="keyword">fun</span> <span class="title">onTouch</span><span class="params">(ev: <span class="type">MotionEvent</span>)</span></span>: <span class="built_in">Boolean</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">open</span> <span class="class"><span class="keyword">class</span> <span class="title">MViewGroup</span></span>(<span class="keyword">private</span> <span class="keyword">val</span> child: MView) : MView(), ViewParent &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">var</span> isChildNeedEvent = <span class="literal">false</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">var</span> isSelfNeedEvent = <span class="literal">false</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">var</span> isDisallowIntercept = <span class="literal">false</span></span><br><span class="line"></span><br><span class="line">    init &#123;</span><br><span class="line">        child.parent = <span class="keyword">this</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">dispatch</span><span class="params">(ev: <span class="type">MotionEvent</span>)</span></span>: <span class="built_in">Boolean</span> &#123;</span><br><span class="line">        <span class="keyword">var</span> handled = <span class="literal">false</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (ev.actionMasked == MotionEvent.ACTION_DOWN) &#123;</span><br><span class="line">            clearStatus()</span><br><span class="line"></span><br><span class="line">            <span class="comment">// add isDisallowIntercept</span></span><br><span class="line">            <span class="keyword">if</span> (!isDisallowIntercept &amp;&amp; onIntercept(ev)) &#123;</span><br><span class="line">                isSelfNeedEvent = <span class="literal">true</span></span><br><span class="line">                handled = onTouch(ev)</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                handled = child.dispatch(ev)</span><br><span class="line">                <span class="keyword">if</span> (handled) isChildNeedEvent = <span class="literal">true</span></span><br><span class="line"></span><br><span class="line">                <span class="keyword">if</span> (!handled) &#123;</span><br><span class="line">                    handled = onTouch(ev)</span><br><span class="line">                    <span class="keyword">if</span> (handled) isSelfNeedEvent = <span class="literal">true</span></span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> (isSelfNeedEvent) &#123;</span><br><span class="line">                handled = onTouch(ev)</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> (isChildNeedEvent) &#123;</span><br><span class="line">                <span class="comment">// add isDisallowIntercept</span></span><br><span class="line">                <span class="keyword">if</span> (!isDisallowIntercept &amp;&amp; onIntercept(ev)) &#123;</span><br><span class="line">                    isSelfNeedEvent = <span class="literal">true</span></span><br><span class="line"></span><br><span class="line">                    <span class="comment">// add cancel</span></span><br><span class="line">                    <span class="keyword">val</span> cancel = MotionEvent.obtain(ev)</span><br><span class="line">                    cancel.action = MotionEvent.ACTION_CANCEL</span><br><span class="line">                    handled = child.dispatch(cancel)</span><br><span class="line">                    cancel.recycle()</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    handled = child.dispatch(ev)</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (ev.actionMasked == MotionEvent.ACTION_UP</span><br><span class="line">            || ev.actionMasked == MotionEvent.ACTION_CANCEL) &#123;</span><br><span class="line">            clearStatus()</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> handled</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="function"><span class="keyword">fun</span> <span class="title">clearStatus</span><span class="params">()</span></span> &#123;</span><br><span class="line">        isChildNeedEvent = <span class="literal">false</span></span><br><span class="line">        isSelfNeedEvent = <span class="literal">false</span></span><br><span class="line">        isDisallowIntercept = <span class="literal">false</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">onTouch</span><span class="params">(ev: <span class="type">MotionEvent</span>)</span></span>: <span class="built_in">Boolean</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">open</span> <span class="function"><span class="keyword">fun</span> <span class="title">onIntercept</span><span class="params">(ev: <span class="type">MotionEvent</span>)</span></span>: <span class="built_in">Boolean</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">requestDisallowInterceptTouchEvent</span><span class="params">(isDisallowIntercept: <span class="type">Boolean</span>)</span></span> &#123;</span><br><span class="line">        <span class="keyword">this</span>.isDisallowIntercept = isDisallowIntercept</span><br><span class="line">        parent?.requestDisallowInterceptTouchEvent(isDisallowIntercept)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这次改动主要是增加了发出<code>CANCEL</code>事件和<code>requestDisallowInterceptTouchEvent</code>机制</p>
+<ol>
+<li>在发出<code>CANCEL</code>事件时有一个细节：没有在给child分发<code>CANCEL</code>事件的同时继续把原事件分发给自己的<code>onTouch</code><ol start="2">
+<li>这是源码中的写法，不是我故意的，可能是为了让一个事件也只能有一个View处理，避免出现bug</li>
+</ol>
+</li>
+<li>实现<code>requestDisallowInterceptTouchEvent</code>机制时，增加了<code>ViewParent</code>接口<ol start="4">
+<li>不使用这种写法也行，但使用它从代码整洁的角度看会更优雅，比如避免反向依赖，而且这也是源码的写法，于是直接搬来了</li>
+</ol>
+</li>
+</ol>
+<p>虽然目前整个框架的代码有点复杂，但对于使用者来说，依然非常简单，只是在上一版框架的基础上增加了：</p>
+<ol>
+<li>如果View判断自己要消费事件，而且执行的是不希望被父View打断的操作时，请立刻调用父View的<code>requestDisallowInterceptTouchEvent</code>方法</li>
+<li>如果在<code>onTouch</code>方法中对事件消费并且做了一些操作，需要注意在收到<code>CANCEL</code>事件时，对操作进行取消</li>
+</ol>
+<p>到这里，事件分发的主要逻辑已经讲清楚了，不过还差一段Activity中的处理，其实它做的事情类似ViewGroup，只有这几个区别：</p>
+<ol>
+<li>不会对事件进行拦截</li>
+<li>只要有子View没有处理的事件，它都会交给自己的<code>onTouch</code></li>
+</ol>
+<p>所以补上Activity的麻雀：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">open</span> <span class="class"><span class="keyword">class</span> <span class="title">MActivity</span></span>(<span class="keyword">private</span> <span class="keyword">val</span> childGroup: MViewGroup) &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">var</span> isChildNeedEvent = <span class="literal">false</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">var</span> isSelfNeedEvent = <span class="literal">false</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">open</span> <span class="function"><span class="keyword">fun</span> <span class="title">dispatch</span><span class="params">(ev: <span class="type">MotionEvent</span>)</span></span>: <span class="built_in">Boolean</span> &#123;</span><br><span class="line">        <span class="keyword">var</span> handled = <span class="literal">false</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (ev.actionMasked == MotionEvent.ACTION_DOWN) &#123;</span><br><span class="line">            clearStatus()</span><br><span class="line"></span><br><span class="line">            handled = childGroup.dispatch(ev)</span><br><span class="line">            <span class="keyword">if</span> (handled) isChildNeedEvent = <span class="literal">true</span></span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (!handled) &#123;</span><br><span class="line">                handled = onTouch(ev)</span><br><span class="line">                <span class="keyword">if</span> (handled) isSelfNeedEvent = <span class="literal">true</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> (isSelfNeedEvent) &#123;</span><br><span class="line">                handled = onTouch(ev)</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> (isChildNeedEvent) &#123;</span><br><span class="line">                handled = childGroup.dispatch(ev)</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (!handled) handled = onTouch(ev)</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (ev.actionMasked == MotionEvent.ACTION_UP</span><br><span class="line">            || ev.actionMasked == MotionEvent.ACTION_CANCEL) &#123;</span><br><span class="line">            clearStatus()</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> handled</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="function"><span class="keyword">fun</span> <span class="title">clearStatus</span><span class="params">()</span></span> &#123;</span><br><span class="line">        isChildNeedEvent = <span class="literal">false</span></span><br><span class="line">        isSelfNeedEvent = <span class="literal">false</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">open</span> <span class="function"><span class="keyword">fun</span> <span class="title">onTouch</span><span class="params">(ev: <span class="type">MotionEvent</span>)</span></span>: <span class="built_in">Boolean</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>到这里，我们终于造好了一个粗糙但不劣质的轮子，源码的主要逻辑与它的区别不大，具体区别大概有：<code>TouchTarget</code>机制、多点触控机制、<code>nested scroll</code>、处理各种listener、结合View的状态进行处理等，相比主要逻辑，它们就没有那么重要了，之后有空会写关于多点触控和<code>TouchTarget</code>的内容<del>（看！热腾腾的坑！）</del></p>
+<p>所以以后再有人问你事件分发是什么，你不用支支吾吾，不用详细列出不同的方法、不同的事件类型，方法不同的返回值，不同的activity/viewgroup/View，对事件分发是怎么影响的，而是只要先讲你要处理一个什么样的问题，有哪些进一步的需求，你有哪些处理的原则，于是最后你是这么处理的，那就OK了</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/05/14/Red-Black-Tree-Delete/" rel="next" title="算法3.3.4 红黑树删除操作">
+                <i class="fa fa-chevron-left"></i> 算法3.3.4 红黑树删除操作
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      
+        <div id="gitment-container"></div>
+      
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">BigBear</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#【透镜系列】看穿-事件分发"><span class="nav-number">1.</span> <span class="nav-text">【透镜系列】看穿 事件分发</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#引子"><span class="nav-number">1.1.</span> <span class="nav-text">引子</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#试造轮子"><span class="nav-number">1.2.</span> <span class="nav-text">试造轮子</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#第一次试造"><span class="nav-number">1.2.1.</span> <span class="nav-text">第一次试造</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第二次试造"><span class="nav-number">1.2.2.</span> <span class="nav-text">第二次试造</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第三次试造"><span class="nav-number">1.2.3.</span> <span class="nav-text">第三次试造</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第四次试造"><span class="nav-number">1.2.4.</span> <span class="nav-text">第四次试造</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第五次试造"><span class="nav-number">1.2.5.</span> <span class="nav-text">第五次试造</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">BigBear</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i> Visitor
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i> Total Visit
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+<!-- LOCAL: You can save these files to your site and update links -->
+    
+        
+        <link rel="stylesheet" href="https://jjeejj.github.io/css/gitment.css">
+        <script src="https://jjeejj.github.io/js/gitment.js"></script>
+    
+<!-- END LOCAL -->
+
+    
+
+    
+      <script type="text/javascript">
+      function renderGitment(){
+        var gitment = new Gitment({
+            id: window.location.pathname,
+            owner: 'SaltedfishCaptain',
+            repo: 'zy-gitment-comments',
+            
+            oauth: {
+            
+            
+                client_secret: 'd146fc6e60a57ef4d238596e6d62f696b0757071',
+            
+                client_id: '8cb146a9a39e15cd2405'
+            }});
+        gitment.render('gitment-container');
+      }
+
+      
+      renderGitment();
+      
+      </script>
+    
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+
+  
+
+  
+
+</body>
+</html>
