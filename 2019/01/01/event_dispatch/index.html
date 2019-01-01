@@ -88,7 +88,7 @@
 <meta property="og:image" content="https://blog-1258341143.cos.ap-beijing.myqcloud.com/blog/6C9609F1-7EEB-41B3-8FEC-F4F041377253.png">
 <meta property="og:image" content="https://blog-1258341143.cos.ap-beijing.myqcloud.com/blog/45107265-0557-4E55-9FEB-EA54AB9E7E20.png">
 <meta property="og:image" content="https://blog-1258341143.cos.ap-beijing.myqcloud.com/blog/IMG_20181227_143236.jpg">
-<meta property="og:updated_time" content="2019-01-01T17:54:06.000Z">
+<meta property="og:updated_time" content="2019-01-01T17:57:22.153Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="【透镜系列】看穿 事件分发">
 <meta name="twitter:image" content="https://blog-1258341143.cos.ap-beijing.myqcloud.com/blog/2019-01-02_01-18-46%20-2-.gif">
@@ -312,7 +312,7 @@
 <p>这块的东西确实麻烦，说出来不怕吓到你，事件流到底怎么流与这些因素都有关系：是什么事件类型（<code>DOWN/MOVE/UP/CANCEL</code>）、所在的View种类（<code>Activity/ViewGroup/View</code>）、在哪个回调方法（<code>dispatch()/onIntercept()/onTouch()</code>）、回调方法给不同的返回值（<code>true/false/super.xxx</code>），甚至对当前事件的不同处理还会对同一事件流中接下来的事件造成不同影响<br>比如我可以问：重写某个<code>ViewGroup</code>里的<code>dispatchTouchEvent</code>方法，对<code>MOVE</code>事件返回<code>false</code>，会怎么影响接下来的事件分发？</p>
 <p>于是就有人对这些情况进行了总结，画出了纷繁复杂的分发流程图：<br><img src="https://blog-1258341143.cos.ap-beijing.myqcloud.com/blog/6C9609F1-7EEB-41B3-8FEC-F4F041377253.png" width="250"><img src="https://blog-1258341143.cos.ap-beijing.myqcloud.com/blog/45107265-0557-4E55-9FEB-EA54AB9E7E20.png" width="330"></p>
 <!-- ![-w250](https://blog-1258341143.cos.ap-beijing.myqcloud.com/blog/6C9609F1-7EEB-41B3-8FEC-F4F041377253.png)× N     ![-w330](https://blog-1258341143.cos.ap-beijing.myqcloud.com/blog/45107265-0557-4E55-9FEB-EA54AB9E7E20.png)× N -->
-<p>甚至还有类似题图这样的动态流程图，然后他们也总结了很多规律<br>（是的，这张吸引你点击的题图居然是反面教材，我也很心疼啊，画了我一个下午呢，结果并没有太大的帮助）</p>
+<p>甚至还有类似题图这样的动态流程图，然后他们也总结了很多规律<br>（是的，这张吸引你点击的题图居然是反面教材，我也很心疼啊，画了我半个下午呢，结果并没有太大的帮助）</p>
 <p>这些流程图和规律确实是对的，而且某种意义上也是非常清晰的，能帮助你在调试bug的时候找到一点方向<br>你或许可以奋发图强，把这些流程图和规律背下来，在需要的时候一通叽里呱啦背完大家大眼瞪小眼<br>但它们并不能让你真正理解事件分发是什么样子，面对「是什么、为什么、怎么办」三连，你只能抱拳告辞</p>
 <!--这样的所谓的规则、规律之类的它是什么样的东西我能给你写一打-->
 <!--这显然不太行，真正理解的人不是这个样子，你得把握其背后的逻辑，你得对其是什么样以及为什么是这样都了如指掌-->
