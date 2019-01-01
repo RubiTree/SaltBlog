@@ -88,7 +88,7 @@
 <meta property="og:image" content="https://blog-1258341143.cos.ap-beijing.myqcloud.com/blog/6C9609F1-7EEB-41B3-8FEC-F4F041377253.png">
 <meta property="og:image" content="https://blog-1258341143.cos.ap-beijing.myqcloud.com/blog/45107265-0557-4E55-9FEB-EA54AB9E7E20.png">
 <meta property="og:image" content="https://blog-1258341143.cos.ap-beijing.myqcloud.com/blog/IMG_20181227_143236.jpg">
-<meta property="og:updated_time" content="2019-01-01T17:34:22.373Z">
+<meta property="og:updated_time" content="2019-01-01T17:46:53.657Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="【透镜系列】看穿 事件分发">
 <meta name="twitter:image" content="https://blog-1258341143.cos.ap-beijing.myqcloud.com/blog/2019-01-02_01-18-46%20-2-.gif">
@@ -308,7 +308,7 @@
       
         <p><img src="https://blog-1258341143.cos.ap-beijing.myqcloud.com/blog/2019-01-02_01-18-46%20-2-.gif" alt=""></p>
 <a id="more"></a>
-<h2 id="引子"><a href="#引子" class="headerlink" title="引子"></a>引子</h2><p>事件分发，我想大部分人都能说几句，哦，三大方法，哦，那段经典伪代码，哦，责任链，或者是多一些东西<br>但如果要让你完完整整捋一遍，你可能就开始支支吾吾了，只能想到啥说啥</p>
+<h2 id="引子"><a href="#引子" class="headerlink" title="引子"></a>引子</h2><p>事件分发，我想大部分人都能说几句，哦，三大方法，哦，那段经典伪代码，哦，责任链…<br>但如果要让你完完整整捋一遍，你可能就开始支支吾吾了，只能想到啥说啥</p>
 <p>这块的东西确实麻烦，说出来不怕吓到你，事件流到底怎么流与这些因素都有关系：是什么事件类型（<code>DOWN/MOVE/UP/CANCEL</code>）、所在的View种类（<code>Activity/ViewGroup/View</code>）、在哪个回调方法（<code>dispatch()/onIntercept()/onTouch()</code>）、回调方法给不同的返回值（<code>true/false/super.xxx</code>），甚至对当前事件的不同处理还会对同一事件流中接下来的事件造成不同影响<br>比如我可以问：重写某个<code>ViewGroup</code>里的<code>dispatchTouchEvent</code>方法，对<code>MOVE</code>事件返回<code>false</code>，会怎么影响接下来的事件分发？</p>
 <p>于是就有人对这些情况进行了总结，画出了纷繁复杂的分发流程图：<br><img src="https://blog-1258341143.cos.ap-beijing.myqcloud.com/blog/6C9609F1-7EEB-41B3-8FEC-F4F041377253.png" width="250"><img src="https://blog-1258341143.cos.ap-beijing.myqcloud.com/blog/45107265-0557-4E55-9FEB-EA54AB9E7E20.png" width="330"></p>
 <!-- ![-w250](https://blog-1258341143.cos.ap-beijing.myqcloud.com/blog/6C9609F1-7EEB-41B3-8FEC-F4F041377253.png)× N     ![-w330](https://blog-1258341143.cos.ap-beijing.myqcloud.com/blog/45107265-0557-4E55-9FEB-EA54AB9E7E20.png)× N -->
